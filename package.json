@@ -1,0 +1,44 @@
+{
+  "name": "generator-template-ui5-project",
+  "version": "0.0.1",
+  "description": "(Sub-)generator for a UI5 project",
+  "scripts": {
+    "test": "mocha",
+    "lint": "eslint .",
+    "test:manual": "cd test/ui5-app && ui5 serve"
+  },
+  "keywords": [
+    "yeoman-generator",
+    "sap",
+    "sapui5",
+    "openui5",
+    "ui5",
+    "project-template"
+  ],
+  "author": "SAP (Marius Obert)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ui5-community/template-ui5-project.git"
+  },
+  "files": [
+    "helpers",
+    "generators"
+  ],
+  "dependencies": {
+    "glob": "^7.1.6",
+    "object-assign-deep": "^0.4.0",
+    "yaml": "^1.10.0",
+    "chalk": "^4.1.0",
+    "yeoman-environment": "^3.2.0",
+    "yeoman-generator": "^4.13.0",
+    "yosay": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0",
+    "execa": "^5.0.0",
+    "mocha": "^8.2.1",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^3.0.0"
+  }
+}
