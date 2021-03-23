@@ -21,7 +21,7 @@ jobs:
       - run: npm test
 
   create-release:
-    needs: publish-npm
+    needs: run-test
     name: Create Release
     runs-on: ubuntu-latest
     steps:
