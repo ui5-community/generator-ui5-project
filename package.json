@@ -1,6 +1,6 @@
 {
   "name": "generator-template-ui5-project",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "(Sub-)generator for a UI5 project",
   "scripts": {
     "test": "mocha",
