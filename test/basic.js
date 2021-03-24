@@ -75,8 +75,8 @@ describe("Basic project capabilities", function () {
       createTest(testConfig);
       return;
     }
-    const totalNodes = Number(process.env.CIRCLE_NODE_TOTAL);
-    const nodeIdx = Number(process.env.CIRCLE_NODE_INDEX);
+    const totalNodes = Number(process.env.NODES_TOTAL);
+    const nodeIdx = Number(process.env.NODE_INDEX);
     const testsPerNode = Math.ceil(testConfigurations.length / totalNodes);
     const lowerBound = testsPerNode * nodeIdx;
     const upperBound = testsPerNode * (nodeIdx + 1);
