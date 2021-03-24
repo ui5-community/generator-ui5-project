@@ -90,36 +90,33 @@ describe("Basic project capabilities", function () {
 describe("OPA5 tests", function () {
   this.timeout(200000);
 
-  it("should add OPA5 tests and run them with karma", function () {
+  it("should add OPA5 tests and run them with karma", async function () {
     var appDir;
-    return helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
+    const dir = await helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
       viewtype: "XML",
       addOPA5: false
-    }).then(function (dir) {
-        appDir = path.join(dir, "com.myorg.myUI5App");
-        return helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
-          modulename: "uimodule",
-          addJourney: false,
-          addPO: false
-        });
-      }).then(function () {
-        return helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
-          modulename: "uimodule",
-          journey: "Main"
-        });
-      }).then(function () {
-        return helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
-          modulename: "uimodule",
-          poName: "Main",
-          action: "iPressTheButton",
-          assertion: "iShouldSeeTheTitle"
-        });
-      }).then(function () {
-        return execa.command("npm install").then(function () {
-          return execa.command("npm run test", { cdw: appDir }).catch(function (e) {
-            throw new Error(e.stdout + "\n" + e.stderr);
-          });
-        });
-      });
+    });
+
+    appDir = path.join(dir, "com.myorg.myUI5App");
+    await helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
+      modulename: "uimodule",
+      addJourney: false,
+      addPO: false
+    });
+
+    await helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
+      modulename: "uimodule",
+      journey: "Main"
+    });
+
+    await helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
+      modulename: "uimodule",
+      poName: "Main",
+      action: "iPressTheButton",
+      assertion: "iShouldSeeTheTitle"
+    });
+
+    await execa.command("npm install")
+    await execa.command("npm run test", { cdw: appDir });
   });
 });
