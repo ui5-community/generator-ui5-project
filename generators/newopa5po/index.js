@@ -12,6 +12,18 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.projectname = this.options.projectname;
       this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
+
+      this.options.oneTimeConfig.assertion = "iShouldSeeTheTitle";
+      this.options.oneTimeConfig.action = "iPressTheButton";
+      this.options.oneTimeConfig.poName = "Main";
+      this.options.oneTimeConfig.appId = this.options.appId;
+
+      const pos = this.config.get("opa5pos") || [];
+      pos.push(this.options.oneTimeConfig.poName);
+      this.config.set("opa5pos", pos);
+      this.options.oneTimeConfig.opa5pos = pos;
+
+      return;
     } else {
       if (!this.config.getAll().viewtype) {
         aPrompt = aPrompt.concat([{
@@ -49,39 +61,40 @@ module.exports = class extends Generator {
           when: modules.length
         });
       }
+
+      aPrompt = aPrompt.concat([{
+        type: "input",
+        name: "poName",
+        message: "Page object name:",
+        default: "Main",
+        validate: validFilename
+      }, {
+        type: "input",
+        name: "action",
+        message: "Add action with name (empty string to skip actions):"
+      }, {
+        type: "input",
+        name: "assertion",
+        message: "Add assertion with name (empty string to skip assertions):"
+      }]);
+
+      return this.prompt(aPrompt).then((answers) => {
+        for (var key in answers) {
+          this.options.oneTimeConfig[key] = answers[key];
+        }
+
+        var appName = !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.oneTimeConfig.modulename;
+        this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
+        this.options.oneTimeConfig.poName = this.options.oneTimeConfig.poName.charAt(0).toUpperCase() + this.options.oneTimeConfig.poName.substr(1);
+        this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespaceInput + "." + appName;
+
+        const pos = this.config.get("opa5pos") || [];
+        pos.push(this.options.oneTimeConfig.poName);
+        this.config.set("opa5pos", pos);
+        this.options.oneTimeConfig.opa5pos = pos;
+      });
+
     }
-
-    aPrompt = aPrompt.concat([{
-      type: "input",
-      name: "poName",
-      message: "Page object name:",
-      default: "Master",
-      validate: validFilename
-    }, {
-      type: "input",
-      name: "action",
-      message: "Add action with name (empty string to skip actions):"
-    }, {
-      type: "input",
-      name: "assertion",
-      message: "Add assertion with name (empty string to skip assertions):"
-    }]);
-
-    return this.prompt(aPrompt).then((answers) => {
-      for (var key in answers) {
-        this.options.oneTimeConfig[key] = answers[key];
-      }
-
-      var appName = !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.oneTimeConfig.modulename;
-      this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
-      this.options.oneTimeConfig.poName = this.options.oneTimeConfig.poName.charAt(0).toUpperCase() + this.options.oneTimeConfig.poName.substr(1);
-      this.options.oneTimeConfig.appId = this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespaceInput + "." + appName;
-
-      const pos = this.config.get("opa5pos") || [];
-      pos.push(this.options.oneTimeConfig.poName);
-      this.config.set("opa5pos", pos);
-      this.options.oneTimeConfig.opa5pos = pos;
-    });
   }
 
   async writing() {
@@ -98,8 +111,11 @@ module.exports = class extends Generator {
     journeys.forEach((journey) => {
       const journeyFile = this.destinationPath(sModule + "test/integration/" + journey + "Journey.js");
       if (fs.existsSync(journeyFile)) {
-        const content = fs.readFileSync(journeyFile, "utf8").replace(/sap.ui.define\(\[(.*)\s\]/gms,
-          `sap.ui.define([$1,\n  "./pages/${this.options.oneTimeConfig.poName}"\n]`).replace(/\s,\s/, ",\n");
+        const content = fs
+          .readFileSync(journeyFile, "utf8")
+          .replace(/sap.ui.define\(\[(.*)\s\]/gms,
+            `sap.ui.define([$1,\n  "./pages/${this.options.oneTimeConfig.poName}"\n]`)
+          .replace(/\s,\s/, ",\n");
         fs.writeFileSync(journeyFile, content);
       }
     });

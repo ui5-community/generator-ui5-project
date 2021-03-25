@@ -22,6 +22,12 @@ module.exports = class extends Generator {
 
         this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (this.options.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.modulename);
         this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (this.options.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : this.options.modulename);
+
+
+        this.composeWith(require.resolve("../opa5"), Object.assign({}, this.options.oneTimeConfig, {
+          isSubgeneratorCall: true,
+          namespaceInput: this.options.oneTimeConfig.namespace
+        }));
       });
     }
 
@@ -41,11 +47,6 @@ module.exports = class extends Generator {
       message: "What name should be displayed on the Fiori Launchpad tile?",
       default: "Fiori App",
       when: this.config.get("platform") === "SAP Launchpad service"
-    }, {
-      type: "confirm",
-      name: "addOPA5",
-      message: "Do you want to add OPA5 tests?",
-      default: true
     }];
 
     if (!this.config.getAll().viewtype) {
@@ -98,12 +99,10 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespace + "." + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
       this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
 
-      if (answers.addOPA5) {
-        this.composeWith(require.resolve("../opa5"), Object.assign({}, this.options.oneTimeConfig, {
-          isSubgeneratorCall: true,
-          namespaceInput: this.options.oneTimeConfig.namespace
-        }));
-      }
+      this.composeWith(require.resolve("../opa5"), Object.assign({}, this.options.oneTimeConfig, {
+        isSubgeneratorCall: true,
+        namespaceInput: this.options.oneTimeConfig.namespace
+      }));
     });
   }
 
@@ -170,7 +169,7 @@ module.exports = class extends Generator {
       }
     }
 
-    // Append to master package.json
+    // Append to Main package.json
     await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
       packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
       packge.scripts["build:ui"] += " build:" + sModuleName;

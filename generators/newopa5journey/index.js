@@ -12,6 +12,19 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.projectname = this.options.projectname;
       this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
+
+      this.options.oneTimeConfig.journey = "Main";
+
+      const journeys = this.config.get("opa5Journeys") || [];
+      journeys.push(this.options.oneTimeConfig.journey);
+      this.config.set("opa5Journeys", journeys);
+      this.options.oneTimeConfig.opa5Journeys = journeys;
+
+      const pos = this.config.get("opa5pos") || [];
+      this.config.set("opa5pos", pos);
+      this.options.oneTimeConfig.opa5pos = pos;
+
+      return;
     } else {
       if (!this.config.getAll().viewtype) {
         aPrompt = aPrompt.concat([{
@@ -49,34 +62,35 @@ module.exports = class extends Generator {
           when: modules.length
         });
       }
+
+
+      aPrompt = aPrompt.concat([{
+        type: "input",
+        name: "journey",
+        message: "Journey name:",
+        default: "Main",
+        validate: validFilename
+      }]);
+
+      return this.prompt(aPrompt).then((answers) => {
+        for (var key in answers) {
+          this.options.oneTimeConfig[key] = answers[key];
+        }
+
+        this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
+        this.options.oneTimeConfig.journey = this.options.oneTimeConfig.journey.charAt(0).toUpperCase() + this.options.oneTimeConfig.journey.substr(1);
+
+        const journeys = this.config.get("opa5Journeys") || [];
+        journeys.push(this.options.oneTimeConfig.journey);
+        this.config.set("opa5Journeys", journeys);
+        this.options.oneTimeConfig.opa5Journeys = journeys;
+
+        // set default value for opa5pos if empty
+        const pos = this.config.get("opa5pos") || [];
+        this.config.set("opa5pos", pos);
+        this.options.oneTimeConfig.opa5pos = pos;
+      });
     }
-
-    aPrompt = aPrompt.concat([{
-      type: "input",
-      name: "journey",
-      message: "Journey name:",
-      default: "Master",
-      validate: validFilename
-    }]);
-
-    return this.prompt(aPrompt).then((answers) => {
-      for (var key in answers) {
-        this.options.oneTimeConfig[key] = answers[key];
-      }
-
-      this.options.oneTimeConfig.namespaceInput = this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
-      this.options.oneTimeConfig.journey = this.options.oneTimeConfig.journey.charAt(0).toUpperCase() + this.options.oneTimeConfig.journey.substr(1);
-
-      const journeys = this.config.get("opa5Journeys") || [];
-      journeys.push(this.options.oneTimeConfig.journey);
-      this.config.set("opa5Journeys", journeys);
-      this.options.oneTimeConfig.opa5Journeys = journeys;
-
-      // set default value for opa5pos if empty
-      const pos = this.config.get("opa5pos") || [];
-      this.config.set("opa5pos", pos);
-      this.options.oneTimeConfig.opa5pos = pos;
-    });
   }
 
   async writing() {

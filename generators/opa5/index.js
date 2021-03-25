@@ -12,6 +12,16 @@ module.exports = class extends Generator {
       this.options.oneTimeConfig.projectname = this.options.projectname;
       this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
       this.options.oneTimeConfig.modulename = this.options.modulename;
+
+      var appName = !this.options.oneTimeConfig.modulename || this.options.modulename === "uimodule" ? this.options.projectname : this.options.modulename;
+      this.options.oneTimeConfig.namespaceURI = this.options.namespaceInput.split(".").join("/");
+      this.options.oneTimeConfig.appId = this.options.namespaceInput + "." + appName;
+      this.options.oneTimeConfig.appURI = this.options.namespaceURI + "/" + appName;
+      this.options.oneTimeConfig.title = appName;
+
+      this.options.oneTimeConfig.addPO = true;
+      this.options.oneTimeConfig.addJourney = true;
+      return;
     } else {
 
       if (!this.config.getAll().viewtype) {
