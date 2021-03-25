@@ -38,6 +38,10 @@ function createTest(oPrompt) {
       return execa.commandSync("npm install");
     });
 
+    it("should pass the OPA tests", function () {
+      return execa.commandSync("npm install");
+    });
+
     if (!!oPrompt.platform && oPrompt.platform !== "Static webserver" && oPrompt.platform !== "SAP NetWeaver") {
       it("should create an buildable project", async function () {
         try {
@@ -52,23 +56,23 @@ function createTest(oPrompt) {
 
 describe("Basic project capabilities", function () {
   const testConfigurations = [
-    { viewtype: "XML", addOPA5: false },
-    { viewtype: "JS", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry", addOPA5: false },
-    // { viewtype: "JSON", platform: "SAP Launchpad service", addOPA5: false },
-    // { viewtype: "XML", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
-    // { viewtype: "XML", platform: "SAP NetWeaver", addOPA5: false },
-    // { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "HTML", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
-    // { viewtype: "JS", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver", addOPA5: false },
-    // { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced", addOPA5: false },
-    // { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP", addOPA5: false }
+    { viewtype: "XML" },
+    { viewtype: "JS", platform: "Application Router @ Cloud Foundry" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver" },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" },
+    { viewtype: "JSON", platform: "SAP Launchpad service" },
+    { viewtype: "XML", platform: "SAP HTML5 Application Repository service for SAP BTP" },
+    { viewtype: "XML", platform: "SAP NetWeaver" },
+    { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JS", ui5libs: "Local resources (SAPUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP" },
+    { viewtype: "JSON", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "HTML", platform: "SAP HTML5 Application Repository service for SAP BTP" },
+    { viewtype: "JS", platform: "SAP HTML5 Application Repository service for SAP BTP" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver" },
+    { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ SAP HANA XS Advanced" },
+    { viewtype: "JS", ui5libs: "Local resources (OpenUI5)", platform: "SAP HTML5 Application Repository service for SAP BTP" }
   ];
 
 
@@ -87,48 +91,4 @@ describe("Basic project capabilities", function () {
       createTest(testConfig);
     }
   });
-});
-
-
-function OPATest() {
-  it("should add OPA5 tests and run them with karma", async function () {
-    var appDir;
-    const dir = await helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
-      viewtype: "XML",
-      addOPA5: false
-    });
-
-    appDir = path.join(dir, "com.myorg.myUI5App");
-    await helpers.run(path.join(__dirname, "../generators/opa5")).cd(appDir).withPrompts({
-      modulename: "uimodule",
-      addJourney: false,
-      addPO: false
-    });
-
-    await helpers.run(path.join(__dirname, "../generators/newopa5journey")).cd(appDir).withPrompts({
-      modulename: "uimodule",
-      journey: "Main"
-    });
-
-    await helpers.run(path.join(__dirname, "../generators/newopa5po")).cd(appDir).withPrompts({
-      modulename: "uimodule",
-      poName: "Main",
-      action: "iPressTheButton",
-      assertion: "iShouldSeeTheTitle"
-    });
-
-    await execa.command("npm install")
-    await execa.command("npm run test", { cdw: appDir });
-  });
-}
-
-describe("OPA5 tests", function () {
-  this.timeout(200000);
-
-  if (!runningInCircleCI) {
-    OPATest();
-  } else if (process.env.NODE_INDEX === 0) {
-    OPATest();
-  }
-
 });

@@ -34,7 +34,7 @@ module.exports = class extends Generator {
     var aPrompt = [{
       type: "input",
       name: "modulename",
-      message: "What is the name ofthe module?",
+      message: "What is the name of the module?",
       validate: (s) => {
         if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
           return true;
