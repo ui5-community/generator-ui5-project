@@ -1,6 +1,8 @@
+"use strict";
 const Generator = require("yeoman-generator"),
   fileaccess = require("../../helpers/fileaccess"),
   path = require("path"),
+  yosay = require("yosay"),
   glob = require("glob");
 
 module.exports = class extends Generator {
@@ -8,6 +10,13 @@ module.exports = class extends Generator {
   static displayName = "Create a new OpenUI/SAPUI5 project"
 
   prompting() {
+
+    if (!this.options.embedded) {
+      this.log(
+        yosay(`Welcome to the ${chalk.red("easy-ui5-project")} generator!`)
+      );
+    }
+
     return this.prompt([{
       type: "input",
       name: "projectname",
