@@ -3,7 +3,7 @@ const path = require("path");
 const helpers = require("yeoman-test");
 const execa = require("execa");
 
-const runningInCircleCI = process.env.CI;
+const IsCIRun = process.env.CI;
 
 
 function createTest(oPrompt) {
@@ -77,7 +77,7 @@ describe("Basic project capabilities", function () {
 
 
   testConfigurations.forEach((testConfig, index) => {
-    if (!runningInCircleCI) {
+    if (!IsCIRun) {
       createTest(testConfig);
       return;
     }
