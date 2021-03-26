@@ -2,6 +2,8 @@ const Generator = require("yeoman-generator");
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new custom control to an existing project"
+
   prompting() {
     const modules = this.config.get("uimodules");
     var aPrompt = [{

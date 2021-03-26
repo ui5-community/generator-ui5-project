@@ -4,6 +4,8 @@ const glob = require("glob");
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new OPA5 test to an existing project"
+
   prompting() {
     let aPrompt = [];
     this.options.oneTimeConfig = this.config.getAll();

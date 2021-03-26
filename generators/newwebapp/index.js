@@ -5,6 +5,8 @@ const Generator = require("yeoman-generator"),
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new web app to an existing project"
+
   prompting() {
     if (this.options.isSubgeneratorCall) {
       return this.prompt([{

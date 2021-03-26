@@ -3,6 +3,8 @@ const Generator = require("yeoman-generator"),
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new view to an existing project"
+
   prompting() {
     if (this.options.isSubgeneratorCall) {
       this.destinationRoot(this.options.cwd);

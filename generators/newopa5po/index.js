@@ -3,6 +3,8 @@ const validFilename = require("valid-filename");
 const fs = require("fs");
 
 module.exports = class extends Generator {
+  
+  static displayName = "Add a new OPA5 page object to an existing test"
 
   prompting() {
     let aPrompt = [];

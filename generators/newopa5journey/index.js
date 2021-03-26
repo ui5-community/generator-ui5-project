@@ -4,6 +4,8 @@ const fs = require("fs");
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new OPA5 journey to an existing test"
+
   prompting() {
     let aPrompt = [];
     this.options.oneTimeConfig = this.config.getAll();

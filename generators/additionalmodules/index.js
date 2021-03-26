@@ -5,6 +5,9 @@ const Generator = require("yeoman-generator"),
 
 module.exports = class extends Generator {
 
+
+  static hidden = true;
+
   prompting() {
     if (this.options.isSubgeneratorCall) {
       this.destinationRoot(this.options.cwd);

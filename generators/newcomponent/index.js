@@ -3,6 +3,8 @@ fileaccess = require("../../helpers/fileaccess");
 
 module.exports = class extends Generator {
 
+  static displayName = "Add a new component to an existing project"
+
   prompting() {
     const modules = this.config.get("uimodules");
     var aPrompt = [{

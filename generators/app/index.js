@@ -5,6 +5,8 @@ const Generator = require("yeoman-generator"),
 
 module.exports = class extends Generator {
 
+  static displayName = "Create a new OpenUI/SAPUI5 project"
+
   prompting() {
     return this.prompt([{
       type: "input",
