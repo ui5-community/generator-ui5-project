@@ -2,6 +2,7 @@
 const Generator = require("yeoman-generator"),
   fileaccess = require("../../helpers/fileaccess"),
   path = require("path"),
+  chalk = require("chalk"),
   yosay = require("yosay"),
   glob = require("glob");
 
