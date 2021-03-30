@@ -68,5 +68,5 @@ all tests are located in `__tests__`.
 
 ## contributing
 
-- `prettier`
-- let'em tests pass
+-   `prettier`
+-   let'em tests pass

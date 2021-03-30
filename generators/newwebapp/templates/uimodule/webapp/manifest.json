@@ -74,9 +74,7 @@
         {
           "name": "Route<%=viewname%>",
           "pattern": "Route<%=viewname%>",
-          "target": [
-            "Target<%=viewname%>"
-          ]
+          "target": ["Target<%=viewname%>"]
         }
       ],
       "targets": {
