@@ -55,9 +55,9 @@ $> yo easy-ui5 project
 
 Run you can use `npm start` (or `yarn start`) to start the local server for development.
 
-### Sub-generators to avoid recurring tasks
+## Sub-generators to avoid recurring tasks
 
-#### Add a new view
+### Add a new view
 
 This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
 
@@ -65,7 +65,7 @@ This sub-generator will create a new view (of the same type you specified during
 yo easy-ui5 project newview
 ```
 
-#### Create a custom control
+### Create a custom control
 
 Run the following command from your project's root to scaffold a custom control.
 
@@ -73,7 +73,7 @@ Run the following command from your project's root to scaffold a custom control.
 yo easy-ui5 project newcontrol
 ```
 
-#### Add a new model
+### Add a new model
 
 This sub-generator will create a new model in your manifest. Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 
@@ -81,7 +81,7 @@ This sub-generator will create a new model in your manifest. Currently, [JSON](h
 yo easy-ui5 project newmodel
 ```
 
-#### Add a new component usage
+### Add a new component usage
 
 This sub-generator will add a new component usage for component reuse to your manifest.
 
@@ -89,7 +89,7 @@ This sub-generator will add a new component usage for component reuse to your ma
 yo easy-ui5 project newcomponentusage
 ```
 
-#### OPA5 tests
+### OPA5 tests
 
 This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
 
@@ -109,11 +109,20 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5 project newopa5journey
 ```
 
-### Deployment
+<!-- ## Standalone usage
+```bash
+$> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
+# will make the control live in namespace 'bla.fasel"
+# and put the built control in directory `cwd` + '../some/dir'
+``` -->
+
+<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
+
+## Deployment
 
 Depending on your target platform you'll need to install additional tools:
 
-#### Cloud Foundry
+### Cloud Foundry
 
 Required tools:
 
@@ -132,7 +141,7 @@ Call this command from the root directory to deploy the application to Cloud Fou
 npm run deploy
 ```
 
-#### SAP HANA XSA
+### SAP HANA XSA
 
 Required tools:
 
@@ -150,7 +159,7 @@ Call this command from the root directory to deploy the application to HANA XSA
 npm run deploy
 ```
 
-#### SAP NetWeaver
+### SAP NetWeaver
 
 Deployment steps:
 
@@ -160,15 +169,6 @@ Run following command to deploy the application to SAP NetWeaver
 ```
 npm run deploy
 ```
-
-<!-- ## Standalone usage
-```bash
-$> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
-# will make the control live in namespace 'bla.fasel"
-# and put the built control in directory `cwd` + '../some/dir'
-``` -->
-
-<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
 
 ## Embedded Technologies
 
