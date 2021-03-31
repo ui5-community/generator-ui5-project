@@ -29,14 +29,26 @@ $> yo easy-ui5 project
 Run you can use `npm start` (or `yarn start`) to start the local server for development.
 
 
-<!-- ## Standalone usage
-```bash
-$> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
-# will make the control live in namespace 'bla.fasel"
-# and put the built control in directory `cwd` + '../some/dir'
-``` -->
+## Standalone usage
 
-<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
+Note the different greeting when the generator starts.
+
+```bash
+$> npm i -g yo
+$> yo ./generator-ui5-project 
+
+     _-----_     ╭──────────────────────────╮
+    |       |    │      Welcome to the      │
+    |--(o)--|    │     easy-ui5-project     │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |     
+   __'.___.'__   
+ ´   `  |° ´ Y ` 
+```
+
+![generation flow](./docs/standaloneUsage.gif)
 
 ## Target platforms
 
