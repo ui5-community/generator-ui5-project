@@ -187,7 +187,7 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 
 [test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
 [test-url]: https://github.com/ui5-community/generator-ui5-project
-[daviddm-image]: https://img.shields.io/david/ui5-community/generator-ui5-project.svg
+[daviddm-image]: https://status.david-dm.org/gh/ui5-community/generator-ui5-project.svg
 [daviddm-url]: https://david-dm.org/ui5-community/generator-ui5-project
-[license-image]: https://img.shields.io//github/license/ui5-community/generator-ui5-project.svg
+[license-image]: https://img.shields.io/github/license/ui5-community/generator-ui5-project.svg
 [license-url]: https://github.com/ui5-community/generator-ui5-project/blob/main/LICENSES/Apache-2.0.txt
