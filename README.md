@@ -1,10 +1,10 @@
 # Generator for OpenUI5/SAPUI5 projects
+
 [![Build Status][test-image]][test-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 [![License Status][license-image]][license-url]
 
 Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
-
 
 ## Target platforms
 
@@ -34,22 +34,21 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
 
-
 ## Usage with easy-ui5
 
 ```bash
 $> npm i -g yo
 $> yo easy-ui5 project
 
-     _-----_     
+     _-----_
     |       |    ╭──────────────────────────╮
     |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 ```
 
 ![generation flow](./docs/embeddedUsage.gif)
@@ -120,9 +119,9 @@ Required tools:
 
 1. [Create a free account](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) on SAP BTP Trial
 2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
-   ```sh
-   cf login
-   ```
+    ```sh
+    cf login
+    ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
 
 Deployment steps:
@@ -139,9 +138,9 @@ Required tools:
 
 1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
 2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
-   ```sh
-   xs login
-   ```
+    ```sh
+    xs login
+    ```
 
 Deployment steps:
 
@@ -171,11 +170,12 @@ $> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/di
 
 <!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
 
-
 ## Embedded Technologies
+
 This project leverages (among others) the following Open Source projects:
-* [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
-* [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
+
+-   [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
+-   [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 
 ## Support
 
@@ -186,7 +186,7 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 We welcome any type of contribution (code contributions, pull requests, issues) to this generator equally.
 
 [test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
-[test-url]:  https://github.com/ui5-community/generator-ui5-project
+[test-url]: https://github.com/ui5-community/generator-ui5-project
 [daviddm-image]: https://img.shields.io/david/ui5-community/generator-ui5-project.svg
 [daviddm-url]: https://david-dm.org/ui5-community/generator-ui5-project
 [license-image]: https://img.shields.io//github/license/ui5-community/generator-ui5-project.svg

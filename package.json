@@ -4,7 +4,7 @@
   "description": "(Sub-)generator for a UI5 project",
   "scripts": {
     "test": "mocha",
-    "lint": "eslint .",
+    "workaround": "find . -name '.DS_Store' -delete",
     "test:manual": "cd test/ui5-app && ui5 serve",
     "prettier": "prettier --write ."
   },
@@ -37,7 +37,6 @@
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "eslint": "^7.22.0",
     "execa": "^5.0.0",
     "mocha": "^8.3.2",
     "prettier": "2.2.1",
