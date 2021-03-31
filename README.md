@@ -6,6 +6,38 @@
 
 Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
+
+## Usage with easy-ui5
+
+```bash
+$> npm i -g yo
+$> yo easy-ui5 project
+
+     _-----_
+    |       |    ╭──────────────────────────╮
+    |--(o)--|    │  Welcome to the easy-ui5 │
+   `---------´   │        generator!        │
+    ( _´U`_ )    ╰──────────────────────────╯
+    /___A___\   /
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
+```
+
+![generation flow](./docs/embeddedUsage.gif)
+
+Run you can use `npm start` (or `yarn start`) to start the local server for development.
+
+
+<!-- ## Standalone usage
+```bash
+$> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
+# will make the control live in namespace 'bla.fasel"
+# and put the built control in directory `cwd` + '../some/dir'
+``` -->
+
+<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
+
 ## Target platforms
 
 During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
@@ -34,26 +66,6 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
 
-## Usage with easy-ui5
-
-```bash
-$> npm i -g yo
-$> yo easy-ui5 project
-
-     _-----_
-    |       |    ╭──────────────────────────╮
-    |--(o)--|    │  Welcome to the easy-ui5 │
-   `---------´   │        generator!        │
-    ( _´U`_ )    ╰──────────────────────────╯
-    /___A___\   /
-     |  ~  |
-   __'.___.'__
- ´   `  |° ´ Y `
-```
-
-![generation flow](./docs/embeddedUsage.gif)
-
-Run you can use `npm start` (or `yarn start`) to start the local server for development.
 
 ## Sub-generators to avoid recurring tasks
 
@@ -109,14 +121,6 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5 project newopa5journey
 ```
 
-<!-- ## Standalone usage
-```bash
-$> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
-# will make the control live in namespace 'bla.fasel"
-# and put the built control in directory `cwd` + '../some/dir'
-``` -->
-
-<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
 
 ## Deployment
 
