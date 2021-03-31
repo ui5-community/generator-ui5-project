@@ -35,25 +35,26 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
 
 
-<!-- ## Usage with easy-ui5
+## Usage with easy-ui5
 
 ```bash
 $> npm i -g yo
-$> yo ./path-to-this-repo/app
+$> yo easy-ui5 project
 
-     _-----_     ╭──────────────────────────╮
-    |       |    │  Welcome to the amazing  │
-    |--(o)--|    │   UI5 custom control     │
+     _-----_     
+    |       |    ╭──────────────────────────╮
+    |--(o)--|    │  Welcome to the easy-ui5 │
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |
-   __'.___.'__
- ´   `  |° ´ Y `
+     |  ~  |     
+   __'.___.'__   
+ ´   `  |° ´ Y ` 
+```
 
-? What's the name space your custom control(s) should live in? (my.ui5.cc)
-``` -->
+![generation flow](./docs/embeddedUsage.gif)
 
+Run you can use `npm start` (or `yarn start`) to start the local server for development.
 
 ### Sub-generators to avoid recurring tasks
 
@@ -109,13 +110,13 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5 project newopa5journey
 ```
 
-## Deployment
+### Deployment
 
 Depending on your target platform you'll need to install additional tools:
 
-### Cloud Foundry
+#### Cloud Foundry
 
-#### Required tools
+Required tools:
 
 1. [Create a free account](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) on SAP BTP Trial
 2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
@@ -124,7 +125,7 @@ Depending on your target platform you'll need to install additional tools:
    ```
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
 
-#### Deploy
+Deployment steps:
 
 Call this command from the root directory to deploy the application to Cloud Foundry
 
@@ -132,19 +133,9 @@ Call this command from the root directory to deploy the application to Cloud Fou
 npm run deploy
 ```
 
-> #### Optional: When using the HTML5 Applications Repository
->
-> [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
->
-> `cf install-plugin -r CF-Community "html5-plugin"`
->
-> With this tool you can update your web app without the need to deploy a new cloud application:
->
-> `cf html5-push -n html5_repo_host .`
+#### SAP HANA XSA
 
-### SAP HANA XSA
-
-#### Required tools
+Required tools:
 
 1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
 2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
@@ -152,7 +143,7 @@ npm run deploy
    xs login
    ```
 
-#### Deploy
+Deployment steps:
 
 Call this command from the root directory to deploy the application to HANA XSA
 
@@ -160,9 +151,9 @@ Call this command from the root directory to deploy the application to HANA XSA
 npm run deploy
 ```
 
-### SAP NetWeaver
+#### SAP NetWeaver
 
-#### Deploy
+Deployment steps:
 
 Update the ui5.yaml file with your system settings (user, password & server) and ABAP repository settings (package, BSP Container & Transport).
 Run following command to deploy the application to SAP NetWeaver
@@ -198,5 +189,5 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 [test-url]:  https://github.com/ui5-community/generator-ui5-project
 [daviddm-image]: https://img.shields.io/david/ui5-community/generator-ui5-project.svg
 [daviddm-url]: https://david-dm.org/ui5-community/generator-ui5-project
-[license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
-[license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
+[license-image]: https://img.shields.io//github/license/ui5-community/generator-ui5-project.svg
+[license-url]: https://github.com/ui5-community/generator-ui5-project/blob/main/LICENSES/Apache-2.0.txt
