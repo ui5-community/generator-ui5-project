@@ -1,10 +1,41 @@
-# generator for a UI5 custom control
+# Generator for OpenUI5/SAPUI5 projects
+[![Build Status][test-image]][test-url]
+[![Dependency Status][daviddm-image]][daviddm-url]
+[![License Status][license-image]][license-url]
 
-Scaffold a UI5 custom control that is structured in such a way that it can also distributed as a `node` module via `npm`.
+Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
-![generating a ui5 custom control](./generate-ui5-control.gif)
 
-## use w/ yeoman locally
+## Target platforms
+
+During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
+
+### Static webserver
+
+This is the most basic option. Choose this option if you want to deploy the web app in your custom environment or host it on an arbitrary server.
+
+### Application Router @ Cloud Foundry
+
+This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+
+### Application Router @ SAP HANA XS Advanced
+
+This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+
+### SAP HTML5 Application Repository service for SAP BTP
+
+This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
+
+### SAP Launchpad service
+
+Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **SAP HTML5 Application Repository service for SAP BTP** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository.
+
+### SAP NetWeaver
+
+Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
+
+
+<!-- ## Usage with easy-ui5
 
 ```bash
 $> npm i -g yo
@@ -21,52 +52,151 @@ $> yo ./path-to-this-repo/app
  ´   `  |° ´ Y `
 
 ? What's the name space your custom control(s) should live in? (my.ui5.cc)
+``` -->
+
+
+### Sub-generators to avoid recurring tasks
+
+#### Add a new view
+
+This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
+
+```
+yo easy-ui5 project newview
 ```
 
-## use w/ options supplied
+#### Create a custom control
 
+Run the following command from your project's root to scaffold a custom control.
+
+```
+yo easy-ui5 project newcontrol
+```
+
+#### Add a new model
+
+This sub-generator will create a new model in your manifest. Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
+
+```
+yo easy-ui5 project newmodel
+```
+
+#### Add a new component usage
+
+This sub-generator will add a new component usage for component reuse to your manifest.
+
+```
+yo easy-ui5 project newcomponentusage
+```
+
+#### OPA5 tests
+
+This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
+
+```
+yo easy-ui5 project opa5
+```
+
+This sub-generator will create an OPA5 page object and add it to your journeys:
+
+```
+yo easy-ui5 project newopa5po
+```
+
+This sub-generator will create an OPA5 journey and add it to your test page:
+
+```
+yo easy-ui5 project newopa5journey
+```
+
+## Deployment
+
+Depending on your target platform you'll need to install additional tools:
+
+### Cloud Foundry
+
+#### Required tools
+
+1. [Create a free account](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) on SAP BTP Trial
+2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
+   ```sh
+   cf login
+   ```
+3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
+
+#### Deploy
+
+Call this command from the root directory to deploy the application to Cloud Foundry
+
+```
+npm run deploy
+```
+
+> #### Optional: When using the HTML5 Applications Repository
+>
+> [Install](https://sap.github.io/cf-html5-apps-repo-cli-plugin/) the HTML5 Applications Repository CF CLI Plugin:
+>
+> `cf install-plugin -r CF-Community "html5-plugin"`
+>
+> With this tool you can update your web app without the need to deploy a new cloud application:
+>
+> `cf html5-push -n html5_repo_host .`
+
+### SAP HANA XSA
+
+#### Required tools
+
+1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
+2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
+   ```sh
+   xs login
+   ```
+
+#### Deploy
+
+Call this command from the root directory to deploy the application to HANA XSA
+
+```
+npm run deploy
+```
+
+### SAP NetWeaver
+
+#### Deploy
+
+Update the ui5.yaml file with your system settings (user, password & server) and ABAP repository settings (package, BSP Container & Transport).
+Run following command to deploy the application to SAP NetWeaver
+
+```
+npm run deploy
+```
+
+<!-- ## Standalone usage
 ```bash
 $> yo ./path-to-this-repo/app --controlNamespace=bla.fasel --buildDir=../some/dir
 # will make the control live in namespace 'bla.fasel"
 # and put the built control in directory `cwd` + '../some/dir'
-```
+``` -->
 
-## aftermath
+<!-- ![generating a ui5 custom control](./generate-ui5-control.gif) -->
 
-the generator also provides a full dev- and test-environment for your new and shiny custom control 😱 !
 
-```bash
-$> cd path/to/generator/result
-$> npm run test:manual
-# ...
-info normalizer:translators:ui5Framework Using OpenUI5 version: 1.86.3
-info server:custommiddleware:livereload Livereload server started!
-Server started
-URL: http://localhost:8081
-```
+## Embedded Technologies
+This project leverages (among others) the following Open Source projects:
+* [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
+* [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 
-As obvious from the above, the `manual` test command boots up a barebones UI5 app using your new custom control, inclusing live reload capabilites. So once you edit the control, the app auto-reloads and changes are visible immediately.
+## Support
 
-```bash
-$> npm run test
-# ...
- PASS  test/ui5-app/basic.test.js
-  my.ui5.cc.Control
-    ✓ should find the my.ui5.cc.Control in index.html (36 ms)
+Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.
 
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        1.103 s
-Ran all test suites.
-```
+## Contributing
 
-## test for the generator
+We welcome any type of contribution (code contributions, pull requests, issues) to this generator equally.
 
-all tests are located in `__tests__`.  
-`jest` is used as test framework and runner.
-
-## contributing
-
--   `prettier`
--   let'em tests pass
+[test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
+[test-url]:  https://github.com/ui5-community/generator-ui5-project
+[daviddm-image]: https://img.shields.io/david/ui5-community/generator-ui5-project.svg
+[daviddm-url]: https://david-dm.org/ui5-community/generator-ui5-project
+[license-image]: https://img.shields.io/npm/l/generator-easy-ui5.svg
+[license-url]: https://github.com/SAP/generator-easy-ui5/blob/master/LICENSE
