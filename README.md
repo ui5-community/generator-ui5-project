@@ -121,6 +121,34 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5 project newopa5journey
 ```
 
+### UIVeri5 tests
+This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
+```
+yo easy-ui5:uiveri5
+```
+This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
+```
+yo easy-ui5:newuiveri5po
+```
+This sub-generator will create a UIVeri5 spec file:
+```
+yo easy-ui5:newuiveri5spec
+```
+
+### OPA5 tests
+This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
+```
+yo easy-ui5:opa5
+```
+This sub-generator will create an OPA5 page object and add it to your journeys:
+```
+yo easy-ui5:newopa5po
+```
+This sub-generator will create an OPA5 journey and add it to your test page:
+```
+yo easy-ui5:newopa5journey
+```
+
 
 ## Deployment
 

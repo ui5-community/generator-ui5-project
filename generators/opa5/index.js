@@ -3,7 +3,7 @@ const path = require("path");
 const glob = require("glob");
 
 module.exports = class extends Generator {
-    static displayName = "Add a new OPA5 test to an existing project";
+    static displayName = "Add a new OPA5 test suite to an existing project";
 
     prompting() {
         let aPrompt = [];
