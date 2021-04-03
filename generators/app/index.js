@@ -7,7 +7,7 @@ const Generator = require("yeoman-generator"),
     glob = require("glob");
 
 module.exports = class extends Generator {
-    static displayName = "Create a new OpenUI/SAPUI5 project";
+    static displayName = "Create a new OpenUI5/SAPUI5 project";
 
     prompting() {
         if (!this.options.embedded) {
