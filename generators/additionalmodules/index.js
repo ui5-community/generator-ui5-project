@@ -106,7 +106,11 @@ module.exports = class extends Generator {
                 type: "org.cloudfoundry.managed-service",
                 parameters: {
                     "service-plan": "lite",
-                    service: "destination"
+                    service: "destination",
+                    config: {
+                        HTML5Runtime_enabled: true,
+                        version: "1.0.0"
+                    }
                 }
             });
             if (approuter) {
