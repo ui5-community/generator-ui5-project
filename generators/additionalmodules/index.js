@@ -210,7 +210,7 @@ module.exports = class extends Generator {
                         ],
                         parameters: {
                             content: {
-                                subaccount: {
+                                instance: {
                                     existing_destinations_policy: "update",
                                     destinations: [
                                         {
