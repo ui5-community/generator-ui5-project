@@ -61,7 +61,7 @@ module.exports = class extends Generator {
         ];
 
         return this.prompt(aPrompt).then((answers) => {
-            this.options.oneTimeConfig = this.config.getAll();
+            this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
             this.options.oneTimeConfig.modelName = answers.modelName;
             this.options.oneTimeConfig.modelType = answers.modelType;
             this.options.oneTimeConfig.bindingMode = answers.bindingMode;
@@ -86,12 +86,12 @@ module.exports = class extends Generator {
             const sourceSettings =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? {
-                          localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"
-                      }
+                        localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"
+                    }
                     : {
-                          localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml",
-                          odataVersion: "4.0"
-                      };
+                        localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml",
+                        odataVersion: "4.0"
+                    };
             const modelType =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? "sap.ui.model.odata.v2.ODataModel"
@@ -99,22 +99,22 @@ module.exports = class extends Generator {
             const modelSettings =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? {
-                          defaultOperationMode: "Server",
-                          defaultBindingMode: this.options.oneTimeConfig.bindingMode,
-                          defaultCountMode: this.options.oneTimeConfig.countMode,
-                          preload: true
-                      }
+                        defaultOperationMode: "Server",
+                        defaultBindingMode: this.options.oneTimeConfig.bindingMode,
+                        defaultCountMode: this.options.oneTimeConfig.countMode,
+                        preload: true
+                    }
                     : {
-                          synchronizationMode: "None",
-                          operationMode: "Server",
-                          autoExpandSelect: true,
-                          earlyRequests: true,
-                          groupProperties: {
-                              default: {
-                                  submit: "Auto"
-                              }
-                          }
-                      };
+                        synchronizationMode: "None",
+                        operationMode: "Server",
+                        autoExpandSelect: true,
+                        earlyRequests: true,
+                        groupProperties: {
+                            default: {
+                                submit: "Auto"
+                            }
+                        }
+                    };
 
             override = {
                 ["sap.app"]: {
