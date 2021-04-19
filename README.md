@@ -6,7 +6,6 @@
 
 Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
-
 ## Usage with easy-ui5
 
 ```bash
@@ -28,14 +27,13 @@ $> yo easy-ui5 project
 
 Run you can use `npm start` (or `yarn start`) to start the local server for development.
 
-
 ## Standalone usage
 
 Note the different greeting when the generator starts.
 
 ```bash
 $> npm i -g yo
-$> yo ./generator-ui5-project 
+$> yo ./generator-ui5-project
 
      _-----_     ╭──────────────────────────╮
     |       |    │      Welcome to the      │
@@ -43,9 +41,9 @@ $> yo ./generator-ui5-project
    `---------´   │        generator!        │
     ( _´U`_ )    ╰──────────────────────────╯
     /___A___\   /
-     |  ~  |     
-   __'.___.'__   
- ´   `  |° ´ Y ` 
+     |  ~  |
+   __'.___.'__
+ ´   `  |° ´ Y `
 ```
 
 ![generation flow](./docs/standaloneUsage.gif)
@@ -77,7 +75,6 @@ Use this option if you would like to develop a Fiori Launchpad application that 
 ### SAP NetWeaver
 
 Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
-
 
 ## Sub-generators to avoid recurring tasks
 
@@ -134,33 +131,24 @@ yo easy-ui5 project newopa5journey
 ```
 
 ### UIVeri5 tests
+
 This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
+
 ```
-yo easy-ui5:uiveri5
+yo easy-ui5 project uiveri5
 ```
+
 This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
+
 ```
-yo easy-ui5:newuiveri5po
+yo easy-ui5 project newuiveri5po
 ```
+
 This sub-generator will create a UIVeri5 spec file:
-```
-yo easy-ui5:newuiveri5spec
-```
 
-### OPA5 tests
-This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
 ```
-yo easy-ui5:opa5
+yo easy-ui5 project newuiveri5spec
 ```
-This sub-generator will create an OPA5 page object and add it to your journeys:
-```
-yo easy-ui5:newopa5po
-```
-This sub-generator will create an OPA5 journey and add it to your test page:
-```
-yo easy-ui5:newopa5journey
-```
-
 
 ## Deployment
 
