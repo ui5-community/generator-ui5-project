@@ -35,10 +35,10 @@ module.exports = class extends Generator {
                         message:
                             "Seems like this project has not been generated with Easy-UI5. Please enter the name of your project.",
                         validate: (s) => {
-                            if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
+                            if (/^[a-zA-Z][a-zA-Z0-9\.]*$/g.test(s)) {
                                 return true;
                             }
-                            return "Please use alpha numeric characters only for the project name.";
+                            return "Please use only alpha numeric characters and dots for the project name.";
                         },
                         default: "myUI5App"
                     },
@@ -50,7 +50,7 @@ module.exports = class extends Generator {
                             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
                                 return true;
                             }
-                            return "Please use alpha numeric characters and dots only for the namespace.";
+                            return "Please use only alpha numeric characters, dots and underscores for the namespace.";
                         },
                         default: "com.myorg"
                     }
