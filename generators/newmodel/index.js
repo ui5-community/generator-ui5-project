@@ -12,7 +12,7 @@ module.exports = class extends Generator {
                 name: "modulename",
                 message: "To which module do you want to add a model?",
                 choices: modules || [],
-                when: modules ? modules.length > 1 : false
+                when: modules && modules.length > 1
             },
             {
                 type: "input",
@@ -65,7 +65,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.modelName = answers.modelName;
             this.options.oneTimeConfig.modelType = answers.modelType;
             this.options.oneTimeConfig.bindingMode = answers.bindingMode;
-            this.options.oneTimeConfig.modulename = answers.modulename || modules ? modules[0] : this.options.modulename;
+            this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
             if (answers.modelType.includes("OData")) {
                 this.options.oneTimeConfig.url = answers.url;
