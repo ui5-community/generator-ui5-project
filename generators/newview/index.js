@@ -7,7 +7,7 @@ module.exports = class extends Generator {
     prompting() {
         if (this.options.isSubgeneratorCall) {
             this.destinationRoot(this.options.cwd);
-            this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
+            this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.modulename = this.options.modulename;
             this.options.oneTimeConfig.viewname = this.options.viewname;
 
@@ -157,8 +157,8 @@ module.exports = class extends Generator {
         var sOrigin = this.templatePath(sViewFileName);
         var sTarget = this.destinationPath(
             sModuleName +
-            "/" +
-            sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
+                "/" +
+                sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
         );
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 
@@ -166,10 +166,10 @@ module.exports = class extends Generator {
             sOrigin = this.templatePath(sControllerFileName);
             sTarget = this.destinationPath(
                 sModuleName +
-                "/" +
-                sControllerFileName
-                    .replace(/\$ViewEnding/, sViewType.toLowerCase())
-                    .replace(/\$ViewName/, sViewName)
+                    "/" +
+                    sControllerFileName
+                        .replace(/\$ViewEnding/, sViewType.toLowerCase())
+                        .replace(/\$ViewName/, sViewName)
             );
             this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
         }
