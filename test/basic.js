@@ -57,7 +57,7 @@ function createTest(oPrompt) {
         });
 
         it("should pass the OPA tests", function () {
-            return execa.commandSync("npm install");
+            return execa.commandSync("npm test");
         });
 
         if (!!oPrompt.platform && oPrompt.platform !== "Static webserver" && oPrompt.platform !== "SAP NetWeaver") {
