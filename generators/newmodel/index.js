@@ -62,6 +62,7 @@ module.exports = class extends Generator {
 
         return this.prompt(aPrompt).then((answers) => {
             this.options.oneTimeConfig = this.config.getAll();
+            this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
             this.options.oneTimeConfig.modelName = answers.modelName;
             this.options.oneTimeConfig.modelType = answers.modelType;
             this.options.oneTimeConfig.bindingMode = answers.bindingMode;

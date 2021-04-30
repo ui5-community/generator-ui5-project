@@ -7,7 +7,7 @@ module.exports = class extends Generator {
     prompting() {
         if (this.options.isSubgeneratorCall) {
             this.destinationRoot(this.options.cwd);
-            this.options.oneTimeConfig = this.config.getAll();
+            this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
             this.options.oneTimeConfig.modulename = this.options.modulename;
             this.options.oneTimeConfig.viewname = this.options.viewname;
 
