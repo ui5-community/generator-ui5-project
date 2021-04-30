@@ -11,7 +11,7 @@ module.exports = class extends Generator {
 
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
+            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
             this.options.oneTimeConfig.modulename = this.options.modulename;
 
             this.options.oneTimeConfig.journey = "Main";
@@ -44,7 +44,7 @@ module.exports = class extends Generator {
                     },
                     {
                         type: "input",
-                        name: "namespaceInput",
+                        name: "namespaceUI5Input",
                         message: "Please enter the namespace you use currently",
                         validate: (s) => {
                             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -83,8 +83,8 @@ module.exports = class extends Generator {
                     this.options.oneTimeConfig[key] = answers[key];
                 }
 
-                this.options.oneTimeConfig.namespaceInput =
-                    this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
+                this.options.oneTimeConfig.namespaceUI5Input =
+                    this.options.oneTimeConfig.namespaceUI5Input || this.options.oneTimeConfig.namespaceUI5;
                 this.options.oneTimeConfig.journey =
                     this.options.oneTimeConfig.journey.charAt(0).toUpperCase() +
                     this.options.oneTimeConfig.journey.substr(1);
