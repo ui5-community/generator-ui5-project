@@ -7,8 +7,8 @@ module.exports = class extends Generator {
 
     prompting() {
         let aPrompt = [];
-        this.options.oneTimeConfig = this.config.getAll();
-
+        this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
+                
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
             this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;

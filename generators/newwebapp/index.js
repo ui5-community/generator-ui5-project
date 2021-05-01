@@ -19,9 +19,6 @@ module.exports = class extends Generator {
             ]).then((answers) => {
                 this.destinationRoot(this.options.cwd);
                 this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
-                if (this.options.namespaceUI5Input) {
-                    this.options.oneTimeConfig.namespaceUI5 = this.options.namespaceUI5Input;
-                }
                 this.options.oneTimeConfig.modulename = this.options.modulename;
                 this.options.oneTimeConfig.tilename = answers.tilename;
                 this.options.oneTimeConfig.viewname = "MainView";
