@@ -29,7 +29,7 @@ module.exports = class extends Generator {
             },
             {
                 type: "input",
-                name: "namespace",
+                name: "namespaceUI5",
                 message: "Which namespace do you want to use?",
                 validate: (s) => {
                     if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -88,10 +88,10 @@ module.exports = class extends Generator {
             }
         ]).then((answers) => {
             if (answers.newdir) {
-                this.destinationRoot(`${answers.namespace}.${answers.projectname}`);
+                this.destinationRoot(`${answers.namespaceUI5}.${answers.projectname}`);
             }
             this.config.set(answers);
-            this.config.set("namespaceURI", answers.namespace.split(".").join("/"));
+            this.config.set("namespaceURI", answers.namespaceUI5.split(".").join("/"));
         });
     }
 

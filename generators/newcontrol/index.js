@@ -54,7 +54,7 @@ module.exports = class extends Generator {
                 },
                 {
                     type: "input",
-                    name: "namespace",
+                    name: "namespaceUI5",
                     message: "Please enter the namespace you use currently",
                     validate: (s) => {
                         if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -73,14 +73,14 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
             this.options.oneTimeConfig.appId =
-                this.options.oneTimeConfig.namespace +
+                this.options.oneTimeConfig.namespaceUI5 +
                 "." +
                 (this.options.modulename === "uimodule"
                     ? this.options.oneTimeConfig.projectname
                     : this.options.modulename);
             if (answers.projectname) {
                 this.options.oneTimeConfig.projectname = answers.projectname;
-                this.options.oneTimeConfig.namespace = answers.namespace;
+                this.options.oneTimeConfig.namespaceUI5 = answers.namespaceUI5;
             }
         });
     }

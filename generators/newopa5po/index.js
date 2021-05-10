@@ -11,7 +11,7 @@ module.exports = class extends Generator {
 
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
+            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
             this.options.oneTimeConfig.modulename = this.options.modulename;
 
             this.options.oneTimeConfig.assertion = "iShouldSeeTheTitle";
@@ -43,7 +43,7 @@ module.exports = class extends Generator {
                     },
                     {
                         type: "input",
-                        name: "namespaceInput",
+                        name: "namespaceUI5Input",
                         message: "Please enter the namespace you use currently",
                         validate: (s) => {
                             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -96,13 +96,13 @@ module.exports = class extends Generator {
                     !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule"
                         ? this.options.oneTimeConfig.projectname
                         : this.options.oneTimeConfig.modulename;
-                this.options.oneTimeConfig.namespaceInput =
-                    this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
+                this.options.oneTimeConfig.namespaceUI5Input =
+                    this.options.oneTimeConfig.namespaceUI5Input || this.options.oneTimeConfig.namespaceUI5;
                 this.options.oneTimeConfig.poName =
                     this.options.oneTimeConfig.poName.charAt(0).toUpperCase() +
                     this.options.oneTimeConfig.poName.substr(1);
                 this.options.oneTimeConfig.appId =
-                    this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespaceInput + "." + appName;
+                    this.options.oneTimeConfig.appId || this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
 
                 const pos = this.config.get("opa5pos") || [];
                 pos.push(this.options.oneTimeConfig.poName);
