@@ -7,19 +7,19 @@ module.exports = class extends Generator {
 
     prompting() {
         let aPrompt = [];
-        this.options.oneTimeConfig = this.config.getAll();
-
+        this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
+                
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceInput = this.options.namespaceInput;
+            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
             this.options.oneTimeConfig.modulename = this.options.modulename;
 
             var appName =
                 !this.options.oneTimeConfig.modulename || this.options.modulename === "uimodule"
                     ? this.options.projectname
                     : this.options.modulename;
-            this.options.oneTimeConfig.namespaceURI = this.options.namespaceInput.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.namespaceInput + "." + appName;
+            this.options.oneTimeConfig.namespaceURI = this.options.namespaceUI5Input.split(".").join("/");
+            this.options.oneTimeConfig.appId = this.options.namespaceUI5Input + "." + appName;
             this.options.oneTimeConfig.appURI = this.options.namespaceURI + "/" + appName;
             this.options.oneTimeConfig.title = appName;
 
@@ -44,7 +44,7 @@ module.exports = class extends Generator {
                     },
                     {
                         type: "input",
-                        name: "namespaceInput",
+                        name: "namespaceUI5Input",
                         message: "Please enter the namespace you use currently",
                         validate: (s) => {
                             if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -93,10 +93,10 @@ module.exports = class extends Generator {
                 !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule"
                     ? this.options.oneTimeConfig.projectname
                     : this.options.oneTimeConfig.modulename;
-            this.options.oneTimeConfig.namespaceInput =
-                this.options.oneTimeConfig.namespaceInput || this.options.oneTimeConfig.namespace;
-            this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespaceInput.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceInput + "." + appName;
+            this.options.oneTimeConfig.namespaceUI5Input =
+                this.options.oneTimeConfig.namespaceUI5Input || this.options.oneTimeConfig.namespaceUI5;
+            this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespaceUI5Input.split(".").join("/");
+            this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
             this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
             this.options.oneTimeConfig.title = appName;
         });

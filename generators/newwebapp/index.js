@@ -18,13 +18,13 @@ module.exports = class extends Generator {
                 }
             ]).then((answers) => {
                 this.destinationRoot(this.options.cwd);
-                this.options.oneTimeConfig = this.config.getAll();
+                this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
                 this.options.oneTimeConfig.modulename = this.options.modulename;
                 this.options.oneTimeConfig.tilename = answers.tilename;
                 this.options.oneTimeConfig.viewname = "MainView";
 
                 this.options.oneTimeConfig.appId =
-                    this.options.oneTimeConfig.namespace +
+                    this.options.oneTimeConfig.namespaceUI5 +
                     "." +
                     (this.options.modulename === "uimodule"
                         ? this.options.oneTimeConfig.projectname
@@ -40,7 +40,7 @@ module.exports = class extends Generator {
                     require.resolve("../opa5"),
                     Object.assign({}, this.options.oneTimeConfig, {
                         isSubgeneratorCall: true,
-                        namespaceInput: this.options.oneTimeConfig.namespace
+                        namespaceUI5Input: this.options.oneTimeConfig.namespaceUI5
                     })
                 );
             });
@@ -84,7 +84,7 @@ module.exports = class extends Generator {
                 },
                 {
                     type: "input",
-                    name: "namespace",
+                    name: "namespaceUI5",
                     message: "Please enter the namespace you use currently",
                     validate: (s) => {
                         if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
@@ -112,13 +112,13 @@ module.exports = class extends Generator {
 
             if (answers.projectname) {
                 this.options.oneTimeConfig.projectname = answers.projectname;
-                this.options.oneTimeConfig.namespace = answers.namespace;
-                this.options.oneTimeConfig.namespaceURI = answers.namespace.split(".").join("/");
+                this.options.oneTimeConfig.namespaceUI5 = answers.namespaceUI5;
+                this.options.oneTimeConfig.namespaceURI = answers.namespaceUI5.split(".").join("/");
                 this.options.oneTimeConfig.viewtype = answers.viewtype;
             }
 
             this.options.oneTimeConfig.appId =
-                this.options.oneTimeConfig.namespace +
+                this.options.oneTimeConfig.namespaceUI5 +
                 "." +
                 (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
             this.options.oneTimeConfig.appURI =
@@ -130,7 +130,7 @@ module.exports = class extends Generator {
                 require.resolve("../opa5"),
                 Object.assign({}, this.options.oneTimeConfig, {
                     isSubgeneratorCall: true,
-                    namespaceInput: this.options.oneTimeConfig.namespace
+                    namespaceUI5Input: this.options.oneTimeConfig.namespaceUI5
                 })
             );
         });
