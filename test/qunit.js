@@ -53,6 +53,10 @@ describe('generator:qunit', function () {
         assert.noFile("webapp/test/unit/foo.js");
     });
 
+});
+
+describe('generator:newqunittest', function () {
+
     it('Should create single QUnit test', async function () {            
         await runGenerator("newqunittest", { projectname: 'testproject', namespaceUI5Input: 'test.name.space', codeUnderTest: '/folder/foo'});        
         assert.file("webapp/test/unit/folder/foo.js"); 

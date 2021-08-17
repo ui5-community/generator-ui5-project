@@ -5,7 +5,8 @@ exports.removeDuplicates = function (aArray) {
     return Array.from(reducedSet);
 }
 
-exports.transformToRelativePath = function(sFilePath) {
-    const regexCUT = /^[\.]?\/?([^.]+(?:\/]+)*|)\/?$/;
-    return sFilePath.replace(regexCUT, '/$1') || './';
+exports.transformToPathWithLeadingSlash = function(sFilePath) {
+    const regexCUT = /^[\.]?\/?([^.]+[\.]?[^.]+|)\/?$/;
+    let result = sFilePath.replace(regexCUT, '/$1') || './';
+    return result;
 }

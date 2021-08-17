@@ -119,9 +119,8 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
             this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
             this.options.oneTimeConfig.title = appName;
-            //this.options.oneTimeConfig.codeUnderTest = this.transformToRelativePath(this.options.oneTimeConfig.codeUnderTest);
-
-            this.options.oneTimeConfig.codeUnderTest = jsUtils.transformToRelativePath(this.options.oneTimeConfig.codeUnderTest);
+    
+            this.options.oneTimeConfig.codeUnderTest = jsUtils.transformToPathWithLeadingSlash(this.options.oneTimeConfig.codeUnderTest);
 
             const tests = this.config.get("qunittests") || [];
             let codeUnderTest = this.options.oneTimeConfig.codeUnderTest;
