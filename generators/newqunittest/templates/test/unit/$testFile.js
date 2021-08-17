@@ -1,0 +1,32 @@
+sap.ui.define(["<%= appURI %><%=codeUnderTest%>"<% if (useSinonJS) { %>, "sap/ui/thirdparty/sinon-4" <% } %>
+], function () {
+	"use strict";
+	<% if (useSinonJS) { %>var sandbox;
+	<% } %>
+	QUnit.module("<%= suiteName %>", function (hooks) {
+		<% if (useSinonJS) { %>
+		hooks.before(function () {			
+			// Runs before all tests.
+			sandbox = sinon.sandbox.create();
+		});<% } %><% if (useSinonJS) { %>
+
+		hooks.afterEach(function () {
+			// Runs after each test.
+			sandbox.restore();
+		});<% } %>
+		<% if (!useSinonJS) { %>QUnit.test("<%= testName %>", function (assert) {
+			//assert.equal(<actual result>, <expected result>, <optional message>);
+			//assert.ok(<actual result>, <optional message>);
+			assert.ok(false, "Implement me");
+		});<% } %>		
+		<% if (useSinonJS) { %>QUnit.test("<%= testName %>", function (assert) {
+			//let spy = sandbox.spy("<placeholder>", "<placeholder>");
+			//let stub = sandbox.stub("<placeholder>", "<placeholder>").returns(...);
+			//let var mock = sandbox.mock(<placeholder);
+			//https://sinonjs.org/
+			//assert.equal(<actual result>, <expected result>, <optional message>);
+			//assert.ok(<actual result>, <optional message>);
+			assert.ok(false, "Implement me");
+		});<% } %>		
+	});
+});
