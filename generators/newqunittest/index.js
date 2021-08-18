@@ -101,6 +101,18 @@ module.exports = class extends Generator {
                 name: "useSinonJS",
                 message: "Do you want to use Sinon.JS?",
                 default: false
+            },
+            {
+                type: "confirm",
+                name: "asynchronousOp",
+                message: "Do you want to test asynchronous operations?",
+                default: false
+            },
+            {
+                type: "confirm",
+                name: "errorThrows",
+                message: "Do you want to test if an exception is thrown?",
+                default: false
             }
         ]);
 

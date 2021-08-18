@@ -28,5 +28,20 @@ sap.ui.define(["<%= appURI %><%=codeUnderTest%>"<% if (useSinonJS) { %>, "sap/ui
 			//assert.ok(<actual result>, <optional message>);
 			assert.ok(false, "Implement me");
 		});<% } %>		
+		<% if (asynchronousOp) { %>QUnit.test("Test an asynchrounous operation", function (assert) {
+			//https://api.qunitjs.com/assert/async/
+			var done = assert.async();
+			// trigger asynchrous operation
+			setTimeout(() => {
+				assert.ok(false, "Implement me");
+				done();
+			});			
+		});<% } %>	
+		<% if (errorThrows) { %>QUnit.test("Test if a callback throws an exception", function (assert) {
+			//https://api.qunitjs.com/assert/throws/
+			assert.throws(() => {
+				"text".reverse();
+			}, TypeError, "function should have thrown TypeError");
+		});<% } %>	
 	});
 });
