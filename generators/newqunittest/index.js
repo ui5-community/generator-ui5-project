@@ -6,13 +6,14 @@ const fs = require("fs");
 module.exports = class extends Generator {
     static displayName = "Add a new QUnit test to an existing test suite";
 
-    prompting() {
+    prompting() {        
         let aPrompt = [];
-        this.options.oneTimeConfig = this.config.getAll();
+        this.options.oneTimeConfig = this.config.getAll();        
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
+            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;            
             this.options.oneTimeConfig.modulename = this.options.modulename;
+            this.options.oneTimeConfig.ui5libs = this.options.ui5libs;
             this.options.oneTimeConfig.appId = this.options.appId;
             this.options.oneTimeConfig.appURI = this.options.appURI;
         } else {
@@ -75,6 +76,16 @@ module.exports = class extends Generator {
                     }
                 ]);
             }
+            const modules = this.config.get("uimodules") || [];
+            if (modules.length) {
+                aPrompt.push({
+                    type: "list",
+                    name: "modulename",
+                    message: "To which module do you want to add QUnit tests?",
+                    choices: modules,
+                    when: modules.length
+                });
+            }
         }
 
         aPrompt = aPrompt.concat([
@@ -119,6 +130,13 @@ module.exports = class extends Generator {
         return this.prompt(aPrompt).then((answers) => {
             for (var key in answers) {
                 this.options.oneTimeConfig[key] = answers[key];
+            }
+
+            const sModule =
+                (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
+            const allTestsFile = this.destinationPath(sModule + "test/unit/AllTests.js");
+            if (!fs.existsSync(allTestsFile)) {
+                this.log("Info: You need to run the generator 'qunit' to create the test-suite.");
             }
 
             var appName =

@@ -52,7 +52,7 @@ describe('generator:newqunittest', function () {
 
     it('Should add no reference to SinonJS in test class ', async function () {        
         await runGenerator("newqunittest", { useSinonJS: false });
-        assert.noFileContent("webapp/test/unit//model/formatter.js", 'sinon"');
+        assert.noFileContent("webapp/test/unit/model/formatter.js", 'sinon"');
     });
 
     it('Should add reference to SinonJS in test class', async function () {        
