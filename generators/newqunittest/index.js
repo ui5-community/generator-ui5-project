@@ -152,13 +152,14 @@ module.exports = class extends Generator {
     
             this.options.oneTimeConfig.codeUnderTest = jsUtils.transformToPathWithLeadingSlash(this.options.oneTimeConfig.codeUnderTest);
 
-            const tests = this.config.get("qunittests") || [];
+            let tests = this.config.get("qunittests") || [];
             let codeUnderTest = this.options.oneTimeConfig.codeUnderTest;
 
             this.options.oneTimeConfig.skipTest = tests.includes(codeUnderTest);
             if (!this.options.oneTimeConfig.skipTests) {
                 tests.push(this.options.oneTimeConfig.codeUnderTest);
             }
+            tests = jsUtils.removeDuplicates(tests || []);
             this.config.set("qunittests", tests);
             this.options.oneTimeConfig.qunittests = tests;
         });
@@ -182,8 +183,8 @@ module.exports = class extends Generator {
                 const content = fs
                     .readFileSync(allTestsFile, "utf8")
                     .replace(
-                        /sap.ui.define\(\[(.*)\s\]/gms,
-                        `sap.ui.define([$1,\n  ".${this.options.oneTimeConfig.codeUnderTest}"\n]`
+                        /sap.ui.define\(\[(.*)$\n\s*\]/gms,
+                        `sap.ui.define([$1,\n\t".${this.options.oneTimeConfig.codeUnderTest}"\n]`
                     )
                     .replace(/\s,\s/, ",\n");
                 fs.writeFileSync(allTestsFile, content);
