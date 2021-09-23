@@ -1,0 +1,10 @@
+lockfileVersion: 5.3
+
+specifiers:
+  '@sap/open-ux-tools-common': ^0.0.1
+  '@sap/open-ux-tools-types': ^0.0.1
+  '@sap/ux-fiori-freestyle-template': ^0.0.2
+  '@sap/ux-odata-service-template': ^0.0.1
+  '@sap/ux-ui5-application-template': ^0.0.1
+  '@sap/ux-ui5-config': ^0.0.1
+  '@sap/ux-yaml': ^0.0.1
