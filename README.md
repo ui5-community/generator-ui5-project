@@ -130,6 +130,20 @@ This sub-generator will create an OPA5 journey and add it to your test page:
 yo easy-ui5 project newopa5journey
 ```
 
+### QUnit tests
+
+This sub-generator will add a basic [QUnit](https://qunitjs.com/) setup. It will ask you for your app name and namespace if it is not yet part of an easy-ui5 project. You can add QUnit tests now or later with the `newqunittest` sub-generator.
+
+```
+yo easy-ui5 project qunit
+```
+
+This sub-generator will create a new QUnit test either in a basic setup or with [Sinon.JS](https://sinonjs.org/) to create standalone test spies, stubs and mocks in your QUnit tests:
+
+```
+yo easy-ui5 project newqunittest
+```
+
 ### UIVeri5 tests
 
 This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
