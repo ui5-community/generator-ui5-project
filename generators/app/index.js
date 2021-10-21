@@ -89,7 +89,7 @@ module.exports = class extends Generator {
             {
                 type: "confirm",
                 name: "codeassist",
-                message: "Would you like to add JavaScript code assist librariers to the project?",
+                message: "Would you like to add JavaScript code assist libraries to the project?",
                 default: true
             }
         ]).then((answers) => {
