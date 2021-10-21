@@ -19,8 +19,13 @@
 		"default-case": 1,
 		"no-console": 2,
 		"no-unused-vars": 2,
-		"no-trailing-spaces": 2,
 		"no-debugger": 2,
+		"no-trailing-spaces": [
+			2,
+			{
+				"ignoreComments": true
+			}
+		],
 		"semi": [
 			1,
 			"always"
