@@ -27,14 +27,7 @@
     "generators"
   ],
   "dependencies": {
-    "@sap/open-ux-tools-common": "^0.0.1",
-    "@sap/open-ux-tools-types": "^0.0.1",
-    "@sap/ux-fiori-freestyle-template": "^0.0.2",
-    "@sap/ux-odata-service-template": "^0.0.1",
-    "@sap/ux-ui5-application-template": "^0.0.1",
-    "@sap/ux-ui5-config": "^0.0.1",
-    "@sap/ux-yaml": "^0.0.1",
-    "chalk": "^4.1.0",
+    "@sap-ux/fiori-freestyle-writer": "^0.9.3",
     "chalk": "^4.1.2",
     "directory-tree": "^3.0.0",
     "glob": "^7.2.0",
