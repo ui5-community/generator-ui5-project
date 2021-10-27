@@ -67,11 +67,11 @@ module.exports = class extends Generator {
                 choices: (props) => {
                     return props.platform !== "SAP Launchpad service"
                         ? [
-                              "Content delivery network (OpenUI5)",
-                              "Content delivery network (SAPUI5)",
-                              "Local resources (OpenUI5)",
-                              "Local resources (SAPUI5)"
-                          ]
+                            "Content delivery network (OpenUI5)",
+                            "Content delivery network (SAPUI5)",
+                            "Local resources (OpenUI5)",
+                            "Local resources (SAPUI5)"
+                        ]
                         : ["Content delivery network (SAPUI5)"];
                 },
                 default: (props) => {
@@ -84,6 +84,12 @@ module.exports = class extends Generator {
                 type: "confirm",
                 name: "newdir",
                 message: "Would you like to create a new directory for the project?",
+                default: true
+            },
+            {
+                type: "confirm",
+                name: "codeassist",
+                message: "Would you like to add JavaScript code assist libraries to the project?",
                 default: true
             }
         ]).then((answers) => {
@@ -108,6 +114,32 @@ module.exports = class extends Generator {
 
             this.fs.copyTpl(sOrigin, sTarget, oConfig);
         });
+
+        if (oConfig.codeassist) {
+            let tsconfig = {
+                compilerOptions: {
+                    module: "none",
+                    noEmit: true,
+                    checkJs: true,
+                    allowJs: true,
+                    types: [
+                        "@sapui5/ts-types"
+                    ]
+                }
+            };
+            let eslintrc = {
+                plugins: [
+                    "@sap/ui5-jsdocs"
+                ],
+                extends: [
+                    "plugin:@sap/ui5-jsdocs/recommended",
+                    "eslint:recommended"
+                ]
+            }
+
+            await fileaccess.writeJSON.call(this, "/tsconfig.json", tsconfig);
+            await fileaccess.manipulateJSON.call(this, "/.eslintrc", eslintrc);
+        }
 
         const oSubGen = Object.assign({}, oConfig);
         oSubGen.isSubgeneratorCall = true;
@@ -187,6 +219,11 @@ module.exports = class extends Generator {
             packge.ui5.dependencies.push("ui5-task-nwabap-deployer");
             packge.ui5.dependencies.push("ui5-middleware-route-proxy");
             packge.scripts["deploy"] = "run-s build:ui";
+        }
+
+        if (oConfig.codeassist) {
+            packge.devDependencies["@sap/eslint-plugin-ui5-jsdocs"] = "^2.0.5";
+            packge.devDependencies["@sapui5/ts-types"] = "^1.84.20";
         }
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
