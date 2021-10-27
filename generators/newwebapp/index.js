@@ -185,10 +185,10 @@ module.exports = class extends Generator {
                 "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
                 "package.json" /* irrelevant */,
                 ".npmignore" /* irrelevant */,
-                "webapp/utils/locate-reuse-libs.js" /* puh-lease*/
             ].map(async (file) => {
                 await fs.unlink(this.destinationPath(sModuleName, file));
             });
+            await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true }); // "webapp/utils" only holds a single file
 
             this.log(`used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to genrate freestyle app skeleton :)`);
             dirTree(this.destinationPath(sModuleName), null, (item) => {
