@@ -190,7 +190,7 @@ module.exports = class extends Generator {
             });
             await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true }); // "webapp/utils" only holds a single file
 
-            this.log(`used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to genrate freestyle app skeleton :)`);
+            this.log(`used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`);
             dirTree(this.destinationPath(sModuleName), null, (item) => {
                 const relativeFilePath = item.path.replace(
                     `${this.destinationPath(sModuleName)}${path.sep}`,
