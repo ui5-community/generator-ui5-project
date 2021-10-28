@@ -188,9 +188,33 @@ module.exports = class extends Generator {
             ].map(async (file) => {
                 await fs.unlink(this.destinationPath(sModuleName, file));
             });
-            await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true }); // "webapp/utils" only holds a single file
+            // "webapp/utils" only holds a single file
+            await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true });
 
-            this.log(`used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`);
+            // relay chosen UI5 lib location -> index.html
+            const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
+            let _ui5libs = "";
+            switch (this.options.oneTimeConfig.ui5libs) {
+                case "Content delivery network (OpenUI5)":
+                    _ui5libs = "https://openui5.hana.ondemand.com/resources/sap-ui-core.js";
+                    break;
+
+                case "Content delivery network (SAPUI5)":
+                    _ui5libs = "https://sapui5.hana.ondemand.com/resources/sap-ui-core.js";
+                    break;
+
+                default:
+                    _ui5libs = "resources/sap-ui-core.js";
+                    break;
+            }
+            await fs.writeFile(
+                index.html,
+                (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
+            );
+
+            this.log(
+                `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+            );
             dirTree(this.destinationPath(sModuleName), null, (item) => {
                 const relativeFilePath = item.path.replace(
                     `${this.destinationPath(sModuleName)}${path.sep}`,
