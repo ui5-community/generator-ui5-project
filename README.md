@@ -6,6 +6,8 @@
 
 Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
+> As of version `0.1.0`, we strive to share core functionality (such as webapp scaffolding) with [SAP's `open-ux-tools`](https://github.com/SAP/open-ux-tools) effort, which is "a set of tools and libraries that makes it faster and easier to develop SAP Fiori applications".
+
 ## Usage with easy-ui5
 
 ```bash
@@ -82,86 +84,86 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 
 This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
 
-```
-yo easy-ui5 project newview
+```shell
+$> yo easy-ui5 project newview
 ```
 
 ### Create a custom control
 
 Run the following command from your project's root to scaffold a custom control.
 
-```
-yo easy-ui5 project newcontrol
+```shell
+$> yo easy-ui5 project newcontrol
 ```
 
 ### Add a new model
 
 This sub-generator will create a new model in your manifest. Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 
-```
-yo easy-ui5 project newmodel
+```shell
+$> yo easy-ui5 project newmodel
 ```
 
 ### Add a new component usage
 
 This sub-generator will add a new component usage for component reuse to your manifest.
 
-```
-yo easy-ui5 project newcomponentusage
+```shell
+$> yo easy-ui5 project newcomponentusage
 ```
 
 ### OPA5 tests
 
 This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
 
-```
-yo easy-ui5 project opa5
+```shell
+$> yo easy-ui5 project opa5
 ```
 
 This sub-generator will create an OPA5 page object and add it to your journeys:
 
-```
-yo easy-ui5 project newopa5po
+```shell
+$> yo easy-ui5 project newopa5po
 ```
 
 This sub-generator will create an OPA5 journey and add it to your test page:
 
-```
-yo easy-ui5 project newopa5journey
+```shell
+$> yo easy-ui5 project newopa5journey
 ```
 
 ### QUnit tests
 
 This sub-generator will add a basic [QUnit](https://qunitjs.com/) setup. It will ask you for your app name and namespace if it is not yet part of an easy-ui5 project. You can add QUnit tests now or later with the `newqunittest` sub-generator.
 
-```
-yo easy-ui5 project qunit
+```shell
+$> yo easy-ui5 project qunit
 ```
 
 This sub-generator will create a new QUnit test either in a basic setup or with [Sinon.JS](https://sinonjs.org/) to create standalone test spies, stubs and mocks in your QUnit tests:
 
 ```
-yo easy-ui5 project newqunittest
+$> yo easy-ui5 project newqunittest
 ```
 
 ### UIVeri5 tests
 
 This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
 
-```
-yo easy-ui5 project uiveri5
+```shell
+$> yo easy-ui5 project uiveri5
 ```
 
 This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
 
-```
-yo easy-ui5 project newuiveri5po
+```shell
+$> yo easy-ui5 project newuiveri5po
 ```
 
 This sub-generator will create a UIVeri5 spec file:
 
-```
-yo easy-ui5 project newuiveri5spec
+```shell
+$> yo easy-ui5 project newuiveri5spec
 ```
 
 ## Deployment
@@ -174,17 +176,19 @@ Required tools:
 
 1. [Create a free account](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) on SAP BTP Trial
 2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
-    ```sh
+
+    ```shell
     cf login
     ```
+
 3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
 
 Deployment steps:
 
 Call this command from the root directory to deploy the application to Cloud Foundry
 
-```
-npm run deploy
+```shell
+$> npm run deploy
 ```
 
 ### SAP HANA XSA
@@ -193,16 +197,17 @@ Required tools:
 
 1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
 2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
-    ```sh
-    xs login
+
+    ```shell
+    $> xs login
     ```
 
 Deployment steps:
 
 Call this command from the root directory to deploy the application to HANA XSA
 
-```
-npm run deploy
+```shell
+$> npm run deploy
 ```
 
 ### SAP NetWeaver
@@ -212,9 +217,14 @@ Deployment steps:
 Update the ui5.yaml file with your system settings (user, password & server) and ABAP repository settings (package, BSP Container & Transport).
 Run following command to deploy the application to SAP NetWeaver
 
+```shell
+$> npm run deploy
 ```
-npm run deploy
-```
+
+## Shared functionality with SAP's `open-ux-tools`
+
+- scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
+
 
 ## Embedded Technologies
 
@@ -222,6 +232,7 @@ This project leverages (among others) the following Open Source projects:
 
 -   [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
 -   [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
+-   [SAP open-ux-tool](https://github.com/SAP/open-ux-tools)
 
 ## Support
 
