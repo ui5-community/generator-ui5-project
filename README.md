@@ -1,8 +1,12 @@
 # Generator for OpenUI5/SAPUI5 projects
 
+[![yeoman generator][yeoman-img]][yeoman-url]
+[![Slack OpenUI5 channel][slack-img]][slack-url]  
 [![Build Status][test-image]][test-url]
-[![Dependency Status][daviddm-image]][daviddm-url]
 [![License Status][license-image]][license-url]
+[![code style: prettier][prettier-img]][prettier-url]
+[![useses node >= 16][node-img]][node-url]
+[![useses nvm][nvm-img]][nvm-url]
 
 Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
@@ -142,7 +146,7 @@ $> yo easy-ui5 project qunit
 
 This sub-generator will create a new QUnit test either in a basic setup or with [Sinon.JS](https://sinonjs.org/) to create standalone test spies, stubs and mocks in your QUnit tests:
 
-```
+```shell
 $> yo easy-ui5 project newqunittest
 ```
 
@@ -244,7 +248,15 @@ We welcome any type of contribution (code contributions, pull requests, issues) 
 
 [test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
 [test-url]: https://github.com/ui5-community/generator-ui5-project
-[daviddm-image]: https://status.david-dm.org/gh/ui5-community/generator-ui5-project.svg
-[daviddm-url]: https://david-dm.org/ui5-community/generator-ui5-project
+[prettier-img]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
+[prettier-url]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [license-image]: https://img.shields.io/github/license/ui5-community/generator-ui5-project.svg
 [license-url]: https://github.com/ui5-community/generator-ui5-project/blob/main/LICENSES/Apache-2.0.txt
+[slack-img]: https://img.shields.io/badge/openUI5-slack-yellow
+[slack-url]: https://openui5.slack.com
+[node-img]: https://img.shields.io/badge/node-%3E%3D16-green?style=flat&logo=nodedotjs
+[node-url]: https://nodejs.org/dist/latest-v16.x/docs/api/
+[nvm-img]: https://img.shields.io/badge/nvm-enabled-9cf?style=flat&logo=gnubash
+[nvm-url]: https://github.com/nvm-sh/nvm
+[yeoman-img]: https://img.shields.io/badge/easy--ui5-generator-red?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADKADAAQAAAABAAAADQAAAADdVr7uAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgoZXuEHAAAByElEQVQoFU1Sz0tiURS+7/nwKTraqIVCMCCE5CJhFrMQZpgQakCYnYvIvyDXrlyGO9dBGEG7pIWbQR60KogBQaRoFhM6xvgTQ0lByGe+03f8AV34+M497/vOue/cK4hIEe+W0+ncwVaTJOkWKMmynMH+40IizbjX6zlgPO52uxtItFwuF4Hf43RhUBQIvxiGcYDEHqrdg5/8fr/P4/FMsJ9ib7FarXq5XJ57YLgAaDAY/O90OifI/gK4+gRgA8dnwHdASNCq4CvAW6/Xe41G47PFYkFTQ8Y/TBVFMQ2Hw2o6nU5qmvaXTaJYLB6NRqNLmJPAS6VSoWazaVSr1Sm6IkUPwAdIdwUCGQEfcA0Q8Xi8CKJoNPoK5mNRJBK5Bgt0/sptVbfb/QnCdeR8/X7fWSgURD6flzA1UzabFbVa7RnfFOi4wGz9CwaDvzlCx28AL31OxOLZCoVC28v4cDH7P7FY7AYjJNyN0W63KZfL8ZT2Waiq6s+lYQVB2+FwLC9rOVJmvg8CzhGvsmH2NMxm8xbils1mo0AgQKlUihKJBKEq2e12PtYPFvOEeBqKrut3OM4mxpvG/5TC4fAjUB6Pxxmv18tPRgNMb23y4fXMIfWkAAAAAElFTkSuQmCC
+[yeoman-url]: https://github.com/yeoman/yeoman
