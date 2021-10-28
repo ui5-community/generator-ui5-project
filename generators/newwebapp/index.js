@@ -159,18 +159,18 @@ module.exports = class extends Generator {
                 id: this.options.oneTimeConfig.appId
             },
             // TODO:
-            // - custom view (and controller) name
             // - relay chosen ui5 lib bootstrap location -> index.html
             // ui5: {
-            //     initialViewName: this.options.oneTimeConfig.viewname,
-            //     initialControllerName: this.options.oneTimeConfig.viewname,
             //     bootstrapSrc: this.options.oneTimeConfig.ui5libs
             // },
             package: {
                 name: this.options.oneTimeConfig.appId
             },
             template: {
-                type: TemplateType.Basic
+                type: TemplateType.Basic,
+                settings: {
+                    viewName: this.options.oneTimeConfig.viewname
+                }
             }
         };
 
@@ -184,7 +184,7 @@ module.exports = class extends Generator {
                 "ui5-local.yaml",
                 "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
                 "package.json" /* irrelevant */,
-                ".npmignore" /* irrelevant */,
+                ".npmignore" /* irrelevant */
             ].map(async (file) => {
                 await fs.unlink(this.destinationPath(sModuleName, file));
             });
