@@ -1,6 +1,6 @@
 {
   "name": "generator-template-ui5-project",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "(Sub-)generator for a UI5 project",
   "scripts": {
     "test": "mocha",
@@ -20,7 +20,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ui5-community/template-ui5-project.git"
+    "url": "https://github.com/ui5-community/generator-ui5-project.git"
   },
   "files": [
     "helpers",
