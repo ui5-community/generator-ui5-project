@@ -1,7 +1,12 @@
 const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
+    fs = require("fs").promises,
     path = require("path"),
-    glob = require("glob");
+    glob = require("glob"),
+    chalk = require("chalk");
+
+const { generate: generateFreestyleTemplate, TemplateType, FreestyleApp } = require("@sap-ux/fiori-freestyle-writer");
+const dirTree = require("directory-tree");
 
 module.exports = class extends Generator {
     static displayName = "Add a new web app to an existing project";
@@ -46,6 +51,8 @@ module.exports = class extends Generator {
             });
         }
 
+        // everything below runs in standalone generator mode only
+        // (aka in easy-ui5 < 3 or when explicitly called from command line in easy-ui5 >= 3)
         var aPrompt = [
             {
                 type: "input",
@@ -144,32 +151,132 @@ module.exports = class extends Generator {
         const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
         const netweaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
-        // Write files in new module folder
         this.sourceRoot(path.join(__dirname, "templates"));
-        glob.sync("**", {
-            cwd: this.sourceRoot(),
-            nodir: true
-        }).forEach((file) => {
-            const sOrigin = this.templatePath(file);
-            const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
 
-            const isUnneededFlpSandbox =
-                sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "SAP Launchpad service";
-            const isUnneededXsApp =
-                sTarget.includes("xs-app") &&
-                !(
-                    this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
-                    this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+        // view type == "XML"
+        // -> utilize @sap-ux/fiori-freestyle-writer scaffolding package
+        if (this.options.viewtype === "XML") {
+            /**
+             * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
+             */
+            const FreestyleApp = {
+                app: {
+                    id: this.options.oneTimeConfig.appId
+                },
+                package: {
+                    name: this.options.oneTimeConfig.appId
+                },
+                template: {
+                    type: TemplateType.Basic,
+                    settings: {
+                        viewName: this.options.oneTimeConfig.viewname
+                    }
+                }
+            };
+
+            try {
+                const _fs = await generateFreestyleTemplate(this.destinationPath(sModuleName), FreestyleApp);
+                await _fs.commit();
+
+                // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
+                [
+                    "ui5-local.yaml",
+                    "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
+                    "package.json" /* irrelevant */,
+                    ".npmignore" /* irrelevant */
+                ].map(async (file) => {
+                    await fs.unlink(this.destinationPath(sModuleName, file));
+                });
+                // "webapp/utils" only holds a single file
+                await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true });
+
+                // relay chosen UI5 lib location -> index.html
+                const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
+                let _ui5libs = "";
+                switch (this.options.oneTimeConfig.ui5libs) {
+                    case "Content delivery network (OpenUI5)":
+                        _ui5libs = "https://openui5.hana.ondemand.com/resources/sap-ui-core.js";
+                        break;
+
+                    case "Content delivery network (SAPUI5)":
+                        _ui5libs = "https://sapui5.hana.ondemand.com/resources/sap-ui-core.js";
+                        break;
+
+                    default:
+                        _ui5libs = "resources/sap-ui-core.js";
+                        break;
+                }
+                await fs.writeFile(
+                    index.html,
+                    (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
 
-            if (isUnneededXsApp || isUnneededFlpSandbox) {
-                return;
+                this.log(
+                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+                );
+                dirTree(this.destinationPath(sModuleName), null, (item) => {
+                    const relativeFilePath = item.path.replace(
+                        `${this.destinationPath(sModuleName)}${path.sep}`,
+                        `${sModuleName}${path.sep}`
+                    );
+                    this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
+                });
+            } catch (error) {
+                this.log("Urgh. Something went wrong. Lookie:");
+                this.log(chalk.red(error.message || JSON.stringify(error)));
             }
 
-            this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
-        });
+            // handle easy-ui5 specific ui5.yaml
+            // and put base controller in place
+            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"]].forEach((file) => {
+                const src = this.templatePath("uimodule", ...file);
+                const dest = this.destinationPath(sModuleName, ...file);
+                this.fs.copyTpl(src, dest, this.options.oneTimeConfig);
+            });
+
+            // special handling of files specific to deployment scenarios
+            if (this.options.oneTimeConfig.platform !== "SAP Launchpad service") {
+                const flpSandboxSrc = this.templatePath("uimodule", "webapp", "flpSandbox.html");
+                const flpSandboxDest = this.destinationPath(sModuleName, "webapp", "flpSandbox.html");
+                this.fs.copyTpl(flpSandboxSrc, flpSandboxDest, this.options.oneTimeConfig);
+            }
+            if (
+                this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
+                this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+            ) {
+                const xsAppSrc = this.templatePath("uimodule", "webapp", "xs-app.json");
+                const xsAppDest = this.destinationPath(sModuleName, "webapp", "xs-app.json");
+                this.fs.copyTpl(xsAppSrc, xsAppDest, this.options.oneTimeConfig);
+            }
+        } else {
+            // view type != "XML"
+            // -> use original generator-ui5-projet scaffolding capabilites
+            glob.sync("**", {
+                cwd: this.sourceRoot(),
+                nodir: true
+            }).forEach((file) => {
+                const sOrigin = this.templatePath(file);
+                const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
+
+                const isUnneededFlpSandbox =
+                    sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "SAP Launchpad service";
+                const isUnneededXsApp =
+                    sTarget.includes("xs-app") &&
+                    !(
+                        this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
+                        this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+                    );
+
+                if (isUnneededXsApp || isUnneededFlpSandbox) {
+                    return;
+                }
+
+                this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
+            });
+        }
 
         if (this.options.oneTimeConfig.platform.includes("Application Router")) {
+            this.log("configuring app router settings...");
             await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
                 routes: [
                     {
@@ -187,6 +294,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.platform === "SAP Launchpad service"
         ) {
             if (this.options.oneTimeConfig.platform === "SAP Launchpad service") {
+                this.log("configuring Launchpad integration...");
                 await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
                     ["sap.cloud"]: {
                         service: this.options.oneTimeConfig.projectname + ".service"
@@ -235,6 +343,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" ||
             this.options.oneTimeConfig.platform === "SAP Launchpad service"
         ) {
+            this.log("configuring deployment options...");
             await fileaccess.writeYAML.call(this, "/mta.yaml", (mta) => {
                 const deployer = mta.modules.find((module) => module.name === "webapp_deployer");
 
@@ -258,10 +367,14 @@ module.exports = class extends Generator {
             });
         }
 
-        const oSubGen = Object.assign({}, this.options.oneTimeConfig);
-        oSubGen.isSubgeneratorCall = true;
-        oSubGen.cwd = this.destinationRoot();
-        this.composeWith(require.resolve("../newview"), oSubGen);
+        // we're utilizing @sap-ux/fiori-freestyle-writer scaffolding
+        // for XML views
+        if (this.options.viewtype !== "XML") {
+            const oSubGen = Object.assign({}, this.options.oneTimeConfig);
+            oSubGen.isSubgeneratorCall = true;
+            oSubGen.cwd = this.destinationRoot();
+            this.composeWith(require.resolve("../newview"), oSubGen);
+        }
 
         const modules = this.config.get("uimodules") || [];
         modules.push(this.options.oneTimeConfig.modulename);

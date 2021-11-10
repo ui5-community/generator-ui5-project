@@ -22,9 +22,16 @@ function createTest(oPrompt) {
             ]);
         });
 
-        it("should reference the base controller", function () {
-            return assert.fileContent("uimodule/webapp/controller/MainView.controller.js", "controller/BaseController");
-        });
+        // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
+        // but doesn't have a base controller in place
+        if (oPrompt.viewtype !== "XML") {
+            it("should reference the base controller", function () {
+                return assert.fileContent(
+                    "uimodule/webapp/controller/MainView.controller.js",
+                    "controller/BaseController"
+                );
+            });
+        }
 
         if (
             !!oPrompt.platform &&

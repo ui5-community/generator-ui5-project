@@ -1,6 +1,6 @@
 {
   "name": "generator-template-ui5-project",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "(Sub-)generator for a UI5 project",
   "scripts": {
     "test": "mocha",
@@ -20,26 +20,28 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ui5-community/template-ui5-project.git"
+    "url": "https://github.com/ui5-community/generator-ui5-project.git"
   },
   "files": [
     "helpers",
     "generators"
   ],
   "dependencies": {
-    "chalk": "^4.1.0",
-    "glob": "^7.1.6",
+    "@sap-ux/fiori-freestyle-writer": "^0.10.0",
+    "chalk": "^4.1.2",
+    "directory-tree": "^3.0.0",
+    "glob": "^7.2.0",
     "object-assign-deep": "^0.4.0",
     "valid-filename": "^3.1.0",
-    "yaml": "^1.10.2",
+    "yaml": "^2.0.0-8",
     "yeoman-environment": "^3.2.0",
     "yeoman-generator": "^4.13.0",
     "yosay": "^2.0.2"
   },
   "devDependencies": {
-    "execa": "^5.0.0",
-    "mocha": "^8.3.2",
-    "prettier": "2.2.1",
+    "execa": "^5.1.1",
+    "mocha": "^9.1.3",
+    "prettier": "^2.4.1",
     "yeoman-assert": "^3.1.1",
     "yeoman-test": "^3.0.0"
   }
