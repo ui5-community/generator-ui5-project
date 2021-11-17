@@ -11,7 +11,7 @@ module.exports = class extends Generator {
                 name: "modulename",
                 message: "To which module do you want to add a control?",
                 choices: modules || [],
-                when: modules && modules.length > 1
+                when: !!modules && modules.length > 1
             },
             {
                 type: "input",
@@ -68,26 +68,29 @@ module.exports = class extends Generator {
         }
         return this.prompt(aPrompt).then((answers) => {
             this.options.oneTimeConfig = this.config.getAll();
-            this.options.oneTimeConfig.controlname = answers.controlname;
-            this.options.oneTimeConfig.supercontrol = answers.supercontrol;
-            this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
 
-            this.options.oneTimeConfig.appId =
-                this.options.oneTimeConfig.namespaceUI5 +
-                "." +
-                (this.options.modulename === "uimodule"
-                    ? this.options.oneTimeConfig.projectname
-                    : this.options.modulename);
             if (answers.projectname) {
                 this.options.oneTimeConfig.projectname = answers.projectname;
                 this.options.oneTimeConfig.namespaceUI5 = answers.namespaceUI5;
             }
+            this.options.oneTimeConfig.controlname = answers.controlname;
+            this.options.oneTimeConfig.supercontrol = answers.supercontrol;
+            this.options.oneTimeConfig.modulename = answers.modulename || (!!modules ? modules[0] : "");
+
+            this.options.oneTimeConfig.appId =
+                this.options.oneTimeConfig.namespaceUI5 +
+                "." +
+                (this.options.modulename === "uimodule" || !this.options.oneTimeConfig.modulename
+                    ? this.options.oneTimeConfig.projectname
+                    : this.options.modulename);
+
+
         });
     }
 
     writing() {
         const sOrigin = this.templatePath("webapp/control/template.js");
-        const sTarget = `${this.options.oneTimeConfig.modulename}/webapp/control/${this.options.oneTimeConfig.controlname}.js`;
+        const sTarget = this.destinationPath(`${(this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "")}webapp/control/${this.options.oneTimeConfig.controlname}.js`);
 
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     }

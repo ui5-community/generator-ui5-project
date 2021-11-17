@@ -12,7 +12,7 @@ module.exports = class extends Generator {
                 name: "modulename",
                 message: "To which module do you want to add a component?",
                 choices: modules || [],
-                when: modules && modules.length > 1
+                when: !!modules && modules.length > 1
             },
             {
                 type: "input",

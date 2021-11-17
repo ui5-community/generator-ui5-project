@@ -12,7 +12,7 @@ module.exports = class extends Generator {
                 name: "modulename",
                 message: "To which module do you want to add a model?",
                 choices: modules || [],
-                when: modules && modules.length > 1
+                when: !!modules && modules.length > 1
             },
             {
                 type: "input",
@@ -66,7 +66,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.modelName = answers.modelName;
             this.options.oneTimeConfig.modelType = answers.modelType;
             this.options.oneTimeConfig.bindingMode = answers.bindingMode;
-            this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
+            this.options.oneTimeConfig.modulename = answers.modulename || (!!modules ? modules[0] : "");
 
             if (answers.modelType.includes("OData")) {
                 this.options.oneTimeConfig.url = answers.url;
@@ -87,12 +87,12 @@ module.exports = class extends Generator {
             const sourceSettings =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? {
-                          localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"
-                      }
+                        localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml"
+                    }
                     : {
-                          localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml",
-                          odataVersion: "4.0"
-                      };
+                        localUri: "localService/" + this.options.oneTimeConfig.url + "/metadata.xml",
+                        odataVersion: "4.0"
+                    };
             const modelType =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? "sap.ui.model.odata.v2.ODataModel"
@@ -100,22 +100,22 @@ module.exports = class extends Generator {
             const modelSettings =
                 this.options.oneTimeConfig.modelType === "OData v2"
                     ? {
-                          defaultOperationMode: "Server",
-                          defaultBindingMode: this.options.oneTimeConfig.bindingMode,
-                          defaultCountMode: this.options.oneTimeConfig.countMode,
-                          preload: true
-                      }
+                        defaultOperationMode: "Server",
+                        defaultBindingMode: this.options.oneTimeConfig.bindingMode,
+                        defaultCountMode: this.options.oneTimeConfig.countMode,
+                        preload: true
+                    }
                     : {
-                          synchronizationMode: "None",
-                          operationMode: "Server",
-                          autoExpandSelect: true,
-                          earlyRequests: true,
-                          groupProperties: {
-                              default: {
-                                  submit: "Auto"
-                              }
-                          }
-                      };
+                        synchronizationMode: "None",
+                        operationMode: "Server",
+                        autoExpandSelect: true,
+                        earlyRequests: true,
+                        groupProperties: {
+                            default: {
+                                submit: "Auto"
+                            }
+                        }
+                    };
 
             override = {
                 ["sap.app"]: {
@@ -152,7 +152,7 @@ module.exports = class extends Generator {
 
         await fileaccess.manipulateJSON.call(
             this,
-            "/" + this.options.oneTimeConfig.modulename + "/webapp/manifest.json",
+            `${(this.options.oneTimeConfig.modulename || "") + "/"}/webapp/manifest.json`,
             override
         );
     }
