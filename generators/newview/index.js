@@ -33,7 +33,7 @@ module.exports = class extends Generator {
                 name: "modulename",
                 message: "To which module do you want to add a view?",
                 choices: modules || [],
-                when: modules && modules.length > 1
+                when: !!modules && modules.length > 1
             },
             {
                 type: "input",
@@ -107,7 +107,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.viewname = answers.viewname;
             this.options.oneTimeConfig.createcontroller = answers.createcontroller;
             this.options.oneTimeConfig.addToRoute = answers.addToRoute;
-            this.options.oneTimeConfig.modulename = answers.modulename || modules[0];
+            this.options.oneTimeConfig.modulename = answers.modulename || (!!modules ? modules[0] : "");
 
             if (answers.projectname) {
                 this.options.oneTimeConfig.projectname = answers.projectname;
@@ -118,13 +118,13 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.appId =
                 this.options.oneTimeConfig.namespaceUI5 +
                 "." +
-                (this.options.oneTimeConfig.modulename === "uimodule"
+                (this.options.oneTimeConfig.modulename === "uimodule" || !this.options.oneTimeConfig.modulename
                     ? this.options.oneTimeConfig.projectname
                     : answers.modulename);
             this.options.oneTimeConfig.appURI =
                 this.options.oneTimeConfig.namespaceURI +
                 "/" +
-                (this.options.oneTimeConfig.modulename === "uimodule"
+                (this.options.oneTimeConfig.modulename === "uimodule" || !this.options.oneTimeConfig.modulename
                     ? this.options.oneTimeConfig.projectname
                     : answers.modulename);
 
@@ -156,20 +156,18 @@ module.exports = class extends Generator {
 
         var sOrigin = this.templatePath(sViewFileName);
         var sTarget = this.destinationPath(
-            sModuleName +
-                "/" +
-                sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
+            (sModuleName ? `/${sModuleName}/` : "") +
+            sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
         );
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 
         if (this.options.oneTimeConfig.createcontroller || this.options.isSubgeneratorCall) {
             sOrigin = this.templatePath(sControllerFileName);
             sTarget = this.destinationPath(
-                sModuleName +
-                    "/" +
-                    sControllerFileName
-                        .replace(/\$ViewEnding/, sViewType.toLowerCase())
-                        .replace(/\$ViewName/, sViewName)
+                (sModuleName ? `/${sModuleName}/` : "") +
+                sControllerFileName
+                    .replace(/\$ViewEnding/, sViewType.toLowerCase())
+                    .replace(/\$ViewName/, sViewName)
             );
             this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
         }
@@ -182,6 +180,10 @@ module.exports = class extends Generator {
             await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", function (json) {
                 const ui5Config = json["sap.ui5"];
                 const targetName = "Target" + sViewName;
+
+                ui5Config.routing = ui5Config.routing || {};
+                ui5Config.routing.routes = ui5Config.routing.routes || [];
+                ui5Config.routing.targets = ui5Config.routing.targets || {};
 
                 ui5Config.routing.routes.push({
                     name: sViewName,
