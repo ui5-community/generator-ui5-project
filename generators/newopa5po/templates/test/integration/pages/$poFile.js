@@ -27,7 +27,7 @@
             return this.waitFor({
               controlType: "sap.m.Title",
               properties: {
-                text: "<%=appId%>"
+                text: "Title of <%=appId%>"
               },
               success: function() {
                 Opa5.assert.ok(true, "The page shows the correct title");
