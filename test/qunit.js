@@ -1,9 +1,6 @@
 const assert = require("yeoman-assert");
 const path = require("path");
 const helpers = require("yeoman-test");
-const execa = require("execa");
-
-const IsCIRun = process.env.CI;
 
 async function runGenerator(sGenerator, oPrompt) { 
     const sGeneratorPath = path.join(__dirname, '../generators/', sGenerator); 
