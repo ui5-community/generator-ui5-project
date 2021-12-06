@@ -188,7 +188,16 @@ module.exports = class extends Generator {
                     await fs.unlink(this.destinationPath(sModuleName, file));
                 });
 
-                // relay chosen UI5 lib location -> index.html
+                this.log(
+                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+                );
+                dirTree(this.destinationPath(sModuleName), null, (item) => {
+                    const relativeFilePath = item.path.replace(
+                        `${this.destinationPath(sModuleName)}${path.sep}`,
+                        `${sModuleName}${path.sep}`
+                    );
+                    this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
+                });
                 const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
                 let _ui5libs = "";
                 switch (this.options.oneTimeConfig.ui5libs) {
@@ -224,13 +233,7 @@ module.exports = class extends Generator {
                 this.log(
                     `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
                 );
-                dirTree(this.destinationPath(sModuleName), null, (item) => {
-                    const relativeFilePath = item.path.replace(
-                        `${this.destinationPath(sModuleName)}${path.sep}`,
-                        `${sModuleName}${path.sep}`
-                    );
-                    this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
-                });
+                
             } catch (error) {
                 this.log("Urgh. Something went wrong. Lookie:");
                 this.log(chalk.red(error.message || JSON.stringify(error)));
