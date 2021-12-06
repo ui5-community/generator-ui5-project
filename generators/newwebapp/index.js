@@ -187,7 +187,7 @@ module.exports = class extends Generator {
                 ].map(async (file) => {
                     await fs.unlink(this.destinationPath(sModuleName, file));
                 });
-                
+
                 // relay chosen UI5 lib location -> index.html
                 const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
                 let _ui5libs = "";
@@ -207,6 +207,18 @@ module.exports = class extends Generator {
                 await fs.writeFile(
                     index.html,
                     (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
+                );
+
+                // fix up test/flpSandbox.html - sap.ushell is only available in sapui5
+                // bootstrap only from there, no matter the used framework choice..
+                const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
+                await fs.writeFile(
+                    flpSandbox.html,
+                    (await fs.readFile(flpSandbox.html))
+                        .toString()
+                        .replace(/src="(..)\/(test-)?resources/g, (match) => {
+                            return match.replace("..", "https://sapui5.hana.ondemand.com");
+                        })
                 );
 
                 this.log(
