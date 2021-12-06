@@ -22,14 +22,18 @@ function createTest(oPrompt) {
             ]);
         });
 
-        // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
-        // but doesn't have a base controller in place
+        // regular easy-ui5 is used for scaffolding
         if (oPrompt.viewtype !== "XML") {
             it("should reference the base controller", function () {
                 return assert.fileContent(
                     "uimodule/webapp/controller/MainView.controller.js",
                     "controller/BaseController"
                 );
+            });
+        } else {
+            // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
+            it("should reference the base controller via file path", function () {
+                return assert.fileContent("uimodule/webapp/controller/MainView.controller.js", "./BaseController");
             });
         }
 
