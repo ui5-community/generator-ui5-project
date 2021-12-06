@@ -30,19 +30,19 @@ function createTest(oPrompt) {
                     "controller/BaseController"
                 );
             });
-        } else {
-            // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
-            it("should reference the base controller via file path", function () {
-                return assert.fileContent("uimodule/webapp/controller/MainView.controller.js", "./BaseController");
-            });
         }
 
-        if (oPrompt.viewtype === "XML") {
+        // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
+        if (oPrompt.viewtype === "XML" && oPrompt.ui5libs && oPrompt.platform) {
             it.only("should make sure the flpSandbox.html is in test/ and bootstraps SAPUI5", function () {
                 return (
                     assert.file("uimodule/webapp/test/flpSandbox.html") &&
                     assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://sapui5.hana.ondemand.com")
                 );
+            });
+
+            it("should reference the base controller via file path", function () {
+                return assert.fileContent("uimodule/webapp/controller/MainView.controller.js", "./BaseController");
             });
         }
 
