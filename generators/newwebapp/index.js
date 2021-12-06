@@ -198,6 +198,8 @@ module.exports = class extends Generator {
                     );
                     this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
                 });
+
+                // relay chosen UI5 lib location -> @sap-ux/fiori-freestyle-writer's index.html
                 const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
                 let _ui5libs = "";
                 switch (this.options.oneTimeConfig.ui5libs) {
@@ -217,8 +219,11 @@ module.exports = class extends Generator {
                     index.html,
                     (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${this.options.oneTimeConfig.ui5libs}`);
 
-                // fix up test/flpSandbox.html - sap.ushell is only available in sapui5
+
+                // fix up @sap-ux/fiori-freestyle-writer's test/flpSandbox.html -
+                // sap.ushell is only available in sapui5
                 // bootstrap only from there, no matter the used framework choice..
                 const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
                 await fs.writeFile(
@@ -229,6 +234,7 @@ module.exports = class extends Generator {
                             return match.replace("..", "https://sapui5.hana.ondemand.com");
                         })
                 );
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`);
 
 
                 // make @sap-ux/fiori-freestyle-writer's MainView.controller
