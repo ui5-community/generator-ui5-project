@@ -34,7 +34,7 @@ function createTest(oPrompt) {
 
         // @sap-ux/fiori-freestyle-writer is used for scaffolding an XML-view based webapp
         if (oPrompt.viewtype === "XML" && oPrompt.ui5libs && oPrompt.platform) {
-            it.only("should make sure the flpSandbox.html is in test/ and bootstraps SAPUI5", function () {
+            it("should make sure the flpSandbox.html is in test/ and bootstraps SAPUI5", function () {
                 return (
                     assert.file("uimodule/webapp/test/flpSandbox.html") &&
                     assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://sapui5.hana.ondemand.com")
