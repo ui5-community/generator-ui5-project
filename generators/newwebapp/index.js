@@ -230,9 +230,19 @@ module.exports = class extends Generator {
                         })
                 );
 
-                this.log(
-                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+
+                // make @sap-ux/fiori-freestyle-writer's MainView.controller
+                // aware of easy-ui5's base controller
+                const MainViewController = {
+                    js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
+                };
+                await fs.writeFile(
+                    MainViewController.js,
+                    (await fs.readFile(MainViewController.js))
+                        .toString()
+                        .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
                 );
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} MainViewController.js to use ./BaseController`);
                 
             } catch (error) {
                 this.log("Urgh. Something went wrong. Lookie:");
