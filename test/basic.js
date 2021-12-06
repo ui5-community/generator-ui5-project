@@ -33,6 +33,15 @@ function createTest(oPrompt) {
             });
         }
 
+        if (oPrompt.viewtype === "XML") {
+            it.only("should make sure the flpSandbox.html is in test/ and bootstraps SAPUI5", function () {
+                return (
+                    assert.file("uimodule/webapp/test/flpSandbox.html") &&
+                    assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://sapui5.hana.ondemand.com")
+                );
+            });
+        }
+
         if (
             !!oPrompt.platform &&
             oPrompt.platform !== "Static webserver" &&
