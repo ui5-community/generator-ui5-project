@@ -233,11 +233,7 @@ module.exports = class extends Generator {
             });
 
             // special handling of files specific to deployment scenarios
-            if (this.options.oneTimeConfig.platform !== "SAP Launchpad service") {
-                const flpSandboxSrc = this.templatePath("uimodule", "webapp", "flpSandbox.html");
-                const flpSandboxDest = this.destinationPath(sModuleName, "webapp", "flpSandbox.html");
-                this.fs.copyTpl(flpSandboxSrc, flpSandboxDest, this.options.oneTimeConfig);
-            }
+            // > flpSandbox.html is created by @sap-ux/fiori-freestyle-writer in test/
             if (
                 this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
                 this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
