@@ -187,9 +187,7 @@ module.exports = class extends Generator {
                 ].map(async (file) => {
                     await fs.unlink(this.destinationPath(sModuleName, file));
                 });
-                // "webapp/utils" only holds a single file
-                await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true });
-
+                
                 // relay chosen UI5 lib location -> index.html
                 const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
                 let _ui5libs = "";
