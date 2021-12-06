@@ -239,13 +239,16 @@ module.exports = class extends Generator {
                 this.log(chalk.red(error.message || JSON.stringify(error)));
             }
 
-            // handle easy-ui5 specific ui5.yaml
-            // and put base controller in place
-            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"]].forEach((file) => {
-                const src = this.templatePath("uimodule", ...file);
-                const dest = this.destinationPath(sModuleName, ...file);
-                this.fs.copyTpl(src, dest, this.options.oneTimeConfig);
-            });
+            // handle easy-ui5 specific ui5.yaml, put
+            // put base controller in place
+            // and provide model/formatter.js
+            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"], ["webapp", "model", "formatter.js"]].forEach(
+                (file) => {
+                    const src = this.templatePath("uimodule", ...file);
+                    const dest = this.destinationPath(sModuleName, ...file);
+                    this.fs.copyTpl(src, dest, this.options.oneTimeConfig);
+                }
+            );
 
             // special handling of files specific to deployment scenarios
             // > flpSandbox.html is created by @sap-ux/fiori-freestyle-writer in test/
