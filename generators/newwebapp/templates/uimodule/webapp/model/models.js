@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/model/json/JSONModel", "sap/ui/Device"],
+sap.ui.define(["sap/ui/model/json/JSONModel", "sap/ui/Device"], // eslint-disable-line 
     /**
      * @param {typeof sap.ui.model.json.JSONModel} JSONModel 
      * @param {typeof sap.ui.Device} Device 
