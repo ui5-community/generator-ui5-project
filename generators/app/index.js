@@ -209,7 +209,7 @@ module.exports = class extends Generator {
             }
 
             if (oConfig.platform === "SAP Launchpad service") {
-                packge.scripts.start = "ui5 serve --config=uimodule/ui5.yaml  --open flpSandbox.html";
+                packge.scripts.start = "ui5 serve --config=uimodule/ui5.yaml  --open test/flpSandbox.html";
             }
         }
 
