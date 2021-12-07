@@ -187,10 +187,19 @@ module.exports = class extends Generator {
                 ].map(async (file) => {
                     await fs.unlink(this.destinationPath(sModuleName, file));
                 });
-                // "webapp/utils" only holds a single file
-                await fs.rm(this.destinationPath(sModuleName, "webapp/utils"), { force: true, recursive: true });
 
-                // relay chosen UI5 lib location -> index.html
+                this.log(
+                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+                );
+                dirTree(this.destinationPath(sModuleName), null, (item) => {
+                    const relativeFilePath = item.path.replace(
+                        `${this.destinationPath(sModuleName)}${path.sep}`,
+                        `${sModuleName}${path.sep}`
+                    );
+                    this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
+                });
+
+                // relay chosen UI5 lib location -> @sap-ux/fiori-freestyle-writer's index.html
                 const index = { html: this.destinationPath(sModuleName, "webapp/index.html") };
                 let _ui5libs = "";
                 switch (this.options.oneTimeConfig.ui5libs) {
@@ -210,36 +219,55 @@ module.exports = class extends Generator {
                     index.html,
                     (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${this.options.oneTimeConfig.ui5libs}`);
 
-                this.log(
-                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+
+                // fix up @sap-ux/fiori-freestyle-writer's test/flpSandbox.html -
+                // sap.ushell is only available in sapui5
+                // bootstrap only from there, no matter the used framework choice..
+                const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
+                await fs.writeFile(
+                    flpSandbox.html,
+                    (await fs.readFile(flpSandbox.html))
+                        .toString()
+                        .replace(/src="(..)\/(test-)?resources/g, (match) => {
+                            return match.replace("..", "https://sapui5.hana.ondemand.com");
+                        })
                 );
-                dirTree(this.destinationPath(sModuleName), null, (item) => {
-                    const relativeFilePath = item.path.replace(
-                        `${this.destinationPath(sModuleName)}${path.sep}`,
-                        `${sModuleName}${path.sep}`
-                    );
-                    this.log(`  ${chalk.blueBright("created")} ${relativeFilePath}`);
-                });
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`);
+
+
+                // make @sap-ux/fiori-freestyle-writer's MainView.controller
+                // aware of easy-ui5's base controller
+                const MainViewController = {
+                    js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
+                };
+                await fs.writeFile(
+                    MainViewController.js,
+                    (await fs.readFile(MainViewController.js))
+                        .toString()
+                        .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
+                );
+                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} MainViewController.js to use ./BaseController`);
+                
             } catch (error) {
                 this.log("Urgh. Something went wrong. Lookie:");
                 this.log(chalk.red(error.message || JSON.stringify(error)));
             }
 
-            // handle easy-ui5 specific ui5.yaml
-            // and put base controller in place
-            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"]].forEach((file) => {
-                const src = this.templatePath("uimodule", ...file);
-                const dest = this.destinationPath(sModuleName, ...file);
-                this.fs.copyTpl(src, dest, this.options.oneTimeConfig);
-            });
+            // handle easy-ui5 specific ui5.yaml, put
+            // put base controller in place
+            // and provide model/formatter.js
+            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"], ["webapp", "model", "formatter.js"]].forEach(
+                (file) => {
+                    const src = this.templatePath("uimodule", ...file);
+                    const dest = this.destinationPath(sModuleName, ...file);
+                    this.fs.copyTpl(src, dest, this.options.oneTimeConfig);
+                }
+            );
 
             // special handling of files specific to deployment scenarios
-            if (this.options.oneTimeConfig.platform !== "SAP Launchpad service") {
-                const flpSandboxSrc = this.templatePath("uimodule", "webapp", "flpSandbox.html");
-                const flpSandboxDest = this.destinationPath(sModuleName, "webapp", "flpSandbox.html");
-                this.fs.copyTpl(flpSandboxSrc, flpSandboxDest, this.options.oneTimeConfig);
-            }
+            // > flpSandbox.html is created by @sap-ux/fiori-freestyle-writer in test/
             if (
                 this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
                 this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
