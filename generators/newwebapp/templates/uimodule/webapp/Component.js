@@ -1,4 +1,5 @@
-sap.ui.define( // eslint-disable-line 
+/* eslint-disable @sap/ui5-jsdocs/no-jsdoc */
+sap.ui.define(
     ["sap/ui/core/UIComponent", "sap/ui/Device", "<%=appURI%>/model/models"],
     /**
      * @param {typeof sap.ui.core.UIComponent} UIComponent 

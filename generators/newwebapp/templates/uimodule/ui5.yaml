@@ -27,7 +27,7 @@ server:
       configuration:
         debug: true
         port: 1091
-        xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : modulename+"/webapp/xs-app.json" %>
+        xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : "webapp/xs-app.json" %>
         destinations: []
 <% if(platform === 'SAP HTML5 Application Repository service for SAP BTP' || platform === 'SAP Launchpad service'){ -%>
 builder:
