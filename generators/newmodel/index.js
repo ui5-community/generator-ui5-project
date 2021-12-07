@@ -152,7 +152,7 @@ module.exports = class extends Generator {
 
         await fileaccess.manipulateJSON.call(
             this,
-            `${(this.options.oneTimeConfig.modulename || "") + "/"}/webapp/manifest.json`,
+            `${"/" + (this.options.oneTimeConfig.modulename || "")}/webapp/manifest.json`,
             override
         );
     }
