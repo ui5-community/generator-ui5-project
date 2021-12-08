@@ -1,4 +1,6 @@
-/* eslint-disable @sap/ui5-jsdocs/no-jsdoc */
+/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc 
+ */
 sap.ui.define(["sap/ui/model/json/JSONModel", "sap/ui/Device"],
     /**
      * @param {typeof sap.ui.model.json.JSONModel} JSONModel 

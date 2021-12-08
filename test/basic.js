@@ -56,8 +56,8 @@ function createTest(oPrompt) {
                 return assert.fileContent(
                     "uimodule/ui5.yaml",
                     oPrompt.platform === "Application Router @ Cloud Foundry"
-                        ? "xsappJson: approuter/xs-app.json"
-                        : "xsappJson: uimodule/webapp/xs-app.json"
+                        ? "xsappJson: ../approuter/xs-app.json"
+                        : "xsappJson: webapp/xs-app.json"
                 );
             });
         }

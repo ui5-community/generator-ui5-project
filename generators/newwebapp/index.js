@@ -5,6 +5,11 @@ const Generator = require("yeoman-generator"),
     glob = require("glob"),
     chalk = require("chalk");
 
+// patches the Generator for the install tasks as new custom install
+// tasks produce ugly errors! (Related issue: https://github.com/yeoman/environment/issues/309)
+// to avoid this error: "TypeError: this.installDependencies is not a function"
+require('lodash').extend(Generator.prototype, require('yeoman-generator/lib/actions/install'))
+
 const { generate: generateFreestyleTemplate, TemplateType, FreestyleApp } = require("@sap-ux/fiori-freestyle-writer");
 const dirTree = require("directory-tree");
 
@@ -185,7 +190,11 @@ module.exports = class extends Generator {
                     "package.json" /* irrelevant */,
                     ".npmignore" /* irrelevant */
                 ].map(async (file) => {
-                    await fs.unlink(this.destinationPath(sModuleName, file));
+                    try {
+                        await fs.unlink(this.destinationPath(sModuleName, file));
+                    } catch (e) {
+                        //ignore as this probably means the file doens't exist anyway
+                    }
                 });
 
                 this.log(
