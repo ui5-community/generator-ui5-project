@@ -6,12 +6,12 @@ const fs = require("fs");
 module.exports = class extends Generator {
     static displayName = "Add a new QUnit test to an existing test suite";
 
-    prompting() {        
+    prompting() {
         let aPrompt = [];
-        this.options.oneTimeConfig = this.config.getAll();        
+        this.options.oneTimeConfig = this.config.getAll();
         if (this.options.isSubgeneratorCall) {
             this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;            
+            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
             this.options.oneTimeConfig.modulename = this.options.modulename;
             this.options.oneTimeConfig.ui5libs = this.options.ui5libs;
             this.options.oneTimeConfig.appId = this.options.appId;
@@ -62,10 +62,10 @@ module.exports = class extends Generator {
                         choices: (props) => {
                             return props.platform !== "SAP Launchpad service"
                                 ? [
-                                    "Content delivery network (OpenUI5)",
-                                    "Content delivery network (SAPUI5)",
-                                    "Local resources"
-                                ]
+                                      "Content delivery network (OpenUI5)",
+                                      "Content delivery network (SAPUI5)",
+                                      "Local resources"
+                                  ]
                                 : ["Content delivery network (SAPUI5)"];
                         },
                         default: (props) => {
@@ -149,8 +149,10 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
             this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
             this.options.oneTimeConfig.title = appName;
-    
-            this.options.oneTimeConfig.codeUnderTest = jsUtils.transformToPathWithLeadingSlash(this.options.oneTimeConfig.codeUnderTest);
+
+            this.options.oneTimeConfig.codeUnderTest = jsUtils.transformToPathWithLeadingSlash(
+                this.options.oneTimeConfig.codeUnderTest
+            );
 
             let tests = this.config.get("qunittests") || [];
             let codeUnderTest = this.options.oneTimeConfig.codeUnderTest;
@@ -163,7 +165,6 @@ module.exports = class extends Generator {
             this.config.set("qunittests", tests);
             this.options.oneTimeConfig.qunittests = tests;
         });
-
     }
 
     async writing() {

@@ -2,7 +2,6 @@
 name: New Issue for the UI5-Project plugin of easy-ui5
 about: Use this template if incorrect files were generated or if the generated project doesn't work.
 assignees: IObert
-
 ---
 
 ## Easy-Ui5 version:

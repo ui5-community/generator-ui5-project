@@ -1,10 +1,11 @@
 /**
- * eslint-disable @sap/ui5-jsdocs/no-jsdoc 
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
  */
-sap.ui.define(["sap/ui/model/json/JSONModel", "sap/ui/Device"],
+sap.ui.define(
+    ["sap/ui/model/json/JSONModel", "sap/ui/Device"],
     /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel 
-     * @param {typeof sap.ui.Device} Device 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
      */
     function (JSONModel, Device) {
         "use strict";
@@ -15,4 +16,5 @@ sap.ui.define(["sap/ui/model/json/JSONModel", "sap/ui/Device"],
                 return oModel;
             }
         };
-    });
+    }
+);

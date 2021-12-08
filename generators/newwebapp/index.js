@@ -8,7 +8,7 @@ const Generator = require("yeoman-generator"),
 // patches the Generator for the install tasks as new custom install
 // tasks produce ugly errors! (Related issue: https://github.com/yeoman/environment/issues/309)
 // to avoid this error: "TypeError: this.installDependencies is not a function"
-require('lodash').extend(Generator.prototype, require('yeoman-generator/lib/actions/install'))
+require("lodash").extend(Generator.prototype, require("yeoman-generator/lib/actions/install"));
 
 const { generate: generateFreestyleTemplate, TemplateType, FreestyleApp } = require("@sap-ux/fiori-freestyle-writer");
 const dirTree = require("directory-tree");
@@ -228,8 +228,11 @@ module.exports = class extends Generator {
                     index.html,
                     (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
-                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${this.options.oneTimeConfig.ui5libs}`);
-
+                this.log(
+                    `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${
+                        this.options.oneTimeConfig.ui5libs
+                    }`
+                );
 
                 // fix up @sap-ux/fiori-freestyle-writer's test/flpSandbox.html -
                 // sap.ushell is only available in sapui5
@@ -243,8 +246,11 @@ module.exports = class extends Generator {
                             return match.replace("..", "https://sapui5.hana.ondemand.com");
                         })
                 );
-                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`);
-
+                this.log(
+                    `  ${chalk.blueBright(
+                        "\u26A0 \uFE0F patched @sap-ux's"
+                    )} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`
+                );
 
                 // make @sap-ux/fiori-freestyle-writer's MainView.controller
                 // aware of easy-ui5's base controller
@@ -257,8 +263,11 @@ module.exports = class extends Generator {
                         .toString()
                         .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
                 );
-                this.log(`  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} MainViewController.js to use ./BaseController`);
-                
+                this.log(
+                    `  ${chalk.blueBright(
+                        "\u26A0 \uFE0F patched @sap-ux's"
+                    )} MainViewController.js to use ./BaseController`
+                );
             } catch (error) {
                 this.log("Urgh. Something went wrong. Lookie:");
                 this.log(chalk.red(error.message || JSON.stringify(error)));

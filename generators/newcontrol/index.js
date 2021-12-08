@@ -83,14 +83,16 @@ module.exports = class extends Generator {
                 (this.options.modulename === "uimodule" || !this.options.oneTimeConfig.modulename
                     ? this.options.oneTimeConfig.projectname
                     : this.options.modulename);
-
-
         });
     }
 
     writing() {
         const sOrigin = this.templatePath("webapp/control/template.js");
-        const sTarget = this.destinationPath(`${(this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "")}webapp/control/${this.options.oneTimeConfig.controlname}.js`);
+        const sTarget = this.destinationPath(
+            `${
+                this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : ""
+            }webapp/control/${this.options.oneTimeConfig.controlname}.js`
+        );
 
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
     }

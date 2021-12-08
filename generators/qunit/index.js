@@ -73,10 +73,10 @@ module.exports = class extends Generator {
                         choices: (props) => {
                             return props.platform !== "SAP Launchpad service"
                                 ? [
-                                    "Content delivery network (OpenUI5)",
-                                    "Content delivery network (SAPUI5)",
-                                    "Local resources"
-                                ]
+                                      "Content delivery network (OpenUI5)",
+                                      "Content delivery network (SAPUI5)",
+                                      "Local resources"
+                                  ]
                                 : ["Content delivery network (SAPUI5)"];
                         },
                         default: (props) => {
@@ -100,14 +100,12 @@ module.exports = class extends Generator {
             }
         }
 
-        aPrompt = aPrompt.concat(
-            {
-                type: "confirm",
-                name: "addTest",
-                message: "Do you want to add a test?",
-                default: true
-            }
-        );
+        aPrompt = aPrompt.concat({
+            type: "confirm",
+            name: "addTest",
+            message: "Do you want to add a test?",
+            default: true
+        });
 
         return this.prompt(aPrompt).then((answers) => {
             for (var key in answers) {
@@ -126,7 +124,6 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.title = appName;
         });
     }
-
 
     main() {
         if (this.options.oneTimeConfig.addTest) {
@@ -157,11 +154,11 @@ module.exports = class extends Generator {
 
         let sPrefix;
         switch (this.options.oneTimeConfig.ui5libs) {
-            case 'Content delivery network (OpenUI5)':
-                sPrefix = 'https://openui5.hana.ondemand.com/';
+            case "Content delivery network (OpenUI5)":
+                sPrefix = "https://openui5.hana.ondemand.com/";
                 break;
-            case 'Content delivery network (SAPUI5)':
-                sPrefix = 'https://sapui5.hana.ondemand.com/';
+            case "Content delivery network (SAPUI5)":
+                sPrefix = "https://sapui5.hana.ondemand.com/";
                 break;
             default:
                 sPrefix = "../../";

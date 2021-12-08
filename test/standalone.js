@@ -7,7 +7,6 @@ const IsCIRun = process.env.CI;
 
 function newViewControllerPairTest() {
     describe("Create a view/controller pair", function () {
-
         it("should run the subgenerator", function () {
             return helpers.run(path.join(__dirname, "../generators/newview")).withPrompts({
                 viewname: "NewView",
@@ -21,33 +20,25 @@ function newViewControllerPairTest() {
         });
 
         it("should create the necessary files", function () {
-            return assert.file([
-                "webapp/controller/NewView.controller.js",
-                "webapp/view/NewView.view.xml"
-            ]);
+            return assert.file(["webapp/controller/NewView.controller.js", "webapp/view/NewView.view.xml"]);
         });
 
         it("should create the proper controller", function () {
-            return assert.fileContent(
-                "webapp/controller/NewView.controller.js",
-                "sap.ui.demo.todo.controller.NewView"
-            );
+            return assert.fileContent("webapp/controller/NewView.controller.js", "sap.ui.demo.todo.controller.NewView");
         });
 
         it("should create a propert view", function () {
             return assert.fileContent(
                 "webapp/view/NewView.view.xml",
-                "id=\"NewView\"",
+                'id="NewView"',
                 "sap.ui.demo.todo.controller.NewView"
             );
         });
-
     });
 }
 
 function newControlTest() {
     describe("Create a control to the app", function () {
-
         it("should run the subgenerator", function () {
             return helpers.run(path.join(__dirname, "../generators/newcontrol")).withPrompts({
                 controlname: "SuperControl",
@@ -58,24 +49,17 @@ function newControlTest() {
         });
 
         it("should create the necessary file", function () {
-            return assert.file([
-                "webapp/control/SuperControl.js"
-            ]);
+            return assert.file(["webapp/control/SuperControl.js"]);
         });
 
         it("should create the proper control", function () {
-            return assert.fileContent(
-                "webapp/control/SuperControl.js",
-                "sap.ui.demo.todo.control.SuperControl"
-            );
+            return assert.fileContent("webapp/control/SuperControl.js", "sap.ui.demo.todo.control.SuperControl");
         });
-
     });
 }
 
 function newModelTest() {
     describe("Create a model to the manifest", function () {
-
         // before(function () {
         //     fs.writeFileSync("webapp/manifest.json", "{}");
         // })
@@ -89,11 +73,7 @@ function newModelTest() {
         });
 
         it("should write the proper model definition", function () {
-            return assert.fileContent(
-                "webapp/manifest.json",
-                "\"NewModel\": {",
-                "sap.ui.model.json.JSONModel"
-            );
+            return assert.fileContent("webapp/manifest.json", '"NewModel": {', "sap.ui.model.json.JSONModel");
         });
     });
 }

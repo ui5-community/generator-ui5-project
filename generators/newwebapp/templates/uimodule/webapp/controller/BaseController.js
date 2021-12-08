@@ -6,9 +6,9 @@ sap.ui.define(
         "<%=appURI%>/model/formatter"
     ],
     /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller 
-     * @param {typeof sap.ui.core.routing.History} History 
-     * @param {typeof sap.ui.core.UIComponent} UIComponent 
+     * @param {typeof sap.ui.core.mvc.Controller} Controller
+     * @param {typeof sap.ui.core.routing.History} History
+     * @param {typeof sap.ui.core.UIComponent} UIComponent
      */
     function (Controller, History, UIComponent, formatter) {
         "use strict";

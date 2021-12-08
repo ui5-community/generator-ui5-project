@@ -67,11 +67,11 @@ module.exports = class extends Generator {
                 choices: (props) => {
                     return props.platform !== "SAP Launchpad service"
                         ? [
-                            "Content delivery network (OpenUI5)",
-                            "Content delivery network (SAPUI5)",
-                            "Local resources (OpenUI5)",
-                            "Local resources (SAPUI5)"
-                        ]
+                              "Content delivery network (OpenUI5)",
+                              "Content delivery network (SAPUI5)",
+                              "Local resources (OpenUI5)",
+                              "Local resources (SAPUI5)"
+                          ]
                         : ["Content delivery network (SAPUI5)"];
                 },
                 default: (props) => {
@@ -122,20 +122,13 @@ module.exports = class extends Generator {
                     noEmit: true,
                     checkJs: true,
                     allowJs: true,
-                    types: [
-                        "@sapui5/ts-types"
-                    ]
+                    types: ["@sapui5/ts-types"]
                 }
             };
             let eslintrc = {
-                plugins: [
-                    "@sap/ui5-jsdocs"
-                ],
-                extends: [
-                    "plugin:@sap/ui5-jsdocs/recommended",
-                    "eslint:recommended"
-                ]
-            }
+                plugins: ["@sap/ui5-jsdocs"],
+                extends: ["plugin:@sap/ui5-jsdocs/recommended", "eslint:recommended"]
+            };
 
             await fileaccess.writeJSON.call(this, "/tsconfig.json", tsconfig);
             await fileaccess.manipulateJSON.call(this, "/.eslintrc", eslintrc);

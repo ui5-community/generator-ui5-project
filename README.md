@@ -227,8 +227,7 @@ $> npm run deploy
 
 ## Shared functionality with SAP's `open-ux-tools`
 
-- scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
-
+-   scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
 
 ## Embedded Technologies
 

@@ -1,6 +1,6 @@
 name: Run test
 
-on: 
+on:
     pull_request:
         branches: [main]
 

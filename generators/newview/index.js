@@ -157,7 +157,7 @@ module.exports = class extends Generator {
         var sOrigin = this.templatePath(sViewFileName);
         var sTarget = this.destinationPath(
             (sModuleName ? `${sModuleName}/` : "") +
-            sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
+                sViewFileName.replace(/\$ViewEnding/, sViewType.toLowerCase()).replace(/\$ViewName/, sViewName)
         );
         this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
 
@@ -165,9 +165,9 @@ module.exports = class extends Generator {
             sOrigin = this.templatePath(sControllerFileName);
             sTarget = this.destinationPath(
                 (sModuleName ? `${sModuleName}/` : "") +
-                sControllerFileName
-                    .replace(/\$ViewEnding/, sViewType.toLowerCase())
-                    .replace(/\$ViewName/, sViewName)
+                    sControllerFileName
+                        .replace(/\$ViewEnding/, sViewType.toLowerCase())
+                        .replace(/\$ViewName/, sViewName)
             );
             this.fs.copyTpl(sOrigin, sTarget, this.options.oneTimeConfig);
         }
