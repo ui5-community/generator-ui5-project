@@ -246,7 +246,7 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 We welcome any type of contribution (code contributions, pull requests, issues) to this generator equally.
 
 [test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
-[test-url]: https://github.com/ui5-community/generator-ui5-project
+[test-url]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml
 [prettier-img]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [license-image]: https://img.shields.io/github/license/ui5-community/generator-ui5-project.svg
