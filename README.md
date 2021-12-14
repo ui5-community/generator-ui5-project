@@ -237,6 +237,22 @@ This project leverages (among others) the following Open Source projects:
 -   [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
 -   [SAP open-ux-tool](https://github.com/SAP/open-ux-tools)
 
+## Debugging the generator
+
+If you want to modify and debug this (or any other Yeoman) generator, I recommend the following trick that leverages the capabilities of VS Code:
+
+You need to add an `npm script` to trigger this generator from the "npm scripts" panel. To make your life a bit easier, I have already added such a script here.
+
+> Note that the generator will be called from the project root, which means all files will be generated here then. This might not be ideal in your situation, but you can always open another project in VS Code and add an npm script that calls this generator from there as well. Be aware that you need to change the path of the generator then.
+
+Once the npm script is set up, you need to set a breakpoint in the logic of the generator itself (here in the index.js). Once all (conditional) breakpoints are set, hit the debug button of the npm script that you want to trigger. 
+![debug](./docs/debugBreakpoint.png)
+Within a few seconds, you'll see that the generator is started, and the debugger will be attached and eventually stop at your breakpoint. 
+![debug](./docs/debugStopped.png)
+
+Now you are ready to go, happy coding 🦁!
+
+
 ## Support
 
 Please use the GitHub bug tracking system to post questions, bug reports or to create pull requests.

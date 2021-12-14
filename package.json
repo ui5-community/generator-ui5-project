@@ -6,7 +6,8 @@
     "test": "mocha",
     "workaround": "find . -name '.DS_Store' -delete",
     "test:manual": "cd test/ui5-app && ui5 serve",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "debug": "yo ."
   },
   "keywords": [
     "yeoman-generator",
