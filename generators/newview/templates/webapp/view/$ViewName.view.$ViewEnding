@@ -2,7 +2,7 @@
   displayBlock="true"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc">
-  <Page title="{i18n>title}">
+  <Page title="{i18n>title}" id="<%= isSubgeneratorCall ? 'idAppControl' : viewname %>" >
     <content></content>
   </Page>
 </mvc:View><% } if (viewtype === 'HTML') { -%>
