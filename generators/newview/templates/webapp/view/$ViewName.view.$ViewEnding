@@ -2,13 +2,9 @@
   displayBlock="true"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc">
-  <App id="<%= isSubgeneratorCall ? 'idAppControl' : viewname %>" >
-    <pages>
-      <Page title="{i18n>title}">
-        <content></content>
-      </Page>
-    </pages>
-  </App>
+  <Page title="{i18n>title}" id="<%= isSubgeneratorCall ? 'idAppControl' : viewname %>" >
+    <content></content>
+  </Page>
 </mvc:View><% } if (viewtype === 'HTML') { -%>
 <template data-controller-name="<%=appId%>.controller.<%=viewname%>">
   <div data-sap-ui-type="sap.m.App" id="<%= isSubgeneratorCall ? 'idAppControl' : viewname %>"  >
