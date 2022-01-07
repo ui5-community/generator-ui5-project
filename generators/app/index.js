@@ -235,7 +235,7 @@ module.exports = class extends Generator {
 
     end() {
         // we have to run lint-fix to get properly formatted code
-        this.spawnCommandSync("npm run lint-fix", {
+        this.spawnCommandSync("npm", ["run", "lint-fix"], {
             cwd: this.destinationPath()
         });
         this.spawnCommandSync("git", ["init", "--quiet"], {
