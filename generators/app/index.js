@@ -234,10 +234,13 @@ module.exports = class extends Generator {
     }
 
     end() {
-        // we have to run lint-fix to get properly formatted code
-        this.spawnCommandSync("npm", ["run", "lint-fix"], {
-            cwd: this.destinationPath()
-        });
+        // If the generator is properly installed, we have to run lint-fix to get properly formatted code
+        // (skipInstall is true when executed in unit tests.)
+        if (!this.env.options.skipInstall) {
+            this.spawnCommandSync("npm", ["run", "lint-fix"], {
+                cwd: this.destinationPath()
+            });
+        }
         this.spawnCommandSync("git", ["init", "--quiet"], {
             cwd: this.destinationPath()
         });
