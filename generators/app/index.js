@@ -158,7 +158,8 @@ module.exports = class extends Generator {
                 "karma-ci": "karma start karma-ci.conf.js",
                 clearCoverage: "shx rm -rf coverage",
                 karma: "run-s clearCoverage karma-ci",
-                lint: "eslint ."
+                lint: "eslint ./**/webapp/**/*.js && prettier --check ./**/webapp/**/*.{js,xml}",
+                "lint-fix": "eslint ./**/webapp/**/*.js --fix && prettier --write ./**/webapp/**/*.{js,xml}"
             },
             devDependencies: {
                 shx: "^0.3.3",
@@ -169,7 +170,9 @@ module.exports = class extends Generator {
                 "karma-coverage": "^2.1.0",
                 "karma-ui5": "^2.3.4",
                 "npm-run-all": "^4.1.5",
-                eslint: "^7.32.0"
+                eslint: "^7.32.0",
+                prettier: "^2.5.1",
+                "@prettier/plugin-xml": "^1.1.0"
             },
             ui5: {
                 dependencies: ["ui5-middleware-livereload"]
@@ -231,6 +234,13 @@ module.exports = class extends Generator {
     }
 
     end() {
+        // If the generator is properly installed, we have to run lint-fix to get properly formatted code
+        // (skipInstall is true when executed in unit tests.)
+        if (!this.env.options.skipInstall) {
+            this.spawnCommandSync("npm", ["run", "lint-fix"], {
+                cwd: this.destinationPath()
+            });
+        }
         this.spawnCommandSync("git", ["init", "--quiet"], {
             cwd: this.destinationPath()
         });

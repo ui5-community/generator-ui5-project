@@ -76,6 +76,11 @@ function createTest(oPrompt) {
             return execa.commandSync("npm install");
         });
 
+        // run lint-fix after npm install, so that the npm test task won't fail
+        it("should run lint-fix", function () {
+            return execa.commandSync("npm run lint-fix");
+        });
+
         it("should pass the OPA tests", function () {
             return execa.commandSync("npm test");
         });
