@@ -1,18 +1,26 @@
 {
     "env": {
         "browser": true,
-        "node": true
+        "node": true,
+        "es6": true,
+        "jquery": true
     },
     "parserOptions": {
-        "ecmaVersion": 2019
+        "ecmaVersion": 2020
     },
     "globals": {
         "sap": true,
         "jQuery": true
     },
     "rules": {
-        "max-lines": ["error", { "max": 500, "skipBlankLines": true, "skipComments": true }],
-        // References & Variables
+        "max-lines": [
+            "error",
+            {
+                "max": 500,
+                "skipBlankLines": true,
+                "skipComments": true
+            }
+        ],
         "prefer-const": "error",
         "no-var": "error",
         "no-unused-vars": "error",
@@ -20,52 +28,54 @@
         "no-plusplus": "error",
         "no-undef": "error",
         "one-var": ["error", "never"],
-        // Objects
         "no-new-object": "error",
         "object-shorthand": ["error", "always"],
         "no-prototype-builtins": "error",
         "prefer-object-spread": "error",
-        // Arrays
         "no-array-constructor": "error",
         "array-callback-return": "error",
-        // Strings
         "prefer-template": "error",
         "template-curly-spacing": "error",
         "no-eval": "error",
-        // Functions
         "no-loop-func": "error",
-        "prefer-rest-params": "error",
         "default-param-last": "error",
         "no-new-func": "error",
-        // Arrow Functions
         "arrow-spacing": "error",
         "no-confusing-arrow": "error",
-        // Properties
         "dot-notation": "error",
-        // Comparison Operators & Equality
         "no-mixed-operators": "error",
         "eqeqeq": "error",
-        // Blocks
         "brace-style": "error",
         "no-else-return": "error",
-        // Styling
         "spaced-comment": "error",
         "keyword-spacing": "error",
         "space-unary-ops": "error",
-        "no-trailing-spaces": ["error", { "ignoreComments": true }],
-        "key-spacing": ["warn", { "beforeColon": false }],
-        "comma-spacing": ["warn", { "before": false, "after": true }],
-        // Commas & Semicolons
+        "no-trailing-spaces": [
+            "error",
+            {
+                "ignoreComments": true
+            }
+        ],
+        "key-spacing": [
+            "warn",
+            {
+                "beforeColon": false
+            }
+        ],
+        "comma-spacing": [
+            "warn",
+            {
+                "before": false,
+                "after": true
+            }
+        ],
         "comma-style": "error",
         "semi": "error",
-        // Type Casting & Coercion
         "radix": "off",
         "no-new-wrappers": "error",
-        // Naming Conventions
         "id-length": "off",
         "new-cap": "warn",
         "camelcase": ["warn"],
-        // Misc
         "consistent-return": "warn",
         "no-warning-comments": "warn",
         "default-case": "warn",
@@ -73,5 +83,7 @@
         "no-debugger": "error",
         "no-shadow": "error",
         "no-irregular-whitespace": "error"
-    }
+    },
+    "plugins": ["@sap/ui5-jsdocs"],
+    "extends": ["plugin:@sap/ui5-jsdocs/recommended", "eslint:recommended"]
 }
