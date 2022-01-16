@@ -1,54 +1,77 @@
 {
-	"env": {
-		"browser": true,
-		"node": true
-	},
-	"parserOptions": {
-		"ecmaVersion": 2019
-	},
-	"globals": {
-		"sap": true,
-		"jQuery": true
-	},
-	"rules": {
-		"block-scoped-var": 1,
-		"keyword-spacing": 2,
-		"space-unary-ops": 2,
-		"camelcase": 1,
-		"consistent-return": 1,
-		"no-warning-comments": 1,
-		"default-case": 1,
-		"no-console": 2,
-		"no-unused-vars": 2,
-		"no-debugger": 2,
-		"no-trailing-spaces": [
-			2,
-			{
-				"ignoreComments": true
-			}
-		],
-		"semi": [
-			1,
-			"always"
-		],
-		"quotes": [
-			1,
-			"double"
-		],
-		"key-spacing": [
-			1,
-			{
-				"beforeColon": false
-			}
-		],
-		"comma-spacing": [
-			1,
-			{
-				"before": false,
-				"after": true
-			}
-		],
-		"no-shadow": 2,
-		"no-irregular-whitespace": 2
-	}
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2019
+    },
+    "globals": {
+        "sap": true,
+        "jQuery": true
+    },
+    "rules": {
+        "max-lines": ["error", { "max": 500, "skipBlankLines": true, "skipComments": true }],
+        // References & Variables
+        "prefer-const": "error",
+        "no-var": "error",
+        "no-unused-vars": "error",
+        "no-multi-assign": "error",
+        "no-plusplus": "error",
+        "no-undef": "error",
+        "one-var": ["error", "never"],
+        // Objects
+        "no-new-object": "error",
+        "object-shorthand": ["error", "always"],
+        "no-prototype-builtins": "error",
+        "prefer-object-spread": "error",
+        // Arrays
+        "no-array-constructor": "error",
+        "array-callback-return": "error",
+        // Strings
+        "prefer-template": "error",
+        "template-curly-spacing": "error",
+        "no-eval": "error",
+        // Functions
+        "no-loop-func": "error",
+        "prefer-rest-params": "error",
+        "default-param-last": "error",
+        "no-new-func": "error",
+        // Arrow Functions
+        "arrow-spacing": "error",
+        "no-confusing-arrow": "error",
+        // Properties
+        "dot-notation": "error",
+        // Comparison Operators & Equality
+        "no-mixed-operators": "error",
+        "eqeqeq": "error",
+        // Blocks
+        "brace-style": "error",
+        "no-else-return": "error",
+        // Styling
+        "spaced-comment": "error",
+        "keyword-spacing": "error",
+        "space-unary-ops": "error",
+        "no-trailing-spaces": ["error", { "ignoreComments": true }],
+        "key-spacing": ["warn", { "beforeColon": false }],
+        "comma-spacing": ["warn", { "before": false, "after": true }],
+        // Commas & Semicolons
+        "comma-style": "error",
+        "semi": "error",
+        // Type Casting & Coercion
+        "radix": "off",
+        "no-new-wrappers": "error",
+        // Naming Conventions
+        "id-length": "off",
+        "new-cap": "warn",
+        "camelcase": ["warn"],
+        // Misc
+        "consistent-return": "warn",
+        "no-warning-comments": "warn",
+        "default-case": "warn",
+        "no-console": "error",
+        "no-debugger": "error",
+        "no-shadow": "error",
+        "no-irregular-whitespace": "error"
+    }
 }
