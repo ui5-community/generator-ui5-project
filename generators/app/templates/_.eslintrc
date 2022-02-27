@@ -13,55 +13,10 @@
         "jQuery": true
     },
     "rules": {
-        "max-lines": [
-            "error",
-            {
-                "max": 500,
-                "skipBlankLines": true,
-                "skipComments": true
-            }
-        ],
-        "prefer-const": "error",
-        "no-var": "error",
-        "no-unused-vars": "error",
-        "no-multi-assign": "error",
-        "no-plusplus": "error",
-        "no-undef": "error",
-        "one-var": ["error", "never"],
-        "no-new-object": "error",
-        "object-shorthand": ["error", "always"],
-        "no-prototype-builtins": "error",
-        "prefer-object-spread": "error",
-        "no-array-constructor": "error",
         "array-callback-return": "error",
-        "prefer-template": "error",
-        "template-curly-spacing": "error",
-        "no-eval": "error",
-        "no-loop-func": "error",
-        "default-param-last": "error",
-        "no-new-func": "error",
         "arrow-spacing": "error",
-        "no-confusing-arrow": "error",
-        "dot-notation": "error",
-        "no-mixed-operators": "error",
-        "eqeqeq": "error",
         "brace-style": "error",
-        "no-else-return": "error",
-        "spaced-comment": "error",
-        "keyword-spacing": "error",
-        "space-unary-ops": "error",
-        "no-trailing-spaces": [
-            "error",
-            {
-                "ignoreComments": true
-            }
-        ],
-        "key-spacing": [
-            "warn",
-            {
-                "beforeColon": false
-            }
-        ],
+        "camelcase": ["warn"],
         "comma-spacing": [
             "warn",
             {
@@ -70,19 +25,61 @@
             }
         ],
         "comma-style": "error",
-        "semi": "error",
-        "radix": "off",
-        "no-new-wrappers": "error",
-        "id-length": "off",
-        "new-cap": "warn",
-        "camelcase": ["warn"],
         "consistent-return": "warn",
-        "no-warning-comments": "warn",
         "default-case": "warn",
+        "default-param-last": "error",
+        "eqeqeq": "error",
+        "id-length": "off",
+        "key-spacing": [
+            "warn",
+            {
+                "beforeColon": false
+            }
+        ],
+        "keyword-spacing": "error",
+        "max-lines": [
+            "warn",
+            {
+                "max": 500,
+                "skipBlankLines": true,
+                "skipComments": true
+            }
+        ],
+        "new-cap": "warn",
+        "no-array-constructor": "error",
+        "no-confusing-arrow": "error",
         "no-console": "error",
         "no-debugger": "error",
+        "no-eval": "error",
+        "no-else-return": "error",
+        "no-loop-func": "error",
+        "no-irregular-whitespace": "error",
+        "no-mixed-operators": "error",
+        "no-multi-assign": "error",
+        "no-new-func": "error",
+        "no-new-object": "error",
+        "no-new-wrappers": "error",
+        "no-prototype-builtins": "error",
         "no-shadow": "error",
-        "no-irregular-whitespace": "error"
+        "no-trailing-spaces": [
+            "error",
+            {
+                "ignoreComments": true
+            }
+        ],
+        "no-undef": "error",
+        "no-unused-vars": "error",
+        "no-var": "error",
+        "no-warning-comments": "warn",
+        "one-var": ["error", "never"],
+        "object-shorthand": ["error", "always"],
+        "prefer-const": "error",
+        "prefer-object-spread": "error",
+        "prefer-template": "error",
+        "radix": "off",
+        "spaced-comment": "error",
+        "space-unary-ops": "error",
+        "template-curly-spacing": "error"
     },
     "plugins": ["@sap/ui5-jsdocs"],
     "extends": ["plugin:@sap/ui5-jsdocs/recommended", "eslint:recommended"]
