@@ -72,7 +72,6 @@
         "no-var": "error",
         "no-warning-comments": "warn",
         "one-var": ["error", "never"],
-        "object-shorthand": ["error", "always"],
         "prefer-const": "error",
         "prefer-object-spread": "error",
         "prefer-template": "error",
