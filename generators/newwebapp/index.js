@@ -176,6 +176,9 @@ module.exports = class extends Generator {
                     settings: {
                         viewName: this.options.oneTimeConfig.viewname
                     }
+                },
+                appOptions: {
+                    loadReuseLibs: false
                 }
             };
 
