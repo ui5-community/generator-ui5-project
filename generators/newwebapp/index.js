@@ -178,7 +178,7 @@ module.exports = class extends Generator {
                     }
                 },
                 appOptions: {
-                    loadReuseLibs: false
+                    loadReuseLibs: this.options.oneTimeConfig.platform === "SAP Launchpad service"
                 }
             };
 
