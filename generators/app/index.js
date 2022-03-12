@@ -122,7 +122,8 @@ module.exports = class extends Generator {
                     noEmit: true,
                     checkJs: true,
                     allowJs: true,
-                    types: ["@sapui5/ts-types"]
+                    types: ["@sapui5/ts-types"],
+                    lib: ["es2015"]
                 }
             };
             let eslintrc = {
@@ -159,7 +160,8 @@ module.exports = class extends Generator {
                 clearCoverage: "shx rm -rf coverage",
                 karma: "run-s clearCoverage karma-ci",
                 lint: "eslint ./**/webapp/**/*.js && prettier --check ./**/webapp/**/*.{js,xml}",
-                "lint-fix": "eslint ./**/webapp/**/*.js --fix && prettier --write ./**/webapp/**/*.{js,xml} --no-error-on-unmatched-pattern"
+                "lint-fix":
+                    "eslint ./**/webapp/**/*.js --fix && prettier --write ./**/webapp/**/*.{js,xml} --no-error-on-unmatched-pattern"
             },
             devDependencies: {
                 shx: "^0.3.3",
