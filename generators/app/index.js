@@ -122,7 +122,8 @@ module.exports = class extends Generator {
                     noEmit: true,
                     checkJs: true,
                     allowJs: true,
-                    types: ["@sapui5/ts-types"]
+                    types: ["@sapui5/ts-types"],
+                    lib: ["es2015"]
                 }
             };
             let eslintrc = {
