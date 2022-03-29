@@ -73,7 +73,7 @@ module.exports = class extends Generator {
             {
                 type: "input",
                 name: "tilename",
-                message: "What name should be displayed on the Fiori Launchpad tile?",
+                message: "What name should be displayed on the Fiori Launchpad tilee?",
                 default: "Fiori App",
                 when: this.config.get("platform") === "SAP Launchpad service"
             }
@@ -154,6 +154,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" ||
             this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)";
         const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
+        const platformIsLaunchpad = this.options.oneTimeConfig.platform === "SAP Launchpad service"
         const netweaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
         this.sourceRoot(path.join(__dirname, "templates"));
@@ -178,7 +179,7 @@ module.exports = class extends Generator {
                     }
                 },
                 appOptions: {
-                    loadReuseLibs: this.options.oneTimeConfig.platform === "SAP Launchpad service"
+                    loadReuseLibs: platformIsLaunchpad
                 }
             };
 
@@ -290,7 +291,7 @@ module.exports = class extends Generator {
             // special handling of files specific to deployment scenarios
             // > flpSandbox.html is created by @sap-ux/fiori-freestyle-writer in test/
             if (
-                this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
+                platformIsLaunchpad ||
                 this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
             ) {
                 const xsAppSrc = this.templatePath("uimodule", "webapp", "xs-app.json");
@@ -312,7 +313,7 @@ module.exports = class extends Generator {
                 const isUnneededXsApp =
                     sTarget.includes("xs-app") &&
                     !(
-                        this.options.oneTimeConfig.platform === "SAP Launchpad service" ||
+                        platformIsLaunchpad ||
                         this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
                     );
 
@@ -340,9 +341,9 @@ module.exports = class extends Generator {
 
         if (
             this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" ||
-            this.options.oneTimeConfig.platform === "SAP Launchpad service"
+            platformIsLaunchpad
         ) {
-            if (this.options.oneTimeConfig.platform === "SAP Launchpad service") {
+            if (platformIsLaunchpad) {
                 this.log("configuring Launchpad integration...");
                 await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
                     ["sap.cloud"]: {
@@ -390,7 +391,7 @@ module.exports = class extends Generator {
 
         if (
             this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" ||
-            this.options.oneTimeConfig.platform === "SAP Launchpad service"
+            platformIsLaunchpad
         ) {
             this.log("configuring deployment options...");
             await fileaccess.writeYAML.call(this, "/mta.yaml", (mta) => {
