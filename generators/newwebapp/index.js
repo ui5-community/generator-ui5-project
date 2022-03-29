@@ -73,7 +73,7 @@ module.exports = class extends Generator {
             {
                 type: "input",
                 name: "tilename",
-                message: "What name should be displayed on the Fiori Launchpad tilee?",
+                message: "What name should be displayed on the Fiori Launchpad tile?",
                 default: "Fiori App",
                 when: this.config.get("platform") === "SAP Launchpad service"
             }
