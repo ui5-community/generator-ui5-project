@@ -155,7 +155,8 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)";
         const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
         const platformIsLaunchpad = this.options.oneTimeConfig.platform === "SAP Launchpad service"
-        const netweaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
+        const platformIsHTML5AppRepo = this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+        const platformIsNetWeaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
         this.sourceRoot(path.join(__dirname, "templates"));
 
@@ -292,7 +293,7 @@ module.exports = class extends Generator {
             // > flpSandbox.html is created by @sap-ux/fiori-freestyle-writer in test/
             if (
                 platformIsLaunchpad ||
-                this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+                platformIsHTML5AppRepo
             ) {
                 const xsAppSrc = this.templatePath("uimodule", "webapp", "xs-app.json");
                 const xsAppDest = this.destinationPath(sModuleName, "webapp", "xs-app.json");
@@ -309,12 +310,12 @@ module.exports = class extends Generator {
                 const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
 
                 const isUnneededFlpSandbox =
-                    sTarget.includes("flpSandbox") && this.options.oneTimeConfig.platform !== "SAP Launchpad service";
+                    sTarget.includes("flpSandbox") && !platformIsLaunchpad;
                 const isUnneededXsApp =
                     sTarget.includes("xs-app") &&
                     !(
                         platformIsLaunchpad ||
-                        this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
+                        platformIsHTML5AppRepo
                     );
 
                 if (isUnneededXsApp || isUnneededFlpSandbox) {
@@ -325,7 +326,7 @@ module.exports = class extends Generator {
             });
         }
 
-        if (this.options.oneTimeConfig.platform.includes("Application Router")) {
+        if (platformIsAppRouter) {
             this.log("configuring app router settings...");
             await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
                 routes: [
@@ -340,7 +341,7 @@ module.exports = class extends Generator {
         }
 
         if (
-            this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" ||
+            platformIsHTML5AppRepo ||
             platformIsLaunchpad
         ) {
             if (platformIsLaunchpad) {
@@ -379,7 +380,7 @@ module.exports = class extends Generator {
             }
             if (platformIsAppRouter) {
                 buildCommand += ` --dest approuter/${sModuleName}/webapp`;
-            } else if (!netweaver) {
+            } else if (!platformIsNetWeaver) {
                 buildCommand += ` --dest ${sModuleName}/dist`;
                 buildCommand += " --include-task=generateManifestBundle";
             } else {
@@ -390,7 +391,7 @@ module.exports = class extends Generator {
         });
 
         if (
-            this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP" ||
+            platformIsHTML5AppRepo ||
             platformIsLaunchpad
         ) {
             this.log("configuring deployment options...");
