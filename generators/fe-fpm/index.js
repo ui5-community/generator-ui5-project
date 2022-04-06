@@ -3,6 +3,7 @@ const ui5Writer = require("@sap-ux/ui5-application-writer");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 
 module.exports = class extends Generator {
+    static displayName = "Create a new Fiori element flexible program model project";
 
     async prompting() {
         this.answers =  await this.prompt([
