@@ -47,11 +47,11 @@ module.exports = class extends Generator {
             }, {
                 type: 'input',
                 name: 'url',
-                message: 'Service url',
-                default: 'https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN',
+                message: 'What is the url of the main service?',
+                default: 'https://iccsrm.sap.com:44300/sap/opu/odata4/iwbep/v4_sample/default/iwbep/v4_gw_sample_basic/0001',
                 validate: (s) => !!s
             }]);
-        
+
         const url = new URL(this.answers.url);
         this.answers.host = url.origin;
         this.answers.path = url.pathname;
@@ -64,7 +64,7 @@ module.exports = class extends Generator {
                 this.answers.metadata = await service.metadata();
             } catch (error) {
                 if (service.defaults?.auth?.username) {
-                    generator.log.error(error.cause.statusText);
+                    this.log.error(error.cause.statusText);
                 }
                 if (error.cause.status === 401) {
                     const { username, password } = await this.prompt([
@@ -90,11 +90,23 @@ module.exports = class extends Generator {
                 }
             }
         }
-    }
 
+        this.answers.mainEntity = (await this.prompt({
+            type: "input",
+            name: "mainEntity",
+            message: "What is the entity for the main page?",
+            validate: (s) => {
+                if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
+                    return true;
+                }
+                return "Please use alpha numeric characters only for the project name.";
+            },
+            default: "Product"
+        })).mainEntity;
+    }
     async writing() {
         this.destinationRoot(this.answers.projectname);
-        ui5Writer.generate(this.destinationRoot(), {
+        await ui5Writer.generate(this.destinationRoot(), {
             app: {
                 id: this.answers.projectname
             },
@@ -102,20 +114,20 @@ module.exports = class extends Generator {
                 name: `${this.answers.namespaceUI5}.${this.answers.projectname}`
             }
         }, this.fs);
-        fpmWriter.enableFPM(this.destinationRoot(), {
-            replaceAppComponent: true
-        }, this.fs);
-        serviceWriter.generate(this.destinationRoot(), {
+        await serviceWriter.generate(this.destinationRoot(), {
             url: this.answers.host,
             path: this.answers.path,
             version: serviceWriter.OdataVersion.v4,
             metadata: this.answers.metadata
         }, this.fs);
+        fpmWriter.enableFPM(this.destinationRoot(), {
+            replaceAppComponent: true
+        }, this.fs);
         fpmWriter.generateCustomPage(
             this.destinationRoot(),
             {
                 name: this.answers.viewname,
-                entity: 'FakeEntity'
+                entity: this.answers.mainEntity
             },
             this.fs
         );
