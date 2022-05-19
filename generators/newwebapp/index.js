@@ -227,6 +227,9 @@ module.exports = class extends Generator {
                             "\u26A0 \uFE0F patched @sap-ux's"
                         )} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`
                     );
+                    this.log(
+                        `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+                    );    
                 }
 
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
@@ -243,9 +246,6 @@ module.exports = class extends Generator {
                     }
                 });
 
-                this.log(
-                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
-                );
                 dirTree(this.destinationPath(sModuleName), null, (item) => {
                     const relativeFilePath = item.path.replace(
                         `${this.destinationPath(sModuleName)}${path.sep}`,
