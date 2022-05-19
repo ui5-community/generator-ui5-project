@@ -1,37 +1,28 @@
+const path = require("path");
 const Generator = require("yeoman-generator");
-const ui5Writer = require("@sap-ux/ui5-application-writer");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const serviceWriter = require("@sap-ux/odata-service-writer");
 const axios = require("@sap-ux/axios-extension");
 
 module.exports = class extends Generator {
-    static displayName = "Create a new Fiori element flexible program model project";
+    static displayName = "Enables the Fiori elements flexible program model";
 
     async prompting() {
+        const modules = this.config.get("uimodules") || [];
         this.answers = await this.prompt([
             {
-                type: "input",
-                name: "projectname",
-                message: "How do you want to name this project?",
-                validate: (s) => {
-                    if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                        return true;
-                    }
-                    return "Please use alpha numeric characters only for the project name.";
-                },
-                default: "myUI5App"
+                type: "list",
+                name: "moduleName",
+                message: "For which module do you want to enable FPM?",
+                choices: modules,
+                when: !!modules && modules.length > 1
             },
             {
-                type: "input",
-                name: "namespaceUI5",
-                message: "Which namespace do you want to use?",
-                validate: (s) => {
-                    if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
-                        return true;
-                    }
-                    return "Please use alpha numeric characters and dots only for the namespace.";
-                },
-                default: "com.myorg"
+                type: "confirm",
+                name: "replaceComponent",
+                message: "Do you want to replace your App Component?",
+                default: false,
+                when: !this.options.isSubgeneratorCall
             },
             {
                 type: "input",
@@ -44,7 +35,8 @@ module.exports = class extends Generator {
                     return "Please use alpha numeric characters only for the view name.";
                 },
                 default: 'Main'
-            }, {
+            }, 
+            {
                 type: 'input',
                 name: 'url',
                 message: 'What is the url of the main service?',
@@ -103,33 +95,21 @@ module.exports = class extends Generator {
             },
             default: "Product"
         })).mainEntity;
+
+        this.config.set(this.answers);
     }
-    async writing() {
-        this.destinationRoot(this.answers.projectname);
-        await ui5Writer.generate(this.destinationRoot(), {
-            app: {
-                id: this.answers.projectname
-            },
-            package: {
-                name: `${this.answers.namespaceUI5}.${this.answers.projectname}`
-            }
-        }, this.fs);
-        await serviceWriter.generate(this.destinationRoot(), {
+
+    writing() {
+        fpmWriter.enableFPM(
+            this.destinationPath(this.options.modulename || this.answers.moduleName || ''), {
+                replaceAppComponent: this.options.isSubgeneratorCall || this.answers.replaceAppComponent 
+            }, this.fs
+        );
+        serviceWriter.generate(this.destinationRoot(), {
             url: this.answers.host,
             path: this.answers.path,
             version: serviceWriter.OdataVersion.v4,
             metadata: this.answers.metadata
         }, this.fs);
-        fpmWriter.enableFPM(this.destinationRoot(), {
-            replaceAppComponent: true
-        }, this.fs);
-        fpmWriter.generateCustomPage(
-            this.destinationRoot(),
-            {
-                name: this.answers.viewname,
-                entity: this.answers.mainEntity
-            },
-            this.fs
-        );
     }
 }
