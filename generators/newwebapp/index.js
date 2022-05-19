@@ -4,8 +4,7 @@ const Generator = require("yeoman-generator"),
     path = require("path"),
     glob = require("glob"),
     chalk = require("chalk"),
-    ui5Writer = require("@sap-ux/ui5-application-writer"),
-    fpmWriter = require("@sap-ux/fe-fpm-writer");
+    ui5Writer = require("@sap-ux/ui5-application-writer");
 
 // patches the Generator for the install tasks as new custom install
 // tasks produce ugly errors! (Related issue: https://github.com/yeoman/environment/issues/309)
@@ -193,14 +192,6 @@ module.exports = class extends Generator {
                         package: FreestyleApp.package,
                         appOptions: FreestyleApp.appOptions
                     }, this.fs);
-                    fpmWriter.generateCustomPage(
-                        this.destinationPath(sModuleName),
-                        {
-                            name: this.answers.viewname,
-                            entity: this.answers.mainEntity
-                        },
-                        this.fs
-                    );
                 } else {
                     await generateFreestyleTemplate(this.destinationPath(sModuleName), FreestyleApp, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
@@ -208,9 +199,9 @@ module.exports = class extends Generator {
                     const MainViewController = {
                         js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
                     };
-                    await this.fs.writeFile(
+                    await this.fs.write(
                         MainViewController.js,
-                        (await this.fs.readFile(MainViewController.js))
+                        (await this.fs.read(MainViewController.js))
                             .toString()
                             .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
                     );
@@ -223,9 +214,9 @@ module.exports = class extends Generator {
                     // sap.ushell is only available in sapui5
                     // bootstrap only from there, no matter the used framework choice..
                     const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
-                    await this.fs.writeFile(
+                    await this.fs.write(
                         flpSandbox.html,
-                        (await this.fs.readFile(flpSandbox.html))
+                        (await this.fs.read(flpSandbox.html))
                             .toString()
                             .replace(/src="(..)\/(test-)?resources/g, (match) => {
                                 return match.replace("..", "https://sapui5.hana.ondemand.com");
@@ -279,9 +270,9 @@ module.exports = class extends Generator {
                         _ui5libs = "resources/sap-ui-core.js";
                         break;
                 }
-                await this.fs.writeFile(
+                await this.fs.write(
                     index.html,
-                    (await this.fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
+                    (await this.fs.read(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
                 this.log(
                     `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${

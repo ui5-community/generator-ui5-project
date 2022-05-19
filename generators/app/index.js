@@ -163,6 +163,7 @@ module.exports = class extends Generator {
         this.composeWith(require.resolve("../newwebapp"), oSubGen);
         if (oConfig.enableFPM) {
             this.composeWith(require.resolve("../enablefpm"), oSubGen);
+            this.composeWith(require.resolve("../newfpmpage"), oSubGen);
         }
     }
 
