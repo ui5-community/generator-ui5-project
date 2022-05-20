@@ -9,6 +9,7 @@ module.exports = class extends Generator {
 
     async prompting() {
         const modules = this.config.get("uimodules") || [];
+        
         this.answers = await this.prompt([
             {
                 type: "list",
@@ -28,66 +29,72 @@ module.exports = class extends Generator {
                     return "Please use alpha numeric characters only for the view name.";
                 },
                 default: 'Main'
-            }, 
-            {
+            },
+            
+        ]);
+
+        const manifest = this.fs.readJSON(this.destinationPath(this.answers.moduleName || this.options.modulename, 'webapp', 'manifest.json'));
+        if (!manifest) {
+            this.answers.serviceUrl = (await this.prompt([{
                 type: 'input',
                 name: 'serviceUrl',
                 message: 'What is the url of the main service?',
                 default: 'https://iccsrm.sap.com:44300/sap/opu/odata4/iwbep/v4_sample/default/iwbep/v4_gw_sample_basic/0001',
                 validate: (s) => !!s
-            }]);
-
-        const url = new URL(this.answers.serviceUrl);
-        this.answers.host = url.origin;
-        this.answers.path = url.pathname;
-        const service = axios.createServiceForUrl(this.answers.serviceUrl, {
-            ignoreCertErrors: true
-        });
-
-        while (!this.answers.metadata) {
-            try {
-                this.answers.metadata = await service.metadata();
-            } catch (error) {
-                if (service.defaults?.auth?.username) {
-                    this.log.error(error.cause.statusText);
-                }
-                if (error.cause.status === 401) {
-                    const { username, password } = await this.prompt([
-                        {
-                            type: 'input',
-                            name: 'username',
-                            message: 'Username',
-                            validate: (answer) => !!answer
-                        },
-                        {
-                            type: 'password',
-                            name: 'password',
-                            message: 'Password',
-                            validate: (answer) => !!answer
-                        }
-                    ]);
-                    service.defaults.auth = {
-                        username,
-                        password
-                    };
-                } else {
-                    throw error;
+            }])).serviceUrl;
+        
+            const url = new URL(this.answers.serviceUrl);
+            this.answers.host = url.origin;
+            this.answers.path = url.pathname;
+            const service = axios.createServiceForUrl(this.answers.serviceUrl, {
+                ignoreCertErrors: true
+            });
+    
+            while (!this.answers.metadata) {
+                try {
+                    this.answers.metadata = await service.metadata();
+                } catch (error) {
+                    if (service.defaults?.auth?.username) {
+                        this.log.error(error.cause.statusText);
+                    }
+                    if (error.cause.status === 401) {
+                        const { username, password } = await this.prompt([
+                            {
+                                type: 'input',
+                                name: 'username',
+                                message: 'Username',
+                                validate: (answer) => !!answer
+                            },
+                            {
+                                type: 'password',
+                                name: 'password',
+                                message: 'Password',
+                                validate: (answer) => !!answer
+                            }
+                        ]);
+                        service.defaults.auth = {
+                            username,
+                            password
+                        };
+                    } else {
+                        throw error;
+                    }
                 }
             }
+    
+            this.answers.mainEntity = (await this.prompt({
+                type: "input",
+                name: "mainEntity",
+                message: "What entity should be used for the new page?",
+                validate: (s) => {
+                    if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
+                        return true;
+                    }
+                    return "Please use alpha numeric characters only for the project name.";
+                },
+                default: "Product"
+            })).mainEntity;
         }
-
-        this.answers.mainEntity = (await this.prompt({
-            type: "input",
-            name: "mainEntity",
-            message: "What is the entity for the main page?",
-            validate: (s) => {
-                if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                    return true;
-                }
-                return "Please use alpha numeric characters only for the project name.";
-            },
-            default: "Product"
-        })).mainEntity;
 
         this.config.set(this.answers);
     }
