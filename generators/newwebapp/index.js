@@ -202,7 +202,7 @@ module.exports = class extends Generator {
                     }
                 });
 
-                // fix incorrect route
+                // temp workaround until https://github.com/SAP/open-ux-tools/issues/500 is fixed
                 this.fs.extendJSON(this.destinationPath(sModuleName, "webapp/manifest.json"), { "sap.ui5" : { routing: { routes: [
                     {
                       name: "RouteMainView",
