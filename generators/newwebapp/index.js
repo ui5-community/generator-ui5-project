@@ -192,8 +192,7 @@ module.exports = class extends Generator {
                 [
                     "ui5-local.yaml",
                     "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
-                    "package.json" /* irrelevant */,
-                    ".npmignore" /* irrelevant */
+                    "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {
                         this.fs.delete(this.destinationPath(sModuleName, file));
@@ -271,7 +270,7 @@ module.exports = class extends Generator {
                 // make @sap-ux/fiori-freestyle-writer's MainView.controller
                 // aware of easy-ui5's base controller
                 const MainViewController = {
-                    js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
+                    js: this.destinationPath(sModuleName, `webapp/controller/${this.options.oneTimeConfig.viewname}.controller.js`)
                 };
                 this.fs.write(
                     MainViewController.js,
