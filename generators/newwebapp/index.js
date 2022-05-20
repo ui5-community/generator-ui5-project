@@ -201,17 +201,6 @@ module.exports = class extends Generator {
                     }
                 });
 
-                // temp workaround until https://github.com/SAP/open-ux-tools/issues/500 is fixed
-                this.fs.extendJSON(this.destinationPath(sModuleName, "webapp/manifest.json"), { "sap.ui5" : { routing: { routes: [
-                    {
-                      name: "RouteMainView",
-                      pattern: ":?query:",
-                      target: [
-                        "TargetMainView"
-                      ]
-                    }
-                  ]}}});
-
                 this.log(
                     `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
                 );
