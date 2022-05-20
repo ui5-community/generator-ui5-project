@@ -165,7 +165,7 @@ module.exports = class extends Generator {
             /**
              * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
              */
-            const FreestyleApp = {
+            const freestyleApp = {
                 app: {
                     id: this.options.oneTimeConfig.appId
                 },
@@ -187,7 +187,7 @@ module.exports = class extends Generator {
             };
 
             try {
-                await generateFreestyleTemplate(this.destinationPath(sModuleName), FreestyleApp, this.fs);
+                await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
