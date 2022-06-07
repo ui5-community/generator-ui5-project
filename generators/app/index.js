@@ -126,13 +126,8 @@ module.exports = class extends Generator {
                     lib: ["es2015"]
                 }
             };
-            let eslintrc = {
-                plugins: ["@sap/ui5-jsdocs"],
-                extends: ["plugin:@sap/ui5-jsdocs/recommended", "eslint:recommended"]
-            };
 
             await fileaccess.writeJSON.call(this, "/tsconfig.json", tsconfig);
-            await fileaccess.manipulateJSON.call(this, "/.eslintrc", eslintrc);
         }
 
         const oSubGen = Object.assign({}, oConfig);
@@ -173,7 +168,8 @@ module.exports = class extends Generator {
                 "npm-run-all": "^4.1.5",
                 eslint: "^7.32.0",
                 prettier: "^2.5.1",
-                "@prettier/plugin-xml": "^1.1.0"
+                "@prettier/plugin-xml": "^1.1.0",
+                "@sap/eslint-plugin-ui5-jsdocs": "^2.0.5"
             },
             ui5: {
                 dependencies: ["ui5-middleware-livereload"]
@@ -219,7 +215,6 @@ module.exports = class extends Generator {
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sap/eslint-plugin-ui5-jsdocs"] = "^2.0.5";
             packge.devDependencies["@sapui5/ts-types"] = "^1.96.0"; //keep this line in sync with ui5.yaml version
         }
 
