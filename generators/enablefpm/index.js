@@ -13,7 +13,7 @@ module.exports = class extends Generator {
                 name: "moduleName",
                 message: "For which module do you want to enable FPM?",
                 choices: modules,
-                when: !!modules && modules.length > 1
+                when: modules.length > 1
             },
             {
                 type: "confirm",
