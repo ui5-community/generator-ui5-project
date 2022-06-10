@@ -3,12 +3,13 @@ const Generator = require("yeoman-generator");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const serviceWriter = require("@sap-ux/odata-service-writer");
 const axios = require("@sap-ux/axios-extension");
+const utils = require("../utils");
 
 module.exports = class extends Generator {
     static displayName = "Enables the Fiori elements flexible program model";
 
     async prompting() {
-        const modules = this.config.get("uimodules") || [];
+        const modules = this.config.get("uimodules");
         
         this.answers = await this.prompt([
             {
@@ -16,18 +17,13 @@ module.exports = class extends Generator {
                 name: "moduleName",
                 message: "To which module do you want add a custom FPM page?",
                 choices: modules,
-                when: !!modules && modules.length > 1
+                when: utils.isArrayWithMoreThanOneElement(modules)
             },
             {
                 type: "input",
                 name: "viewName",
                 message: "What is the name of the page view?",
-                validate: (s) => {
-                    if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                        return true;
-                    }
-                    return "Please use alpha numeric characters only for the view name.";
-                },
+                validate: utils.validateAlhpaNumericStartingWithLetter,
                 default: 'Main'
             },
             
@@ -40,7 +36,7 @@ module.exports = class extends Generator {
                 name: 'serviceUrl',
                 message: 'What is the url of the main service?',
                 default: 'https://iccsrm.sap.com:44300/sap/opu/odata4/iwbep/v4_sample/default/iwbep/v4_gw_sample_basic/0001',
-                validate: (s) => !!s
+                validate: utils.validatHttpUrl
             }])).serviceUrl;
         
             const url = new URL(this.answers.serviceUrl);
@@ -63,13 +59,13 @@ module.exports = class extends Generator {
                                 type: 'input',
                                 name: 'username',
                                 message: 'Username',
-                                validate: (answer) => !!answer
+                                validate: Boolean
                             },
                             {
                                 type: 'password',
                                 name: 'password',
                                 message: 'Password',
-                                validate: (answer) => !!answer
+                                validate: Boolean
                             }
                         ]);
                         service.defaults.auth = {
@@ -86,12 +82,7 @@ module.exports = class extends Generator {
                 type: "input",
                 name: "mainEntity",
                 message: "What entity should be used for the new page?",
-                validate: (s) => {
-                    if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                        return true;
-                    }
-                    return "Please use alpha numeric characters only for the project name.";
-                },
+                validate: utils.validateAlhpaNumericStartingWithLetter,
                 default: "Product"
             })).mainEntity;
         }

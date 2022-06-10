@@ -1,6 +1,7 @@
 const path = require("path");
 const Generator = require("yeoman-generator");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
+const utils = require("../utils");
 
 module.exports = class extends Generator {
     static displayName = "Enables the Fiori elements flexible program model";
@@ -13,7 +14,7 @@ module.exports = class extends Generator {
                 name: "moduleName",
                 message: "For which module do you want to enable FPM?",
                 choices: modules,
-                when: modules.length > 1
+                when: utils.isArrayWithMoreThanOneElement(modules)
             },
             {
                 type: "confirm",
