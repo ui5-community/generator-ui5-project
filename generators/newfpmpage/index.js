@@ -2,8 +2,10 @@ const path = require("path");
 const Generator = require("yeoman-generator");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const serviceWriter = require("@sap-ux/odata-service-writer");
+const UI5Config = require("@sap-ux/ui5-config").UI5Config;
 const axios = require("@sap-ux/axios-extension");
 const utils = require("../utils");
+const { join } = require("path");
 
 module.exports = class extends Generator {
     static displayName = "Enables the Fiori elements flexible program model";
@@ -90,10 +92,15 @@ module.exports = class extends Generator {
         this.config.set(this.answers);
     }
 
-    writing() {
+    async writing() {
         const target = this.destinationPath(this.options.modulename || this.answers.moduleName || '');
         if (this.answers.metadata) {
-            serviceWriter.generate(target, {
+            // add fiori-tools-proxy 
+            const ui5Yaml = await UI5Config.newInstance(this.fs.read(join(target, 'ui5.yaml')));
+            ui5Yaml.addFioriToolsProxydMiddleware({ });
+            this.fs.write(join(target, 'ui5.yaml'), ui5Yaml.toString());
+            // add the service to manifest and ui5.yaml
+            await serviceWriter.generate(target, {
                 url: this.answers.host,
                 path: this.answers.path,
                 version: serviceWriter.OdataVersion.v4,
