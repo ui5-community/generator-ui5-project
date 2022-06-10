@@ -1,6 +1,5 @@
 const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
-    fs = require("fs").promises,
     path = require("path"),
     glob = require("glob"),
     chalk = require("chalk");
@@ -166,7 +165,7 @@ module.exports = class extends Generator {
             /**
              * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
              */
-            const FreestyleApp = {
+            const freestyleApp = {
                 app: {
                     id: this.options.oneTimeConfig.appId
                 },
@@ -181,22 +180,22 @@ module.exports = class extends Generator {
                 },
                 appOptions: {
                     loadReuseLibs: platformIsLaunchpad
-                }
+                },
+                ui5:{
+                    
+                 }
             };
 
             try {
-                const _fs = await generateFreestyleTemplate(this.destinationPath(sModuleName), FreestyleApp);
-                await _fs.commit();
-
+                await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
                     "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
-                    "package.json" /* irrelevant */,
-                    ".npmignore" /* irrelevant */
+                    "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {
-                        await fs.unlink(this.destinationPath(sModuleName, file));
+                        this.fs.delete(this.destinationPath(sModuleName, file));
                     } catch (e) {
                         //ignore as this probably means the file doens't exist anyway
                     }
@@ -229,9 +228,9 @@ module.exports = class extends Generator {
                         _ui5libs = "resources/sap-ui-core.js";
                         break;
                 }
-                await fs.writeFile(
+                this.fs.write(
                     index.html,
-                    (await fs.readFile(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
+                    (this.fs.read(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
                 this.log(
                     `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${
@@ -243,9 +242,9 @@ module.exports = class extends Generator {
                 // sap.ushell is only available in sapui5
                 // bootstrap only from there, no matter the used framework choice..
                 const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
-                await fs.writeFile(
+                this.fs.write(
                     flpSandbox.html,
-                    (await fs.readFile(flpSandbox.html))
+                    (this.fs.read(flpSandbox.html))
                         .toString()
                         .replace(/src="(..)\/(test-)?resources/g, (match) => {
                             return match.replace("..", "https://sapui5.hana.ondemand.com");
@@ -260,11 +259,11 @@ module.exports = class extends Generator {
                 // make @sap-ux/fiori-freestyle-writer's MainView.controller
                 // aware of easy-ui5's base controller
                 const MainViewController = {
-                    js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
+                    js: this.destinationPath(sModuleName, `webapp/controller/${this.options.oneTimeConfig.viewname}.controller.js`)
                 };
-                await fs.writeFile(
+                this.fs.write(
                     MainViewController.js,
-                    (await fs.readFile(MainViewController.js))
+                    (this.fs.read(MainViewController.js))
                         .toString()
                         .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
                 );
