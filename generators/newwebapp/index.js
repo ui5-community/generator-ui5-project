@@ -1,6 +1,5 @@
 const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
-    fs = require("fs").promises,
     path = require("path"),
     glob = require("glob"),
     chalk = require("chalk"),
@@ -167,7 +166,7 @@ module.exports = class extends Generator {
             /**
              * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
              */
-            const FreestyleApp = {
+            const freestyleApp = {
                 app: {
                     id: this.options.oneTimeConfig.appId
                 },
@@ -182,7 +181,10 @@ module.exports = class extends Generator {
                 },
                 appOptions: {
                     loadReuseLibs: platformIsLaunchpad
-                }
+                },
+                ui5:{
+                    
+                 }
             };
 
             try {
@@ -193,15 +195,15 @@ module.exports = class extends Generator {
                         appOptions: FreestyleApp.appOptions
                     }, this.fs);
                 } else {
-                    await generateFreestyleTemplate(this.destinationPath(sModuleName), FreestyleApp, this.fs);
+                    await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
                     // aware of easy-ui5's base controller
                     const MainViewController = {
                         js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
                     };
-                    await this.fs.write(
+                    this.fs.write(
                         MainViewController.js,
-                        (await this.fs.read(MainViewController.js))
+                        this.fs.read(MainViewController.js)
                             .toString()
                             .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
                     );
@@ -214,12 +216,12 @@ module.exports = class extends Generator {
                     // sap.ushell is only available in sapui5
                     // bootstrap only from there, no matter the used framework choice..
                     const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
-                    await this.fs.write(
+                    this.fs.write(
                         flpSandbox.html,
-                        (await this.fs.read(flpSandbox.html))
+                        this.fs.read(flpSandbox.html)
                             .toString()
                             .replace(/src="(..)\/(test-)?resources/g, (match) => {
-                                return match.replace("..", "https://sapui5.hana.ondemand.com");
+                                return match.replace("..", "https://ui5.sap.com");
                             })
                     );
                     this.log(
@@ -236,8 +238,7 @@ module.exports = class extends Generator {
                 [
                     "ui5-local.yaml",
                     "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
-                    "package.json" /* irrelevant */,
-                    ".npmignore" /* irrelevant */
+                    "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {
                         this.fs.delete(this.destinationPath(sModuleName, file));
@@ -263,16 +264,16 @@ module.exports = class extends Generator {
                         break;
 
                     case "Content delivery network (SAPUI5)":
-                        _ui5libs = "https://sapui5.hana.ondemand.com/resources/sap-ui-core.js";
+                        _ui5libs = "https://ui5.sap.com/resources/sap-ui-core.js";
                         break;
 
                     default:
                         _ui5libs = "resources/sap-ui-core.js";
                         break;
                 }
-                await this.fs.write(
+                this.fs.write(
                     index.html,
-                    (await this.fs.read(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
+                    (this.fs.read(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
                 this.log(
                     `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${
