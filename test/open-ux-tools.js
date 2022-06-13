@@ -32,7 +32,7 @@ describe("open-ux-tools", function () {
         });
 
         after(() => {
-            context.restore();
+            context && context.restore();
         });
 
         it("files that are not relevant for easy-ui5 are removed", () => {

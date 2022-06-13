@@ -76,20 +76,21 @@ module.exports = class extends Generator {
                 name: "ui5libs",
                 message: "Where should your UI5 libs be served from?",
                 choices: (props) => {
-                    return props.platform !== "SAP Launchpad service"
+                    return props.platform !== "SAP Launchpad service" && !initialAnswers.enableFPM // limit to SAPUI5 for some use cases
                         ? [
                               "Content delivery network (OpenUI5)",
                               "Content delivery network (SAPUI5)",
                               "Local resources (OpenUI5)",
                               "Local resources (SAPUI5)"
                           ]
-                        : ["Content delivery network (SAPUI5)"];
+                        : ["Content delivery network (SAPUI5)", "Local resources (SAPUI5)"];
                 },
                 default: (props) => {
-                    return props.platform !== "SAP Launchpad service"
+                    return props.platform !== "SAP Launchpad service" && !initialAnswers.enableFPM
                         ? "Content delivery network (OpenUI5)"
                         : "Content delivery network (SAPUI5)";
-                }
+                },
+                when: props => props.platform !== "SAP Launchpad service" // user cannot choose if the platform is SAP Launchpad service
             },
             {
                 type: "confirm",
