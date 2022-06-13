@@ -1,10 +1,14 @@
 const assert = require("yeoman-assert");
 const path = require("path");
 const helpers = require("yeoman-test");
+const fs = require("fs");
 
-const config = require('dotenv').config()
-if (config.error) {
-  throw config.error
+
+if (fs.existsSync(path.join(process.cwd(), '.env'))) {
+    const config = require('dotenv').config()
+    if (config.error) {
+      throw config.error
+    }
 }
 
 function generate(prompts) {
