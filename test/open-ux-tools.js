@@ -24,7 +24,7 @@ describe("open-ux-tools", function () {
 
     describe("create a project using the fiori-freestyle-writer", () => {
         let context;
-        before(async () => {
+        before(async function () {
             context = await generate({
                 projectname: "myFioriFreestylApp",
                 viewtype: 'XML'
@@ -69,19 +69,24 @@ describe("open-ux-tools", function () {
 
     describe("create project with the flexible programming model enabled", () => {
         let context;
-        before(function () {
-            context = await generate({
-                projectname: "myFPMApp",
-                enableFPM: true,
-                serviceUrl: process.env.TEST_SERVICE,
-                username: process.env.TEST_USERNAME,
-                password: process.env.TEST_PASSWORD,
-                mainEntity: "Product"
-            });
+        before(async function () {
+            if (process.env.TEST_DEBUG) {
+                context = await generate({
+                    projectname: "myFPMApp",
+                    enableFPM: true,
+                    serviceUrl: process.env.TEST_SERVICE,
+                    username: process.env.TEST_USERNAME,
+                    password: process.env.TEST_PASSWORD,
+                    mainEntity: "Product"
+                });
+            } else {
+                console.log('Skipping debug tests');
+                runTest = false;
+            }
         });
 
         after(() => {
-            context.restore();
+            context && context.restore();
         });
 
         it("dump it for now", () => {
