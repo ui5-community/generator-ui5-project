@@ -2,11 +2,31 @@ const assert = require("yeoman-assert");
 const path = require("path");
 const helpers = require("yeoman-test");
 
-describe("open-ux-tools", () => {
-    describe("create project using fiori-freestyle-writer", () => {
+const config = require('dotenv').config()
+if (config.error) {
+  throw config.error
+}
+
+function generate(prompts) {
+    const context = helpers.run(path.join(__dirname, "../generators/app"));
+    if (process.env.TEST_DEBUG) {
+        context.inDir(path.join(__dirname, 'test-output'));
+    }
+    context.withPrompts({
+        namespaceUI5: "test",
+        ...prompts
+    });
+    return context;
+}
+
+describe("open-ux-tools", function () {
+    this.timeout(5000);
+
+    describe("create a project using the fiori-freestyle-writer", () => {
         let context;
         before(async () => {
-            context = await helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
+            context = await generate({
+                projectname: "myFioriFreestylApp",
                 viewtype: 'XML'
             });
         });
@@ -44,6 +64,28 @@ describe("open-ux-tools", () => {
         it("the flpSandbox.html is in test/ and bootstraps SAPUI5", () => {
             assert.file("uimodule/webapp/test/flpSandbox.html");
             assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://ui5.sap.com");
+        });
+    });
+
+    describe("create project with the flexible programming model enabled", () => {
+        let context;
+        before(function () {
+            context = await generate({
+                projectname: "myFPMApp",
+                enableFPM: true,
+                serviceUrl: process.env.TEST_SERVICE,
+                username: process.env.TEST_USERNAME,
+                password: process.env.TEST_PASSWORD,
+                mainEntity: "Product"
+            });
+        });
+
+        after(() => {
+            context.restore();
+        });
+
+        it("dump it for now", () => {
+            
         });
     });
 });

@@ -164,7 +164,7 @@ module.exports = class extends Generator {
         // -> utilize @sap-ux/fiori-freestyle-writer scaffolding package
         if (this.options.viewtype === "XML") {
             /**
-             * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
+             * @type FreestyleApp
              */
             const freestyleApp = {
                 app: {
@@ -190,9 +190,9 @@ module.exports = class extends Generator {
             try {
                 if (this.options.enableFPM) {
                     await ui5Writer.generate(this.destinationPath(sModuleName), {
-                        app: FreestyleApp.app,
-                        package: FreestyleApp.package,
-                        appOptions: FreestyleApp.appOptions
+                        app: freestyleApp.app,
+                        package: freestyleApp.package,
+                        appOptions: freestyleApp.appOptions
                     }, this.fs);
                 } else {
                     await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
