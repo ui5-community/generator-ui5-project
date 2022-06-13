@@ -83,14 +83,13 @@ module.exports = class extends Generator {
                               "Local resources (OpenUI5)",
                               "Local resources (SAPUI5)"
                           ]
-                        : ["Content delivery network (SAPUI5)", "Local resources (SAPUI5)"];
+                        : ["Content delivery network (SAPUI5)"];
                 },
                 default: (props) => {
                     return props.platform !== "SAP Launchpad service" && !initialAnswers.enableFPM
                         ? "Content delivery network (OpenUI5)"
                         : "Content delivery network (SAPUI5)";
-                },
-                when: props => props.platform !== "SAP Launchpad service" // user cannot choose if the platform is SAP Launchpad service
+                }
             },
             {
                 type: "confirm",
