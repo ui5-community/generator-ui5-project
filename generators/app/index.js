@@ -45,6 +45,12 @@ module.exports = class extends Generator {
                 name: "enableFPM",
                 message: "Do you want to enable the SAP Fiori elements flexible programming model?",
                 default: false
+            },
+            {
+                type: "confirm",
+                name: "enableFioriTools",
+                message: "Do you want the module to be visible in the SAP Fiori tools?",
+                default: true
             }
         ]);
 

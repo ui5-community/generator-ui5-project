@@ -69,6 +69,10 @@ describe("open-ux-tools", function () {
             assert.file("uimodule/webapp/test/flpSandbox.html");
             assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://ui5.sap.com");
         });
+
+        it("check that Fiori tools are enabled", () => {
+            assert.fileContent('package.json', 'sapux');
+        });
     });
 
     describe("create project with the flexible programming model enabled", () => {

@@ -442,5 +442,9 @@ module.exports = class extends Generator {
         const modules = this.config.get("uimodules") || [];
         modules.push(this.options.oneTimeConfig.modulename);
         this.config.set("uimodules", modules);
+
+        if (this.config.get("enableFioriTools")) {
+            this.fs.extendJSON('package.json', { sapux: modules });
+        }
     }
 };
