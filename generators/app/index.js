@@ -174,7 +174,7 @@ module.exports = class extends Generator {
             name: oConfig.projectname,
             version: "0.0.1",
             scripts: {
-                start: "ui5 serve --config=uimodule/ui5.yaml  --open index.html",
+                start: `ui5 serve --config=uimodule/ui5.yaml  --open index.html${oConfig.enableFPM ? "?sap-ui-xx-viewCache=false": ""}`,
                 "build:ui": "run-s ",
                 test: "run-s lint karma",
                 "karma-ci": "karma start karma-ci.conf.js",
