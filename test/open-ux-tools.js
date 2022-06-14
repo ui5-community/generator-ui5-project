@@ -2,18 +2,11 @@ const assert = require("yeoman-assert");
 const path = require("path");
 const helpers = require("yeoman-test");
 const fs = require("fs");
-
-
-if (fs.existsSync(path.join(process.cwd(), '.env'))) {
-    const config = require('dotenv').config()
-    if (config.error) {
-      throw config.error
-    }
-}
+const nock = require("nock");
 
 function generate(prompts) {
     const context = helpers.run(path.join(__dirname, "../generators/app"));
-    if (process.env.TEST_DEBUG) {
+    if (process.env.DEBUG) {
         context.inDir(path.join(__dirname, 'test-output'));
     }
     context.withPrompts({
@@ -72,33 +65,47 @@ describe("open-ux-tools", function () {
 
         it("check that Fiori tools are enabled", () => {
             assert.fileContent('package.json', 'sapux');
+            assert.fileContent('package.json', '@sap/ux-specification');
         });
     });
 
     describe("create project with the flexible programming model enabled", () => {
+        const host = "http://localhost:4004";
+        const service = "/travel";
         let context;
         before(async function () {
-            if (process.env.TEST_DEBUG) {
-                context = await generate({
-                    projectname: "myFPMApp",
-                    enableFPM: true,
-                    serviceUrl: process.env.TEST_SERVICE,
-                    username: process.env.TEST_USERNAME,
-                    password: process.env.TEST_PASSWORD,
-                    mainEntity: "Product"
-                });
-            } else {
-                console.log('Skipping debug tests');
-                runTest = false;
-            }
+            nock.disableNetConnect();
+
+            nock(host)
+                .get(`${service}/$metadata`)
+                .replyWithFile(200, path.join(__dirname, 'mock/metadata.xml'))
+                .persist(true);
+
+            context = await generate({
+                projectname: "fpmTravelApp",
+                enableFPM: true,
+                serviceUrl: `${host}${service}`,
+                mainEntity: "BookedFlights"
+            });
+
         });
 
         after(() => {
             context && context.restore();
+            nock.cleanAll();
+            nock.enableNetConnect();
         });
 
-        it("dump it for now", () => {
-            
+        it("custom page is generated", () => {
+            assert.file([
+                "uimodule/webapp/ext/main/Main.view.xml",
+                "uimodule/webapp/ext/main/Main.controller.js"
+            ]);
+        });
+
+        it("check that fe components are used", () => {
+            assert.fileContent("uimodule/webapp/manifest.json", "sap.fe.core.fpm");
+            assert.fileContent("uimodule/webapp/Component.js", "sap/fe/core/AppComponent");
         });
     });
 });

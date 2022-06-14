@@ -183,17 +183,13 @@ module.exports = class extends Generator {
                     loadReuseLibs: platformIsLaunchpad
                 },
                 ui5:{
-                    
-                 }
+                    minUI5Version: "1.102.0"
+                }
             };
 
             try {
                 if (this.options.enableFPM) {
-                    await ui5Writer.generate(this.destinationPath(sModuleName), {
-                        app: freestyleApp.app,
-                        package: freestyleApp.package,
-                        appOptions: freestyleApp.appOptions
-                    }, this.fs);
+                    await ui5Writer.generate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                 } else {
                     await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
@@ -444,7 +440,12 @@ module.exports = class extends Generator {
         this.config.set("uimodules", modules);
 
         if (this.config.get("enableFioriTools")) {
-            this.fs.extendJSON('package.json', { sapux: modules });
+            this.fs.extendJSON('package.json', { 
+                sapux: modules, 
+                devDependencies: {
+                    "@sap/ux-specification": "latest"
+                }
+            });
         }
     }
 };
