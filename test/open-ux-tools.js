@@ -96,10 +96,11 @@ describe("open-ux-tools", function () {
             nock.enableNetConnect();
         });
 
-        it("custom page is generated", () => {
+        it("custom page and local annotation file is generated", () => {
             assert.file([
                 "uimodule/webapp/ext/main/Main.view.xml",
-                "uimodule/webapp/ext/main/Main.controller.js"
+                "uimodule/webapp/ext/main/Main.controller.js",
+                "uimodule/webapp/annotations/annotation.xml"
             ]);
         });
 

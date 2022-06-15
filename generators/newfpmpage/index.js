@@ -106,7 +106,8 @@ module.exports = class extends Generator {
                 client: this.answers.client,
                 path: this.answers.path,
                 version: serviceWriter.OdataVersion.v4,
-                metadata: this.answers.metadata
+                metadata: this.answers.metadata,
+                localAnnotationsName: "annotation"
             }, this.fs);
         }
         fpmWriter.generateCustomPage(target, {
