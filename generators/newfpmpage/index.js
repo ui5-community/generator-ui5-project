@@ -22,23 +22,36 @@ module.exports = class extends Generator {
                 when: utils.isArrayWithMoreThanOneElement(modules)
             },
             {
+                type: "list",
+                name: "pageType",
+                message: "What type of page should be use for the main page?",
+                choices: [
+                    { value: "custom", name: "Custom Page",  }, 
+                    { value: "list", name: "List Report" }, 
+                    { value: "object", name: "Object Page" }],
+                default: "custom"
+            }
+        ]);
+
+        if (this.answers.pageType === 'custom') {
+            this.answers.viewName = (await this.prompt({
                 type: "input",
                 name: "viewName",
                 message: "What is the name of the page view?",
                 validate: utils.validateAlhpaNumericStartingWithLetter,
                 default: 'Main'
-            },
-            
-        ]);
+            })).viewName;
+        }
 
-        const manifest = this.fs.readJSON(this.destinationPath(this.answers.moduleName || this.options.modulename, 'webapp', 'manifest.json'));
-        if (!manifest) {
-            this.answers.serviceUrl = (await this.prompt([{
+        // only ask for service etc. if called as part of the fpm enablement on app
+        const manifest = this.fs.readJSON(this.destinationPath(this.answers.moduleName || this.options.modulename || 'uimodule', 'webapp', 'manifest.json')); 
+        if (this.config.get("enableFPM") && !manifest) {
+            this.answers.serviceUrl = (await this.prompt({
                 type: 'input',
                 name: 'serviceUrl',
                 message: 'What is the url of the main service?',
                 validate: utils.validatHttpUrl
-            }])).serviceUrl;
+            })).serviceUrl;
         
             const url = new URL(this.answers.serviceUrl);
             this.answers.host = url.origin;
@@ -81,20 +94,38 @@ module.exports = class extends Generator {
                     }
                 }
             }
-    
-            this.answers.mainEntity = (await this.prompt({
-                type: "input",
-                name: "mainEntity",
-                message: "What entity should be used for the new page?",
-                validate: utils.validateAlhpaNumericStartingWithLetter
-            })).mainEntity;
+        } else {   
+            const targets = manifest[ "sap.ui5"]?.["routing"]?.["targets"];
+            if (targets) {
+                this.answers.navigation = await this.prompt({
+                    type: "list",
+                    name: "sourcePage",
+                    message: "From what page do you want to navigate?",
+                    choices: Object.keys(targets)
+                });
+            } else {
+                this.answers.navigation = {};
+            }
+            this.answers.navigation.navKey = this.answers.pageType !== 'list';
+        }
+        
+        this.answers.mainEntity = (await this.prompt({
+            type: "input",
+            name: "mainEntity",
+            message: "What entity should be used for the new page?",
+            validate: utils.validateAlhpaNumericStartingWithLetter
+        })).mainEntity;
+
+        // assign entity to navigation object if it was created
+        if (this.answers.navigation) {
+            this.answers.navigation.navEntity = this.answers.mainEntity;
         }
 
         this.config.set(this.answers);
     }
 
     async writing() {
-        const target = this.destinationPath(this.options.modulename || this.answers.moduleName || '');
+        const target = this.destinationPath(this.options.modulename || this.answers.moduleName || 'uimodule');
         if (this.answers.metadata) {
             // add fiori-tools-proxy 
             const ui5Yaml = await UI5Config.newInstance(this.fs.read(join(target, 'ui5.yaml')));
@@ -110,9 +141,21 @@ module.exports = class extends Generator {
                 localAnnotationsName: "annotation"
             }, this.fs);
         }
-        fpmWriter.generateCustomPage(target, {
-            name: this.answers.viewName,
-            entity: this.answers.mainEntity
-        }, this.fs);
+        switch (this.answers.pageType) {
+            case 'object':
+                fpmWriter.generateObjectPage(target, { entity: this.answers.mainEntity, navigation: this.answers.navigation }, this.fs);
+                break;
+            case 'list': 
+                fpmWriter.generateListReport(target, { entity: this.answers.mainEntity }, this.fs);
+                break;
+            default:
+                fpmWriter.generateCustomPage(target, {
+                    name: this.answers.viewName,
+                    entity: this.answers.mainEntity,
+                    navigation: this.answers.navigation
+                }, this.fs);
+                break;
+        }
+
     }
 }
