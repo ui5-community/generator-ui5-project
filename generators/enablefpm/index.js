@@ -4,7 +4,7 @@ const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const utils = require("../utils");
 
 module.exports = class extends Generator {
-    static displayName = "Enables the Fiori elements flexible program model";
+    static displayName = "Enable the Fiori elements flexible program model";
 
     async prompting() {
         const modules = this.config.get("uimodules") || [];
