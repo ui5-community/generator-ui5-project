@@ -2,6 +2,7 @@
   "name": "generator-ui5-project",
   "version": "0.2.0",
   "description": "(Sub-)generator for a UI5 project",
+  "main": "generators/app/index.js",
   "scripts": {
     "test": "mocha",
     "workaround": "find . -name '.DS_Store' -delete",
