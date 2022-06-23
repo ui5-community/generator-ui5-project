@@ -8,7 +8,7 @@ const utils = require("../utils");
 const { join } = require("path");
 
 module.exports = class extends Generator {
-    static displayName = "Enables the Fiori elements flexible program model";
+    static displayName = "Add a page to a Fiori elements FPM application";
 
     async prompting() {
         const modules = this.config.get("uimodules");
