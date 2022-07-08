@@ -1,4 +1,5 @@
 "use strict";
+
 const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
     path = require("path"),
@@ -9,12 +10,12 @@ const Generator = require("yeoman-generator"),
 module.exports = class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
 
-    prompting() {
+    async prompting() {
         if (!this.options.embedded) {
             this.log(yosay(`Welcome to the ${chalk.red("easy-ui5-project")} generator!`));
         }
 
-        return this.prompt([
+        const initialAnswers = await this.prompt([
             {
                 type: "input",
                 name: "projectname",
@@ -40,6 +41,22 @@ module.exports = class extends Generator {
                 default: "com.myorg"
             },
             {
+                type: "confirm",
+                name: "enableFPM",
+                message: "Do you want to enable the SAP Fiori elements flexible programming model?",
+                default: false
+            }
+        ]);
+
+        const answers = await this.prompt([
+            {
+                type: "confirm",
+                name: "enableFioriTools",
+                message: "Do you want the module to be visible in the SAP Fiori tools?",
+                default: true,
+                when: initialAnswers.enableFPM
+            },
+            {
                 type: "list",
                 name: "platform",
                 message: "On which platform would you like to host the application?",
@@ -58,14 +75,15 @@ module.exports = class extends Generator {
                 name: "viewtype",
                 message: "Which view type do you want to use?",
                 choices: ["XML", "JSON", "JS", "HTML"],
-                default: "XML"
+                default: "XML",
+                when: !initialAnswers.enableFPM
             },
             {
                 type: "list",
                 name: "ui5libs",
                 message: "Where should your UI5 libs be served from?",
                 choices: (props) => {
-                    return props.platform !== "SAP Launchpad service"
+                    return props.platform !== "SAP Launchpad service" && !initialAnswers.enableFPM // limit to SAPUI5 for some use cases
                         ? [
                               "Content delivery network (OpenUI5)",
                               "Content delivery network (SAPUI5)",
@@ -75,7 +93,7 @@ module.exports = class extends Generator {
                         : ["Content delivery network (SAPUI5)"];
                 },
                 default: (props) => {
-                    return props.platform !== "SAP Launchpad service"
+                    return props.platform !== "SAP Launchpad service" && !initialAnswers.enableFPM
                         ? "Content delivery network (OpenUI5)"
                         : "Content delivery network (SAPUI5)";
                 }
@@ -92,13 +110,18 @@ module.exports = class extends Generator {
                 message: "Would you like to add JavaScript code assist libraries to the project?",
                 default: true
             }
-        ]).then((answers) => {
-            if (answers.newdir) {
-                this.destinationRoot(`${answers.namespaceUI5}.${answers.projectname}`);
-            }
-            this.config.set(answers);
-            this.config.set("namespaceURI", answers.namespaceUI5.split(".").join("/"));
-        });
+        ]);
+        
+        if (answers.newdir) {
+            this.destinationRoot(`${initialAnswers.namespaceUI5}.${initialAnswers.projectname}`);
+        }
+        if (initialAnswers.enableFPM) {
+            this.config.set('viewtype', 'XML');
+        }
+        
+        this.config.set(initialAnswers);
+        this.config.set(answers);
+        this.config.set("namespaceURI", initialAnswers.namespaceUI5.split(".").join("/"));
     }
 
     async writing() {
@@ -140,6 +163,10 @@ module.exports = class extends Generator {
         }
 
         this.composeWith(require.resolve("../newwebapp"), oSubGen);
+        if (oConfig.enableFPM) {
+            this.composeWith(require.resolve("../enablefpm"), oSubGen);
+            this.composeWith(require.resolve("../newfpmpage"), oSubGen);
+        }
     }
 
     async addPackage() {
@@ -148,7 +175,7 @@ module.exports = class extends Generator {
             name: oConfig.projectname,
             version: "0.0.1",
             scripts: {
-                start: "ui5 serve --config=uimodule/ui5.yaml  --open index.html",
+                start: `ui5 serve --config=uimodule/ui5.yaml  --open index.html${oConfig.enableFPM ? "?sap-ui-xx-viewCache=false": ""}`,
                 "build:ui": "run-s ",
                 test: "run-s lint karma",
                 "karma-ci": "karma start karma-ci.conf.js",

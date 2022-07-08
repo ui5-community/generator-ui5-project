@@ -2,7 +2,8 @@ const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
     path = require("path"),
     glob = require("glob"),
-    chalk = require("chalk");
+    chalk = require("chalk"),
+    ui5Writer = require("@sap-ux/ui5-application-writer");
 
 // patches the Generator for the install tasks as new custom install
 // tasks produce ugly errors! (Related issue: https://github.com/yeoman/environment/issues/309)
@@ -163,7 +164,7 @@ module.exports = class extends Generator {
         // -> utilize @sap-ux/fiori-freestyle-writer scaffolding package
         if (this.options.viewtype === "XML") {
             /**
-             * @type import("@sap-ux/fiori-freestyle-writer").FreestyleApp
+             * @type FreestyleApp
              */
             const freestyleApp = {
                 app: {
@@ -182,12 +183,53 @@ module.exports = class extends Generator {
                     loadReuseLibs: platformIsLaunchpad
                 },
                 ui5:{
-                    
-                 }
+                    minUI5Version: "1.102.0"
+                }
             };
 
             try {
-                await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                if (this.options.enableFPM) {
+                    await ui5Writer.generate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                } else {
+                    await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    // make @sap-ux/fiori-freestyle-writer's MainView.controller
+                    // aware of easy-ui5's base controller
+                    const MainViewController = {
+                        js: this.destinationPath(sModuleName, "webapp/controller/MainView.controller.js")
+                    };
+                    this.fs.write(
+                        MainViewController.js,
+                        this.fs.read(MainViewController.js)
+                            .toString()
+                            .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
+                    );
+                    this.log(
+                        `  ${chalk.blueBright(
+                            "\u26A0 \uFE0F patched @sap-ux's"
+                        )} MainViewController.js to use ./BaseController`
+                    );
+                    // fix up @sap-ux/fiori-freestyle-writer's test/flpSandbox.html -
+                    // sap.ushell is only available in sapui5
+                    // bootstrap only from there, no matter the used framework choice..
+                    const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
+                    this.fs.write(
+                        flpSandbox.html,
+                        this.fs.read(flpSandbox.html)
+                            .toString()
+                            .replace(/src="(..)\/(test-)?resources/g, (match) => {
+                                return match.replace("..", "https://ui5.sap.com");
+                            })
+                    );
+                    this.log(
+                        `  ${chalk.blueBright(
+                            "\u26A0 \uFE0F patched @sap-ux's"
+                        )} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`
+                    );
+                    this.log(
+                        `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
+                    );    
+                }
+
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
@@ -201,9 +243,6 @@ module.exports = class extends Generator {
                     }
                 });
 
-                this.log(
-                    `used ${chalk.blueBright("@sap-ux/fiori-freestyle-writer")} to generate freestyle app skeleton :)`
-                );
                 dirTree(this.destinationPath(sModuleName), null, (item) => {
                     const relativeFilePath = item.path.replace(
                         `${this.destinationPath(sModuleName)}${path.sep}`,
@@ -221,7 +260,7 @@ module.exports = class extends Generator {
                         break;
 
                     case "Content delivery network (SAPUI5)":
-                        _ui5libs = "https://sapui5.hana.ondemand.com/resources/sap-ui-core.js";
+                        _ui5libs = "https://ui5.sap.com/resources/sap-ui-core.js";
                         break;
 
                     default:
@@ -237,50 +276,20 @@ module.exports = class extends Generator {
                         this.options.oneTimeConfig.ui5libs
                     }`
                 );
-
-                // fix up @sap-ux/fiori-freestyle-writer's test/flpSandbox.html -
-                // sap.ushell is only available in sapui5
-                // bootstrap only from there, no matter the used framework choice..
-                const flpSandbox = { html: this.destinationPath(sModuleName, "webapp/test/flpSandbox.html") };
-                this.fs.write(
-                    flpSandbox.html,
-                    (this.fs.read(flpSandbox.html))
-                        .toString()
-                        .replace(/src="(..)\/(test-)?resources/g, (match) => {
-                            return match.replace("..", "https://sapui5.hana.ondemand.com");
-                        })
-                );
-                this.log(
-                    `  ${chalk.blueBright(
-                        "\u26A0 \uFE0F patched @sap-ux's"
-                    )} flpSandbox.html to boostrap only SAPUI5 (sap.ushell!)`
-                );
-
-                // make @sap-ux/fiori-freestyle-writer's MainView.controller
-                // aware of easy-ui5's base controller
-                const MainViewController = {
-                    js: this.destinationPath(sModuleName, `webapp/controller/${this.options.oneTimeConfig.viewname}.controller.js`)
-                };
-                this.fs.write(
-                    MainViewController.js,
-                    (this.fs.read(MainViewController.js))
-                        .toString()
-                        .replace(/sap\/ui\/core\/mvc\/Controller/g, "./BaseController")
-                );
-                this.log(
-                    `  ${chalk.blueBright(
-                        "\u26A0 \uFE0F patched @sap-ux's"
-                    )} MainViewController.js to use ./BaseController`
-                );
             } catch (error) {
                 this.log("Urgh. Something went wrong. Lookie:");
                 this.log(chalk.red(error.message || JSON.stringify(error)));
             }
 
+            const additionalFiles = [ ["ui5.yaml"] ];
+            if (!this.options.enableFPM) {
+                additionalFiles.push(["webapp", "controller", "BaseController.js"]);
+                additionalFiles.push(["webapp", "model", "formatter.js"]);
+            }
             // handle easy-ui5 specific ui5.yaml, put
             // put base controller in place
             // and provide model/formatter.js
-            [["ui5.yaml"], ["webapp", "controller", "BaseController.js"], ["webapp", "model", "formatter.js"]].forEach(
+            additionalFiles.forEach(
                 (file) => {
                     const src = this.templatePath("uimodule", ...file);
                     const dest = this.destinationPath(sModuleName, ...file);
@@ -429,5 +438,14 @@ module.exports = class extends Generator {
         const modules = this.config.get("uimodules") || [];
         modules.push(this.options.oneTimeConfig.modulename);
         this.config.set("uimodules", modules);
+
+        if (this.config.get("enableFioriTools")) {
+            this.fs.extendJSON('package.json', { 
+                sapux: modules, 
+                devDependencies: {
+                    "@sap/ux-specification": "latest"
+                }
+            });
+        }
     }
 };

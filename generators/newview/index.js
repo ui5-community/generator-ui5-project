@@ -1,5 +1,6 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess");
+const Generator = require("yeoman-generator");
+const fileaccess = require("../../helpers/fileaccess");
+const utils = require("../utils");
 
 module.exports = class extends Generator {
     static displayName = "Add a new view to an existing project";
@@ -32,19 +33,14 @@ module.exports = class extends Generator {
                 type: "list",
                 name: "modulename",
                 message: "To which module do you want to add a view?",
-                choices: modules || [],
-                when: !!modules && modules.length > 1
+                choices: modules,
+                when: utils.isArrayWithMoreThanOneElement(modules)
             },
             {
                 type: "input",
                 name: "viewname",
                 message: "What is the name of the new view?",
-                validate: (s) => {
-                    if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                        return true;
-                    }
-                    return "Please use alpha numeric characters only for the view name.";
-                }
+                validate: utils.validateAlhpaNumericStartingWithLetter
             },
             {
                 type: "confirm",
@@ -66,12 +62,7 @@ module.exports = class extends Generator {
                     name: "projectname",
                     message:
                         "Seems like this project has not been generated with Easy-UI5. Please enter the name your project.",
-                    validate: (s) => {
-                        if (/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(s)) {
-                            return true;
-                        }
-                        return "Please use alpha numeric characters only for the project name.";
-                    },
+                    validate: utils.validateAlhpaNumericStartingWithLetter,
                     default: "myUI5App"
                 },
                 {

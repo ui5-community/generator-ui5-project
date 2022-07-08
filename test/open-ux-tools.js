@@ -1,18 +1,35 @@
 const assert = require("yeoman-assert");
 const path = require("path");
 const helpers = require("yeoman-test");
+const fs = require("fs");
+const nock = require("nock");
 
-describe("open-ux-tools", () => {
-    describe("create project using fiori-freestyle-writer", () => {
+function generate(prompts) {
+    const context = helpers.run(path.join(__dirname, "../generators/app"));
+    if (process.env.DEBUG) {
+        context.inDir(path.join(__dirname, 'test-output'));
+    }
+    context.withPrompts({
+        namespaceUI5: "test",
+        ...prompts
+    });
+    return context;
+}
+
+describe("open-ux-tools", function () {
+    this.timeout(5000);
+
+    describe("create a project using the fiori-freestyle-writer", () => {
         let context;
-        before(async () => {
-            context = await helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
+        before(async function () {
+            context = await generate({
+                projectname: "myFioriFreestylApp",
                 viewtype: 'XML'
             });
         });
 
         after(() => {
-            context.restore();
+            context && context.restore();
         });
 
         it("files that are not relevant for easy-ui5 are removed", () => {
@@ -43,7 +60,54 @@ describe("open-ux-tools", () => {
 
         it("the flpSandbox.html is in test/ and bootstraps SAPUI5", () => {
             assert.file("uimodule/webapp/test/flpSandbox.html");
-            assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://sapui5.hana.ondemand.com");
+            assert.fileContent("uimodule/webapp/test/flpSandbox.html", "https://ui5.sap.com");
+        });
+
+    });
+
+    describe("create project with the flexible programming model enabled", () => {
+        const host = "http://localhost:4004";
+        const service = "/travel";
+        let context;
+        before(async function () {
+            nock.disableNetConnect();
+
+            nock(host)
+                .get(`${service}/$metadata`)
+                .replyWithFile(200, path.join(__dirname, 'mock/metadata.xml'))
+                .persist(true);
+
+            context = await generate({
+                projectname: "fpmTravelApp",
+                enableFPM: true,
+                serviceUrl: `${host}${service}`,
+                mainEntity: "BookedFlights"
+            });
+
+        });
+
+        after(() => {
+            context && context.restore();
+            nock.cleanAll();
+            nock.enableNetConnect();
+        });
+
+        it("custom page and local annotation file is generated", () => {
+            assert.file([
+                "uimodule/webapp/ext/main/Main.view.xml",
+                "uimodule/webapp/ext/main/Main.controller.js",
+                "uimodule/webapp/annotations/annotation.xml"
+            ]);
+        });
+
+        it("check that fe components are used", () => {
+            assert.fileContent("uimodule/webapp/manifest.json", "sap.fe.core.fpm");
+            assert.fileContent("uimodule/webapp/Component.js", "sap/fe/core/AppComponent");
+        });
+
+        it("check that Fiori tools are enabled", () => {
+            assert.fileContent('package.json', 'sapux');
+            assert.fileContent('package.json', '@sap/ux-specification');
         });
     });
 });
