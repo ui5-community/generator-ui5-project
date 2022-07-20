@@ -149,6 +149,7 @@ module.exports = class extends Generator {
 
     async writing() {
         const sModuleName = this.options.oneTimeConfig.modulename;
+        const sProjectName = this.options.oneTimeConfig.projectname;
         const localResources =
             this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" ||
             this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)";
@@ -181,9 +182,9 @@ module.exports = class extends Generator {
                 appOptions: {
                     loadReuseLibs: platformIsLaunchpad
                 },
-                ui5:{
-                    
-                 }
+                ui5: {
+
+                }
             };
 
             try {
@@ -233,8 +234,7 @@ module.exports = class extends Generator {
                     (this.fs.read(index.html)).toString().replace(/src=".*"/g, `src="${_ui5libs}"`)
                 );
                 this.log(
-                    `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${
-                        this.options.oneTimeConfig.ui5libs
+                    `  ${chalk.blueBright("\u26A0 \uFE0F patched @sap-ux's")} index.html with ${this.options.oneTimeConfig.ui5libs
                     }`
                 );
 
@@ -339,34 +339,29 @@ module.exports = class extends Generator {
             });
         }
 
-        if (
-            platformIsHTML5AppRepo ||
-            platformIsLaunchpad
-        ) {
-            if (platformIsLaunchpad) {
-                this.log("configuring Launchpad integration...");
-                await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
-                    ["sap.cloud"]: {
-                        service: this.options.oneTimeConfig.projectname + ".service"
-                    },
-                    ["sap.app"]: {
-                        crossNavigation: {
-                            inbounds: {
-                                intent1: {
-                                    signature: {
-                                        parameters: {},
-                                        additionalParameters: "allowed"
-                                    },
-                                    semanticObject: sModuleName,
-                                    action: "display",
-                                    title: this.options.oneTimeConfig.tilename,
-                                    icon: "sap-icon://add"
-                                }
+        if (platformIsLaunchpad) {
+            this.log("configuring Launchpad integration...");
+            await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+                ["sap.cloud"]: {
+                    service: this.options.oneTimeConfig.projectname + ".service"
+                },
+                ["sap.app"]: {
+                    crossNavigation: {
+                        inbounds: {
+                            intent1: {
+                                signature: {
+                                    parameters: {},
+                                    additionalParameters: "allowed"
+                                },
+                                semanticObject: sModuleName,
+                                action: "display",
+                                title: this.options.oneTimeConfig.tilename,
+                                icon: "sap-icon://add"
                             }
                         }
                     }
-                });
-            }
+                }
+            });
         }
 
         // Append to Main package.json
@@ -413,6 +408,62 @@ module.exports = class extends Generator {
                         "supported-platforms": []
                     }
                 });
+
+                //add destination content to mta.yaml so it will be displayed under "HTML5 Applications" in SAP BTP Cockpit
+                if (platformIsHTML5AppRepo) {
+                    mta.modules.push({
+                        "name": `${sProjectName}_destination_content`,
+                        "type": "com.sap.application.content",
+                        "build-parameters": {
+                            "no-source": true,
+                        },
+                        "requires": [{
+                            "name": `${sProjectName}_uaa`,
+                            "parameters": {
+                                "service-key": {
+                                    "name": `${sProjectName}_uaa_key`
+                                }
+                            }
+                        },
+                        {
+                            "name": `${sProjectName}_html5_repo_host`,
+                            "parameters": {
+                                "service-key": {
+                                    "name": `${sProjectName}_html5_repo_host_key`
+                                }
+                            }
+                        },
+                        {
+                            "name": `${sProjectName}_destination`,
+                            "parameters": {
+                                "content-target": true
+                            }
+                        }],
+                        "parameters": {
+                            "content": {
+                                "instance": {
+                                    "existing_destinations_policy": "update",
+                                    "destinations": [
+                                        {
+                                            "Name": `${sProjectName}_destination_html5`,
+                                            "ServiceInstanceName": `${sProjectName}_html5_repo_host`,
+                                            "ServiceKeyName": `${sProjectName}_html5_repo_host_key`,
+                                            "sap.cloud.service": this.options.oneTimeConfig.projectname + ".service"
+                                        },
+                                        {
+                                            "Name": `${sProjectName}_destination_uaa`,
+                                            "Authentication": "OAuth2UserTokenExchange",
+                                            "ServiceInstanceName": `${sProjectName}_uaa`,
+                                            "ServiceKeyName": `${sProjectName}_uaa_key`,
+                                            "sap.cloud.service": this.options.oneTimeConfig.projectname + ".service"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    });
+                }
+
                 return mta;
             });
         }
