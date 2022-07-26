@@ -29,12 +29,12 @@
     "generators"
   ],
   "dependencies": {
-    "@sap-ux/axios-extension": "0.5.0",
-    "@sap-ux/fe-fpm-writer": "0.11.0",
-    "@sap-ux/fiori-freestyle-writer": "0.12.1",
-    "@sap-ux/ui5-application-writer": "0.13.0",
-    "@sap-ux/ui5-config": "0.14.0",
-    "@sap-ux/odata-service-writer": "0.14.0",
+    "@sap-ux/axios-extension": "0.9.0",
+    "@sap-ux/fe-fpm-writer": "0.13.3",
+    "@sap-ux/fiori-freestyle-writer": "0.12.4",
+    "@sap-ux/odata-service-writer": "0.14.3",
+    "@sap-ux/ui5-application-writer": "0.14.3",
+    "@sap-ux/ui5-config": "0.14.3",
     "chalk": "^4.1.2",
     "directory-tree": "^3.0.1",
     "glob": "^7.2.0",
@@ -42,7 +42,7 @@
     "valid-filename": "^3.1.0",
     "yaml": "^2.0.0-8",
     "yeoman-environment": "^3.8.1",
-    "yeoman-generator": "^4.13.0",
+    "yeoman-generator": "^5.6.1",
     "yosay": "^2.0.2"
   },
   "devDependencies": {

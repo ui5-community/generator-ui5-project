@@ -10,6 +10,13 @@ const Generator = require("yeoman-generator"),
 module.exports = class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
 
+    constructor(args, opts) {
+        super(args, opts, {
+            // disable the Yeoman 5 package-manager logic (auto install)!
+            customInstallTask: "disabled"
+        });
+    }
+
     async prompting() {
         if (!this.options.embedded) {
             this.log(yosay(`Welcome to the ${chalk.red("easy-ui5-project")} generator!`));
