@@ -70,7 +70,7 @@ module.exports = class extends Generator {
                     if (service.defaults?.auth?.username) {
                         this.log.error(error.cause.statusText);
                     }
-                    if (error.cayse && error.cause.status === 401) {
+                    if (error.cause && error.cause.status === 401) {
                         const { username, password } = await this.prompt([
                             {
                                 type: 'input',
