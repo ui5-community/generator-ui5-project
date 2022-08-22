@@ -109,6 +109,12 @@ module.exports = class extends Generator {
                 name: "codeassist",
                 message: "Would you like to add JavaScript code assist libraries to the project?",
                 default: true
+            },
+            {
+                type: "confirm",
+                name: "initrepo",
+                message: "Would you like to initialize a local git repository for the project?",
+                default: true
             }
         ]);
         
@@ -264,18 +270,20 @@ module.exports = class extends Generator {
                 cwd: this.destinationPath()
             });
         }
-        this.spawnCommandSync("git", ["init", "--quiet"], {
-            cwd: this.destinationPath()
-        });
-        this.spawnCommandSync("git", ["add", "."], {
-            cwd: this.destinationPath()
-        });
-        this.spawnCommandSync(
-            "git",
-            ["commit", "--quiet", "--allow-empty", "-m", "Initialize repository with easy-ui5"],
-            {
+        if (this.config.initrepo) {
+            this.spawnCommandSync("git", ["init", "--quiet"], {
                 cwd: this.destinationPath()
-            }
-        );
+            });
+            this.spawnCommandSync("git", ["add", "."], {
+                cwd: this.destinationPath()
+            });
+            this.spawnCommandSync(
+                "git",
+                ["commit", "--quiet", "--allow-empty", "-m", "Initialize repository with easy-ui5"],
+                {
+                    cwd: this.destinationPath()
+                }
+            );
+        }
     }
 };
