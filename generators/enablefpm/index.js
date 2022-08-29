@@ -74,7 +74,7 @@ module.exports = class extends Generator {
         const typescript = this.config.get("enableTypescript") || false;
         const target = this.destinationPath(this.options.modulename || this.answers.moduleName || '');
         fpmWriter.enableFPM(target, {
-                replaceAppComponent: this.options.isSubgeneratorCall || this.answers.replaceAppComponent, typescript 
+                replaceAppComponent: this.answers.replaceAppComponent, typescript 
             }, this.fs
         );
         if (typescript) {

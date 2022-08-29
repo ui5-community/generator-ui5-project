@@ -167,18 +167,12 @@ module.exports = class extends Generator {
             /**
              * @type FreestyleApp
              */
-            const freestyleApp = {
+            const ui5App = {
                 app: {
                     id: this.options.oneTimeConfig.appId
                 },
                 package: {
                     name: this.options.oneTimeConfig.appId
-                },
-                template: {
-                    type: TemplateType.Basic,
-                    settings: {
-                        viewName: this.options.oneTimeConfig.viewname
-                    }
                 },
                 appOptions: {
                     loadReuseLibs: platformIsLaunchpad
@@ -190,10 +184,11 @@ module.exports = class extends Generator {
 
             try {
                 if (this.options.enableFPM) {
+                    ui5App.app.baseComponent = 'sap/fe/core/AppComponent';
                     if (this.options.enableTypescript) {
-                        freestyleApp.appOptions.typescript = true;
+                        ui5App.appOptions.typescript = true;
                     }
-                    await ui5Writer.generate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    await ui5Writer.generate(this.destinationPath(sModuleName), ui5App, this.fs);
                     if (this.options.enableTypescript) {
                         // manipulate a few files to work with the easy-ui5 structure
                         const tsconfig = "tsconfig.json";
@@ -223,7 +218,13 @@ module.exports = class extends Generator {
                         })
                     }
                 } else {
-                    await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    await generateFreestyleTemplate(this.destinationPath(sModuleName), { ...ui5App,
+                        template: {
+                            type: TemplateType.Basic,
+                            settings: {
+                                viewName: this.options.oneTimeConfig.viewname
+                            }
+                        }}, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
                     // aware of easy-ui5's base controller
                     const MainViewController = {
@@ -265,9 +266,9 @@ module.exports = class extends Generator {
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
-                    "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
+                    "ui5.yaml", /* easy-ui5 specific ui5* yamls */
                     ".gitignore", /* irrelevant */
-                    ".eslintrc", /* irrelevant */
+                    ".eslintrc.json", /* irrelevant */
                     "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {

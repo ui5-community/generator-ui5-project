@@ -21,7 +21,7 @@ describe("open-ux-tools", function () {
 
     describe("create a project using the fiori-freestyle-writer", () => {
         let context;
-        before(async function () {
+        before(async () => {
             context = await generate({
                 projectname: "myFioriFreestylApp",
                 viewtype: 'XML'
@@ -65,11 +65,11 @@ describe("open-ux-tools", function () {
 
     });
 
-    describe.only("create project with the flexible programming model enabled", () => {
+    describe("create project with the flexible programming model enabled", () => {
         const host = "http://localhost:4004";
         const service = "/travel";
         let context;
-        before(async function () {
+        before(async () => {
             nock.disableNetConnect();
 
             nock(host)
