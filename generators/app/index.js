@@ -57,6 +57,13 @@ module.exports = class extends Generator {
                 when: initialAnswers.enableFPM
             },
             {
+                type: "confirm",
+                name: "enableTypescript",
+                message: "Do you want to use the awesomeness of Typescript?",
+                default: true,
+                when: initialAnswers.enableFPM
+            },
+            {
                 type: "list",
                 name: "platform",
                 message: "On which platform would you like to host the application?",
@@ -248,7 +255,7 @@ module.exports = class extends Generator {
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types"] = "^1.96.0"; //keep this line in sync with ui5.yaml version
+            packge.devDependencies["@sapui5/ts-types-esm"] = "latest"; //keep this line in sync with ui5.yaml version
         }
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);

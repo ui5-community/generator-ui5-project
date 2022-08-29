@@ -152,7 +152,8 @@ module.exports = class extends Generator {
                 fpmWriter.generateCustomPage(target, {
                     name: this.answers.viewName,
                     entity: this.answers.mainEntity,
-                    navigation: this.answers.navigation
+                    navigation: this.answers.navigation,
+                    typescript: this.options.enableTypescript
                 }, this.fs);
                 break;
         }

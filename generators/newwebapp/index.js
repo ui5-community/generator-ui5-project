@@ -190,7 +190,38 @@ module.exports = class extends Generator {
 
             try {
                 if (this.options.enableFPM) {
+                    if (this.options.enableTypescript) {
+                        freestyleApp.appOptions.typescript = true;
+                    }
                     await ui5Writer.generate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    if (this.options.enableTypescript) {
+                        // manipulate a few files to work with the easy-ui5 structure
+                        const tsconfig = "tsconfig.json";
+                        const tsCfgStr = this.fs.read(this.destinationPath(sModuleName, tsconfig));
+                        this.fs.delete(this.destinationPath(tsconfig));
+                        this.fs.delete(this.destinationPath(sModuleName, tsconfig));
+                        this.fs.write(this.destinationPath(tsconfig), tsCfgStr.replaceAll('webapp', `${sModuleName}/webapp`).replace('dist', `${sModuleName}/dist`));
+                        const babel = ".babelrc.json";
+                        this.fs.move(this.destinationPath(sModuleName, babel), this.destinationPath(babel));
+                        const pckg = "package.json";
+                        const devDeps = this.fs.readJSON(this.destinationPath(sModuleName, pckg)).devDependencies;
+                        this.fs.extendJSON(this.destinationPath(pckg), {
+                            scripts: {
+                                "start:mock": `ui5 serve --config=${sModuleName}/ui5-mock.yaml  --open index.html?sap-ui-xx-viewCache=false`,
+                                "ts:check": "tsc --noEmit"
+                            },
+                            devDependencies: devDeps,
+                            ui5: {
+                                dependencies: [
+                                    "ui5-middleware-livereload",
+                                    "@sap/ux-ui5-tooling",
+                                    "@sap-ux/ui5-middleware-fe-mockserver",
+                                    "ui5-tooling-modules",
+                                    "ui5-tooling-transpile"
+                                  ]
+                            }
+                        })
+                    }
                 } else {
                     await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
@@ -235,6 +266,8 @@ module.exports = class extends Generator {
                 [
                     "ui5-local.yaml",
                     "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
+                    ".gitignore", /* irrelevant */
+                    ".eslintrc", /* irrelevant */
                     "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {
