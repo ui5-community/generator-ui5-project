@@ -41,6 +41,13 @@ module.exports = class extends Generator {
                 validate: utils.validateAlhpaNumericStartingWithLetter,
                 default: 'Main'
             })).viewName;
+            this.answers.enableTypescript = (await this.prompt({
+                type: "confirm",
+                name: "enableTypescript",
+                message: "Do you want to use the awesomeness of Typescript for your controller?",
+                default: true,
+                when: this.options.enableTypescript === undefined
+            })).enableTypescript;
         }
 
         // only ask for service etc. if called as part of the fpm enablement on app
@@ -153,7 +160,7 @@ module.exports = class extends Generator {
                     name: this.answers.viewName,
                     entity: this.answers.mainEntity,
                     navigation: this.answers.navigation,
-                    typescript: this.options.enableTypescript
+                    typescript: this.answers.enableTypescript !== undefined ? this.answers.enableTypescript : this.options.enableTypescript
                 }, this.fs);
                 break;
         }
