@@ -2,6 +2,8 @@ const Generator = require("yeoman-generator");
 const fileaccess = require("../../helpers/fileaccess");
 const utils = require("../utils");
 
+const AppTypes = {ts: "ts", js: "js"};
+
 module.exports = class extends Generator {
     static displayName = "Add a new view to an existing project";
 
@@ -48,13 +50,25 @@ module.exports = class extends Generator {
                 message: "Would you like to create a corresponding controller as well?"
             },
             {
+                type: "list",
+                name: "apptype",
+                message: "Which app type do you use?",
+                choices: [AppTypes.js, AppTypes.ts],
+                default:  AppTypes.ts
+            },
+            {
                 type: "confirm",
                 name: "addPO",
                 message: "Do you want to add an OPA5 page object?",
                 default: false
             }
         ];
-
+        var namespace = "com.myorg";
+        var application = "myUI5App";
+        try {
+            namespace = this.config._cachedStore["generator-ui5-ts-app"].namespace;
+            application = this.config._cachedStore["generator-ui5-ts-app"].application;
+        } catch (error) { }
         if (!this.config.getAll().viewtype) {
             aPrompt = aPrompt.concat([
                 {
@@ -63,7 +77,7 @@ module.exports = class extends Generator {
                     message:
                         "Seems like this project has not been generated with Easy-UI5. Please enter the name your project.",
                     validate: utils.validateAlhpaNumericStartingWithLetter,
-                    default: "myUI5App"
+                    default: application
                 },
                 {
                     type: "input",
@@ -75,7 +89,7 @@ module.exports = class extends Generator {
                         }
                         return "Please use alpha numeric characters and dots only for the namespace.";
                     },
-                    default: "com.myorg"
+                    default: namespace
                 },
                 {
                     type: "list",
@@ -97,6 +111,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig = this.config.getAll();
             this.options.oneTimeConfig.viewname = answers.viewname;
             this.options.oneTimeConfig.createcontroller = answers.createcontroller;
+            this.options.oneTimeConfig.apptype = answers.apptype;
             this.options.oneTimeConfig.addToRoute = answers.addToRoute;
             this.options.oneTimeConfig.modulename = answers.modulename || (!!modules ? modules[0] : "");
 
@@ -131,14 +146,22 @@ module.exports = class extends Generator {
     }
 
     async writing() {
-        const sViewFileName = "webapp/view/$ViewName.view.$ViewEnding";
-        const sControllerFileName = "webapp/controller/$ViewName.controller.js";
+        const sAppType = this.options.oneTimeConfig.apptype;
+        var Path;
+        if (sAppType === AppTypes.js) {
+            Path = "webapp"
+        } else {
+            Path = "src"
+        }
+
+        const sViewFileName = Path + "/view/$ViewName.view.$ViewEnding";
+        const sControllerFileName = Path + "/controller/$ViewName.controller." + sAppType;
         const sViewType = this.options.oneTimeConfig.viewtype;
         const sViewName = this.options.oneTimeConfig.viewname;
         const sModuleName = this.options.oneTimeConfig.modulename;
         this.options.oneTimeConfig.isSubgeneratorCall = this.options.isSubgeneratorCall;
 
-        const bBaseControllerExists = this.fs.exists(sModuleName + "/webapp/controller/BaseController.js");
+        const bBaseControllerExists = this.fs.exists(sModuleName + `/${Path}/controller/BaseController.${sAppType}`);
         var sControllerToExtend = "sap/ui/core/mvc/Controller";
         if (bBaseControllerExists) {
             sControllerToExtend = this.options.oneTimeConfig.appURI + "/controller/BaseController";
@@ -168,7 +191,7 @@ module.exports = class extends Generator {
         }
 
         if (this.options.oneTimeConfig.addToRoute) {
-            await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", function (json) {
+            await fileaccess.manipulateJSON.call(this, `/${sModuleName}/${Path}/manifest.json`, function (json) {
                 const ui5Config = json["sap.ui5"];
                 const targetName = "Target" + sViewName;
 
