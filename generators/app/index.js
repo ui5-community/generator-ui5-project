@@ -119,7 +119,8 @@ module.exports = class extends Generator {
         ]);
         
         if (answers.newdir) {
-            this.destinationRoot(`${initialAnswers.namespaceUI5}.${initialAnswers.projectname}`);
+            // ensure that the directory is created as a subdirectory of the current directory
+            this.destinationRoot(this.destinationPath(`${initialAnswers.namespaceUI5}.${initialAnswers.projectname}`));
         }
         if (initialAnswers.enableFPM) {
             this.config.set('viewtype', 'XML');
