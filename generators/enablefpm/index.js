@@ -6,15 +6,10 @@ const utils = require("../utils");
 const { join } = require("path");
 
 /**
- * UI5 tasks configurations required for TypeScript projects
+ * UI5 task and middleware configurations required for TypeScript projects
  */
-const ui5TsTasks = [
-    {
-        name: 'ui5-tooling-modules-task',
-        afterTask: 'replaceVersion',
-        configuration: {}
-    },
-    {
+const ui5TSSupport = {
+    task: {
         name: 'ui5-tooling-transpile-task',
         afterTask: 'replaceVersion',
         configuration: {
@@ -23,19 +18,8 @@ const ui5TsTasks = [
             transpileAsync: true,
             transpileTypeScript: true
         }
-    }
-];
-
-/**
- * UI5 middleware configurations required for TypeScript projects
- */
-const ui5TsMiddlewares = [
-    {
-        name: 'ui5-tooling-modules-middleware',
-        afterMiddleware: 'compression',
-        configuration: {}
     },
-    {
+    middleware: {
         name: 'ui5-tooling-transpile-middleware',
         afterMiddleware: 'compression',
         configuration: {
@@ -44,7 +28,7 @@ const ui5TsMiddlewares = [
             transpileTypeScript: true
         }
     }
-];
+};
 
 module.exports = class extends Generator {
     static displayName = "Enable the Fiori elements flexible program model";
@@ -79,8 +63,8 @@ module.exports = class extends Generator {
         );
         if (typescript) {
             const ui5Yaml = await UI5Config.newInstance(this.fs.read(join(target, 'ui5.yaml')));
-            ui5Yaml.addCustomMiddleware(ui5TsMiddlewares);
-            ui5Yaml.addCustomTasks(ui5TsTasks);
+            ui5Yaml.addCustomMiddleware([ui5TSSupport.middleware]);
+            ui5Yaml.addCustomTasks([ui5TSSupport.task]);
             this.fs.write(join(target, 'ui5.yaml'), ui5Yaml.toString());
         }
     }

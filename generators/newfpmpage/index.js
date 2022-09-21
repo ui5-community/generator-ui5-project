@@ -2,6 +2,7 @@ const path = require("path");
 const Generator = require("yeoman-generator");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const serviceWriter = require("@sap-ux/odata-service-writer");
+const isTypescriptEnabled = require("@sap-ux/ui5-application-writer").isTypescriptEnabled;
 const UI5Config = require("@sap-ux/ui5-config").UI5Config;
 const axios = require("@sap-ux/axios-extension");
 const utils = require("../utils");
@@ -41,13 +42,6 @@ module.exports = class extends Generator {
                 validate: utils.validateAlhpaNumericStartingWithLetter,
                 default: 'Main'
             })).viewName;
-            this.answers.enableTypescript = (await this.prompt({
-                type: "confirm",
-                name: "enableTypescript",
-                message: "Do you want to use the awesomeness of Typescript for your controller?",
-                default: true,
-                when: this.options.enableTypescript === undefined
-            })).enableTypescript;
         }
 
         // only ask for service etc. if called as part of the fpm enablement on app
@@ -156,11 +150,14 @@ module.exports = class extends Generator {
                 fpmWriter.generateListReport(target, { entity: this.answers.mainEntity }, this.fs);
                 break;
             default:
+                if (this.options.enableTypescript === undefined) {
+                    this.options.enableTypescript = isTypescriptEnabled(target, this.fs);
+                }
                 fpmWriter.generateCustomPage(target, {
                     name: this.answers.viewName,
                     entity: this.answers.mainEntity,
                     navigation: this.answers.navigation,
-                    typescript: this.answers.enableTypescript !== undefined ? this.answers.enableTypescript : this.options.enableTypescript
+                    typescript: this.options.enableTypescript
                 }, this.fs);
                 break;
         }

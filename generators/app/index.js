@@ -255,7 +255,7 @@ module.exports = class extends Generator {
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types-esm"] = "latest"; //keep this line in sync with ui5.yaml version
+            packge.devDependencies["@sapui5/ts-types"] = "~1.102.7"; //keep this line in sync with ui5.yaml version
         }
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
