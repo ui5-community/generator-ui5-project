@@ -48,18 +48,19 @@ module.exports = class extends Generator {
             }
         ]);
 
+        initialAnswers.enableTypescript = (await this.prompt({
+            type: "confirm",
+            name: "enableTypescript",
+            message: "Do you want to use the awesomeness of Typescript?",
+            default: true,
+            when: initialAnswers.enableFPM
+        })).enableTypescript;
+
         const answers = await this.prompt([
             {
                 type: "confirm",
                 name: "enableFioriTools",
                 message: "Do you want the module to be visible in the SAP Fiori tools?",
-                default: true,
-                when: initialAnswers.enableFPM
-            },
-            {
-                type: "confirm",
-                name: "enableTypescript",
-                message: "Do you want to use the awesomeness of Typescript?",
                 default: true,
                 when: initialAnswers.enableFPM
             },
@@ -115,7 +116,8 @@ module.exports = class extends Generator {
                 type: "confirm",
                 name: "codeassist",
                 message: "Would you like to add JavaScript code assist libraries to the project?",
-                default: true
+                default: !initialAnswers.enableTypescript,
+                when: !initialAnswers.enableTypescript
             },
             {
                 type: "confirm",

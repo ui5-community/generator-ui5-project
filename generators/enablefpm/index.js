@@ -1,6 +1,6 @@
 const path = require("path");
 const Generator = require("yeoman-generator");
-const UI5Config = require("@sap-ux/ui5-config").UI5Config;
+const { UI5Config } = require("@sap-ux/ui5-config");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const utils = require("../utils");
 const { join } = require("path");
