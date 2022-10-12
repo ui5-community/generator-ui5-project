@@ -265,16 +265,15 @@ module.exports = class extends Generator {
 
     install() {
         this.config.set("setupCompleted", true);
-        this.installDependencies({
-            bower: false,
-            npm: true
-        });
     }
 
     end() {
-        // If the generator is properly installed, we have to run lint-fix to get properly formatted code
         // (skipInstall is true when executed in unit tests.)
         if (!this.env.options.skipInstall) {
+            this.spawnCommandSync('npm', ['install'], {
+                cwd: this.destinationPath()
+            });
+            // If the generator is properly installed, we have to run lint-fix to get properly formatted code
             this.spawnCommandSync("npm", ["run", "lint-fix"], {
                 cwd: this.destinationPath()
             });
