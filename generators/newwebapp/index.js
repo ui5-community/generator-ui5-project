@@ -211,7 +211,6 @@ module.exports = class extends Generator {
                                     "ui5-middleware-livereload",
                                     "@sap/ux-ui5-tooling",
                                     "@sap-ux/ui5-middleware-fe-mockserver",
-                                    "ui5-tooling-modules",
                                     "ui5-tooling-transpile"
                                   ]
                             }
