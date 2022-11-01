@@ -492,7 +492,7 @@ module.exports = class extends Generator {
         this.config.set("uimodules", modules);
 
         if (this.config.get("enableFioriTools")) {
-            this.fs.extendJSON('package.json', { 
+            this.fs.extendJSON(this.destinationRoot() + "/package.json", { 
                 sapux: modules, 
                 devDependencies: {
                     "@sap/ux-specification": "latest"
