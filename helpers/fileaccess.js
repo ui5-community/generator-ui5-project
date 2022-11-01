@@ -4,7 +4,8 @@ const objectAssignDeep = require("object-assign-deep"),
 // overide can be an object or a function that receives the current object
 exports.writeJSON = async function (filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        console.log()
+        const fullFilePath = this.destinationRoot() + filePath;
         let oldContent = {};
         if (this.fs.exists(fullFilePath)) {
             oldContent = this.fs.readJSON(fullFilePath);
@@ -28,7 +29,7 @@ exports.writeJSON = async function (filePath, override) {
 // overide can be an object or a function that receives the current object
 exports.writeYAML = async function (filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationRoot() + filePath;
         let oldContent = {};
         if (this.fs.exists(fullFilePath)) {
             oldContent = yaml.parse(this.fs.read(fullFilePath));
@@ -53,7 +54,7 @@ exports.writeYAML = async function (filePath, override) {
 // overide can be an object or a function that receives the current object
 exports.manipulateJSON = async function (filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationRoot() + filePath;
         const oldContent = this.fs.readJSON(fullFilePath);
 
         const newContent =
@@ -74,7 +75,7 @@ exports.manipulateJSON = async function (filePath, override) {
 // overide can be an object or a function that receives the current object
 exports.manipulateYAML = async function (filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationRoot() + filePath;
         const oldContent = yaml.parse(this.fs.read(fullFilePath));
 
         const newContent =
