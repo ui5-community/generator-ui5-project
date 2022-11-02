@@ -1,13 +1,20 @@
 "use strict";
 
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess"),
-    path = require("path"),
-    chalk = require("chalk"),
-    yosay = require("yosay"),
-    glob = require("glob");
+// const Generator = require("yeoman-generator"),
+//     fileaccess = require("../../helpers/fileaccess"),
+//     path = require("path"),
+//     yosay = require("yosay"),
+//     glob = require("glob");
 
-module.exports = class extends Generator {
+import Generator from "yeoman-generator"
+import fileaccess from "../../helpers/fileaccess.js"
+import path from "path"
+import { fileURLToPath } from 'url';
+import yosay from "yosay"
+import glob from "glob"
+import chalk from "chalk"
+
+export default class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
 
     async prompting() {
@@ -134,6 +141,9 @@ module.exports = class extends Generator {
     async writing() {
         const oConfig = this.config.getAll();
 
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        console.log(__dirname)
         this.sourceRoot(path.join(__dirname, "templates"));
         glob.sync("**", {
             cwd: this.sourceRoot(),
@@ -166,13 +176,13 @@ module.exports = class extends Generator {
         oSubGen.modulename = "uimodule";
 
         if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-            this.composeWith(require.resolve("../additionalmodules"), oSubGen);
+            this.composeWith(__dirname + "/../additionalmodules", oSubGen);
         }
 
-        this.composeWith(require.resolve("../newwebapp"), oSubGen);
+        this.composeWith(__dirname + "/../newwebapp", oSubGen);
         if (oConfig.enableFPM) {
-            this.composeWith(require.resolve("../enablefpm"), oSubGen);
-            this.composeWith(require.resolve("../newfpmpage"), oSubGen);
+            this.composeWith(__dirname + "/../enablefpm", oSubGen);
+            this.composeWith(__dirname + "/../newfpmpage", oSubGen);
         }
     }
 
