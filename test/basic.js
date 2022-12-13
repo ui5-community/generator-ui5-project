@@ -8,15 +8,28 @@ const __dirname = path.dirname(__filename);
 
 const IsCIRun = process.env.CI;
 
+function generate(prompts) {
+    const context = helpers.run(path.join(__dirname, "../generators/app"));
+    context.withPrompts({
+        newdir: false,
+        ...prompts
+    });
+    return context;
+}
+
 function createTest(oPrompt) {
     let testDescription = Object.values(oPrompt).join("-");
-    oPrompt["newdir"] = false;
     describe(testDescription, function () {
         this.timeout(200000);
-        it("should be able to create the project", function () {
-            return helpers.run(path.join(__dirname, "../generators/app/index.js")).withPrompts(oPrompt);
+        let context;
+        before(async () => {
+            context = await generate(oPrompt)
         });
 
+        after(() => {
+            context.restore();
+        });
+        
         it("should create the necessary ui5 files", function () {
             return assert.file([
                 "uimodule/ui5.yaml",
@@ -89,79 +102,82 @@ function createTest(oPrompt) {
 
 describe("Basic project capabilities", function () {
     const testConfigurations = [
-        { 
-            viewtype: "XML"
+        {
+            "viewtype": "XML"
         },
         {
-            viewtype: "JS",
-            platform: "Application Router @ Cloud Foundry"
+            "viewtype": "JS",
+            "platform": "Application Router @ Cloud Foundry"
         },
         {
-            viewtype: "JSON",
-            ui5libs: "Local resources (SAPUI5)"
+            "viewtype": "JSON",
+            "ui5libs": "Local resources (SAPUI5)"
         },
         {
-            viewtype: "JSON",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "SAP NetWeaver" },
-        {
-            viewtype: "HTML",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "Application Router @ Cloud Foundry"
+            "viewtype": "JSON",
+            "ui5libs": "Local resources (SAPUI5)",
+            "platform": "SAP NetWeaver"
         },
         {
-            viewtype: "JSON",
-            platform: "SAP Launchpad service"
+            "viewtype": "HTML",
+            "ui5libs": "Local resources (OpenUI5)",
+            "platform": "Application Router @ Cloud Foundry"
         },
         {
-            viewtype: "XML",
-            platform: "SAP HTML5 Application Repository service for SAP BTP"
+            "viewtype": "JSON",
+            "platform": "SAP Launchpad service"
         },
         {
-            viewtype: "XML",
-            platform: "SAP NetWeaver"
+            "viewtype": "XML",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
         },
         {
-            viewtype: "XML",
-            platform: "Application Router @ SAP HANA XS Advanced"
+            "viewtype": "XML",
+            "platform": "SAP NetWeaver"
         },
         {
-            viewtype: "JS",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "SAP HTML5 Application Repository service for SAP BTP"
+            "viewtype": "XML",
+            "platform": "Application Router @ SAP HANA XS Advanced"
         },
         {
-            viewtype: "JSON",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
-        },
-        { 
-            viewtype: "HTML",
-            platform: "SAP HTML5 Application Repository service for SAP BTP" },
-        { 
-            viewtype: "JS",
-            platform: "SAP HTML5 Application Repository service for SAP BTP" },
-        {
-            viewtype: "JSON",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
-        },
-        { 
-            viewtype: "JSON",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "SAP NetWeaver" },
-        {
-            viewtype: "HTML",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
+            "viewtype": "JS",
+            "ui5libs": "Local resources (SAPUI5)",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
         },
         {
-            viewtype: "JS",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "SAP HTML5 Application Repository service for SAP BTP"
+            "viewtype": "JSON",
+            "ui5libs": "Local resources (OpenUI5)",
+            "platform": "Application Router @ SAP HANA XS Advanced"
+        },
+        {
+            "viewtype": "HTML",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
+        },
+        {
+            "viewtype": "JS",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
+        },
+        {
+            "viewtype": "JSON",
+            "ui5libs": "Local resources (SAPUI5)",
+            "platform": "Application Router @ SAP HANA XS Advanced"
+        },
+        {
+            "viewtype": "JSON",
+            "ui5libs": "Local resources (SAPUI5)",
+            "platform": "SAP NetWeaver"
+        },
+        {
+            "viewtype": "HTML",
+            "ui5libs": "Local resources (OpenUI5)",
+            "platform": "Application Router @ SAP HANA XS Advanced"
+        },
+        {
+            "viewtype": "JS",
+            "ui5libs": "Local resources (OpenUI5)",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
         }
-    ];
-
+    ]
     testConfigurations.forEach((testConfig, index) => {
         if (!IsCIRun) {
             createTest(testConfig);
