@@ -64,11 +64,11 @@ This is the most basic option. Choose this option if you want to deploy the web 
 
 ### Application Router @ Cloud Foundry
 
-This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add a standalone [approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
 
 ### Application Router @ SAP HANA XS Advanced
 
-This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add a standalone [aApprouter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
 
 ### SAP HTML5 Application Repository service for SAP BTP
 
@@ -86,7 +86,7 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 
 ### Add a new view
 
-This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
+This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator (`newopa5po`).
 
 ```shell
 $> yo easy-ui5 project newview
@@ -227,7 +227,8 @@ $> npm run deploy
 
 ## Shared functionality with SAP's `open-ux-tools`
 
--   scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
+- Scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
+- Scaffolding a new webapp that uses the Fiori elements flexible program model uses [`@sap-ux/fe-fpm-writer`](https://www.npmjs.com/package/@sap-ux/fe-fpm-writer)
 
 ## Embedded Technologies
 
@@ -251,7 +252,6 @@ Within a few seconds, you'll see that the generator is started, and the debugger
 ![debug](./docs/debugStopped.png)
 
 Now you are ready to go, happy coding 🦁!
-
 
 ## Support
 
