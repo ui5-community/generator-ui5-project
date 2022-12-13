@@ -1,7 +1,7 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new model to an existing project";
 
     prompting() {

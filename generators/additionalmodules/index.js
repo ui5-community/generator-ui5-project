@@ -1,9 +1,12 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess"),
-    path = require("path"),
-    glob = require("glob");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
+import glob from "glob";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static hidden = true;
 
     prompting() {

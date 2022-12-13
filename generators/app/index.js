@@ -1,18 +1,14 @@
 "use strict";
 
-// const Generator = require("yeoman-generator"),
-//     fileaccess = require("../../helpers/fileaccess"),
-//     path = require("path"),
-//     yosay = require("yosay"),
-//     glob = require("glob");
-
-import Generator from "yeoman-generator"
-import fileaccess from "../../helpers/fileaccess.js"
-import path from "path"
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
+import yosay from "yosay";
+import glob from "glob";
+import chalk from "chalk";
 import { fileURLToPath } from 'url';
-import yosay from "yosay"
-import glob from "glob"
-import chalk from "chalk"
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
@@ -141,9 +137,6 @@ export default class extends Generator {
     async writing() {
         const oConfig = this.config.getAll();
 
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
-        console.log(__dirname)
         this.sourceRoot(path.join(__dirname, "templates"));
         glob.sync("**", {
             cwd: this.sourceRoot(),
@@ -180,6 +173,7 @@ export default class extends Generator {
         }
 
         this.composeWith(__dirname + "/../newwebapp", oSubGen);
+        
         if (oConfig.enableFPM) {
             this.composeWith(__dirname + "/../enablefpm", oSubGen);
             this.composeWith(__dirname + "/../newfpmpage", oSubGen);
@@ -193,13 +187,13 @@ export default class extends Generator {
             version: "0.0.1",
             scripts: {
                 start: `ui5 serve --config=uimodule/ui5.yaml  --open index.html${oConfig.enableFPM ? "?sap-ui-xx-viewCache=false": ""}`,
-                "build:ui": "run-s ",
+                "build:ui": "run-s build:uimodule",
                 test: "run-s lint karma",
                 "karma-ci": "karma start karma-ci.conf.js",
                 clearCoverage: "shx rm -rf coverage",
                 karma: "run-s clearCoverage karma-ci",
-                lint: "eslint ./**/webapp/**/*.js && prettier --plugin-search-dir=. --check ./**/webapp/**/*.{js,xml}",
-                "lint-fix": "eslint ./**/webapp/**/*.js --fix && prettier --plugin-search-dir=. --write ./**/webapp/**/*.{js,xml} --no-error-on-unmatched-pattern"
+                lint: `eslint ./**/webapp/**/*.js && prettier --plugin-search-dir=. --check ./**/webapp/**/*.{js,${oConfig.viewtype.toLowerCase()}}`,
+                "lint-fix": `eslint ./**/webapp/**/*.js --fix && prettier --plugin-search-dir=. --write ./**/webapp/**/*.{js,${oConfig.viewtype.toLowerCase()}} --no-error-on-unmatched-pattern`
             },
             devDependencies: {
                 shx: "^0.3.3",
@@ -259,17 +253,30 @@ export default class extends Generator {
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types"] = "^1.96.0"; //keep this line in sync with ui5.yaml version
+            packge.devDependencies["@sapui5/ts-types"] = "^1.96.0"; // keep this line in sync with ui5.yaml version
         }
+
+        let buildCommand = "ui5 build --config=uimodule/ui5.yaml --clean-dest";
+        if (oConfig.ui5libs.includes("Local")) {
+            buildCommand += " --a";
+        }
+        if (oConfig.platform === "Application Router @ Cloud Foundry") {
+            buildCommand += " --dest approuter/uimodule/webapp";
+        } else if (oConfig.platform !== "SAP NetWeaver") {
+            buildCommand += " --dest uimodule/dist";
+            buildCommand += " --include-task=generateManifestBundle";
+        } else {
+            buildCommand += " --dest dist/uimodule";
+        }
+        packge.scripts["build:uimodule"] = buildCommand;
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
     }
 
     install() {
         this.config.set("setupCompleted", true);
-        this.installDependencies({
-            bower: false,
-            npm: true
+        this.spawnCommandSync("npm", ["install"], {
+            cwd: this.destinationPath()
         });
     }
 

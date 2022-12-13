@@ -1,8 +1,8 @@
-const objectAssignDeep = require("object-assign-deep"),
-    yaml = require("yaml");
+import objectAssignDeep from "object-assign-deep";
+import yaml from "yaml";
 
 // overide can be an object or a function that receives the current object
-exports.writeJSON = async function (filePath, override) {
+async function writeJSON(filePath, override) {
     try {
         console.log()
         const fullFilePath = this.destinationRoot() + filePath;
@@ -27,7 +27,7 @@ exports.writeJSON = async function (filePath, override) {
 };
 
 // overide can be an object or a function that receives the current object
-exports.writeYAML = async function (filePath, override) {
+async function writeYAML(filePath, override) {
     try {
         const fullFilePath = this.destinationRoot() + filePath;
         let oldContent = {};
@@ -51,8 +51,8 @@ exports.writeYAML = async function (filePath, override) {
     }
 };
 
-// overide can be an object or a function that receives the current object
-exports.manipulateJSON = async function (filePath, override) {
+// override can be an object or a function that receives the current object
+async function manipulateJSON(filePath, override) {
     try {
         const fullFilePath = this.destinationRoot() + filePath;
         const oldContent = this.fs.readJSON(fullFilePath);
@@ -73,7 +73,7 @@ exports.manipulateJSON = async function (filePath, override) {
 };
 
 // overide can be an object or a function that receives the current object
-exports.manipulateYAML = async function (filePath, override) {
+async function manipulateYAML(filePath, override) {
     try {
         const fullFilePath = this.destinationRoot() + filePath;
         const oldContent = yaml.parse(this.fs.read(fullFilePath));
@@ -91,3 +91,10 @@ exports.manipulateYAML = async function (filePath, override) {
         throw e;
     }
 };
+
+export default {
+    writeJSON,
+    writeYAML,
+    manipulateJSON,
+    manipulateYAML
+}

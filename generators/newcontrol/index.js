@@ -1,6 +1,6 @@
-const Generator = require("yeoman-generator");
+import Generator from "yeoman-generator";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new custom control to an existing project";
 
     prompting() {

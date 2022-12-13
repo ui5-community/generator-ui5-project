@@ -1,8 +1,8 @@
-var Generator = require("yeoman-generator");
-var validFilename = require("valid-filename");
-var fs = require("fs");
+import Generator from "yeoman-generator";
+import validFilename from "valid-filename";
+import fs from "fs";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new UIVeri5 page object to an existing project suite";
 
     constructor(args, opts) {

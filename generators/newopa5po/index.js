@@ -1,8 +1,8 @@
-const Generator = require("yeoman-generator");
-const validFilename = require("valid-filename");
-const fs = require("fs");
+import Generator from "yeoman-generator";
+import validFilename from "valid-filename";
+import fs from "fs";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new OPA5 page object to an existing test suite";
 
     prompting() {

@@ -1,8 +1,10 @@
-const assert = require("yeoman-assert");
-const path = require("path");
-const helpers = require("yeoman-test");
-const fs = require("fs");
-const nock = require("nock");
+import assert from "yeoman-assert";
+import path from "path";
+import helpers from "yeoman-test";
+import nock from "nock";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function generate(prompts) {
     const context = helpers.run(path.join(__dirname, "../generators/app"));
@@ -11,13 +13,14 @@ function generate(prompts) {
     }
     context.withPrompts({
         namespaceUI5: "test",
+        newdir: false,
         ...prompts
     });
     return context;
 }
 
 describe("open-ux-tools", function () {
-    this.timeout(5000);
+    this.timeout(200000);
 
     describe("create a project using the fiori-freestyle-writer", () => {
         let context;
@@ -81,7 +84,8 @@ describe("open-ux-tools", function () {
                 projectname: "fpmTravelApp",
                 enableFPM: true,
                 serviceUrl: `${host}${service}`,
-                mainEntity: "BookedFlights"
+                mainEntity: "BookedFlights",
+                newdir: false
             });
 
         });

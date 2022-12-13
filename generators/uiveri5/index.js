@@ -1,7 +1,10 @@
-var Generator = require("yeoman-generator");
-var fileaccess = require("../../helpers/fileaccess");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new UIVeri5 test suite to an existing project";
 
     constructor(args, opts) {
@@ -119,12 +122,12 @@ module.exports = class extends Generator {
 
     main() {
         if (this.options.oneTimeConfig.addPO) {
-            this.composeWith(require.resolve("../newuiveri5po"), {
+            this.composeWith(__dirname + "/../newuiveri5po/index.js", {
                 dirname: this.options.oneTimeConfig.dirname
             });
         }
         if (this.options.oneTimeConfig.addSpec) {
-            this.composeWith(require.resolve("../newuiveri5spec"), {
+            this.composeWith(__dirname + "/../newuiveri5spec/index.js", {
                 dirname: this.options.oneTimeConfig.dirname
             });
         }

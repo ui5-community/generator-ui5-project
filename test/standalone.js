@@ -1,8 +1,9 @@
-const assert = require("yeoman-assert");
-const path = require("path");
-// const fs = require('fs');
-const helpers = require("yeoman-test");
-
+import assert from "yeoman-assert";
+import path from "path";
+import helpers from "yeoman-test";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const IsCIRun = process.env.CI;
 
 function newViewControllerPairTest() {

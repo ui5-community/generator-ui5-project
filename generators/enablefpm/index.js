@@ -1,9 +1,8 @@
-const path = require("path");
-const Generator = require("yeoman-generator");
-const fpmWriter = require("@sap-ux/fe-fpm-writer");
-const utils = require("../utils");
+import Generator from "yeoman-generator";
+import fpmWriter from "@sap-ux/fe-fpm-writer";
+import utils from "../utils.js";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Enable the Fiori elements flexible program model";
 
     async prompting() {

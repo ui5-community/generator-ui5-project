@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "(Sub-)generator for a UI5 project",
   "main": "generators/app/index.js",
+  "type": "module",
   "scripts": {
     "test": "mocha",
     "workaround": "find . -name '.DS_Store' -delete",

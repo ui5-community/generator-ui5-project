@@ -1,9 +1,12 @@
-const Generator = require("yeoman-generator");
-const jsUtils = require("../../helpers/jsutils");
-const path = require("path");
-const glob = require("glob");
+import Generator from "yeoman-generator";
+import jsUtils from "../../helpers/jsutils.js";
+import path from "path";
+import glob from "glob";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new QUnit test suite to an existing project";
 
     prompting() {
@@ -128,7 +131,7 @@ module.exports = class extends Generator {
     main() {
         if (this.options.oneTimeConfig.addTest) {
             this.composeWith(
-                require.resolve("../newqunittest"),
+                __dirname + "/../newqunittest/index.js",
                 Object.assign({}, this.options.oneTimeConfig, {
                     isSubgeneratorCall: true
                 })

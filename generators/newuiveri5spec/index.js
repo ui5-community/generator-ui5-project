@@ -1,7 +1,7 @@
-var Generator = require("yeoman-generator");
-var validFilename = require("valid-filename");
+import Generator from "yeoman-generator";
+import validFilename from "valid-filename";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new UIVeri5 spec to an existing test suite";
 
     prompting() {
