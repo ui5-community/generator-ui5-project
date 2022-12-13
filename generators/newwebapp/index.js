@@ -150,13 +150,9 @@ export default class extends Generator {
     async writing() {
         const sModuleName = this.options.oneTimeConfig.modulename;
         const sProjectName = this.options.oneTimeConfig.projectname;
-        const localResources =
-            this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" ||
-            this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)";
         const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
         const platformIsLaunchpad = this.options.oneTimeConfig.platform === "SAP Launchpad service"
         const platformIsHTML5AppRepo = this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
-        const platformIsNetWeaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
         this.sourceRoot(path.join(__dirname, "templates"));
 
@@ -372,26 +368,6 @@ export default class extends Generator {
                 }
             });
         }
-
-        // Append to Main package.json
-        // await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
-        //     packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
-        //     packge.scripts["build:ui"] += " build:" + sModuleName;
-        //     let buildCommand = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest";
-        //     if (localResources) {
-        //         buildCommand += " --a";
-        //     }
-        //     if (platformIsAppRouter) {
-        //         buildCommand += ` --dest approuter/${sModuleName}/webapp`;
-        //     } else if (!platformIsNetWeaver) {
-        //         buildCommand += ` --dest ${sModuleName}/dist`;
-        //         buildCommand += " --include-task=generateManifestBundle";
-        //     } else {
-        //         buildCommand += " --dest dist/" + sModuleName;
-        //     }
-        //     packge.scripts["build:" + sModuleName] = buildCommand;
-        //     return packge;
-        // });
 
         if (
             platformIsHTML5AppRepo ||
