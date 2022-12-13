@@ -135,6 +135,12 @@ export default class extends Generator {
     }
 
     async writing() {
+        // required so that yeoman detects changes to package.json
+        // and runs install automatically, even if newdir = true
+        // see https://github.com/yeoman/environment/issues/309
+        this.env.cwd = this.destinationPath();
+        this.env.options.nodePackageManager = "npm"
+
         const oConfig = this.config.getAll();
 
         this.sourceRoot(path.join(__dirname, "templates"));
@@ -271,13 +277,6 @@ export default class extends Generator {
         packge.scripts["build:uimodule"] = buildCommand;
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
-    }
-
-    install() {
-        this.config.set("setupCompleted", true);
-        this.spawnCommandSync("npm", ["install"], {
-            cwd: this.destinationPath()
-        });
     }
 
     end() {
