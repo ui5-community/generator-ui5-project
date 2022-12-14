@@ -48,6 +48,14 @@ module.exports = class extends Generator {
             }
         ]);
 
+        initialAnswers.enableTypescript = (await this.prompt({
+            type: "confirm",
+            name: "enableTypescript",
+            message: "Do you want to use the awesomeness of Typescript?",
+            default: true,
+            when: initialAnswers.enableFPM
+        })).enableTypescript;
+
         const answers = await this.prompt([
             {
                 type: "confirm",
@@ -108,7 +116,8 @@ module.exports = class extends Generator {
                 type: "confirm",
                 name: "codeassist",
                 message: "Would you like to add JavaScript code assist libraries to the project?",
-                default: true
+                default: !initialAnswers.enableTypescript,
+                when: !initialAnswers.enableTypescript
             },
             {
                 type: "confirm",
@@ -249,7 +258,7 @@ module.exports = class extends Generator {
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types"] = "^1.96.0"; //keep this line in sync with ui5.yaml version
+            packge.devDependencies["@sapui5/ts-types"] = "~1.102.7"; //keep this line in sync with ui5.yaml version
         }
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
@@ -257,16 +266,15 @@ module.exports = class extends Generator {
 
     install() {
         this.config.set("setupCompleted", true);
-        this.installDependencies({
-            bower: false,
-            npm: true
-        });
     }
 
     end() {
-        // If the generator is properly installed, we have to run lint-fix to get properly formatted code
         // (skipInstall is true when executed in unit tests.)
         if (!this.env.options.skipInstall) {
+            this.spawnCommandSync('npm', ['install'], {
+                cwd: this.destinationPath()
+            });
+            // If the generator is properly installed, we have to run lint-fix to get properly formatted code
             this.spawnCommandSync("npm", ["run", "lint-fix"], {
                 cwd: this.destinationPath()
             });

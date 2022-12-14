@@ -167,18 +167,12 @@ module.exports = class extends Generator {
             /**
              * @type FreestyleApp
              */
-            const freestyleApp = {
+            const ui5App = {
                 app: {
                     id: this.options.oneTimeConfig.appId
                 },
                 package: {
                     name: this.options.oneTimeConfig.appId
-                },
-                template: {
-                    type: TemplateType.Basic,
-                    settings: {
-                        viewName: this.options.oneTimeConfig.viewname
-                    }
                 },
                 appOptions: {
                     loadReuseLibs: platformIsLaunchpad
@@ -190,9 +184,46 @@ module.exports = class extends Generator {
 
             try {
                 if (this.options.enableFPM) {
-                    await ui5Writer.generate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    ui5App.app.baseComponent = 'sap/fe/core/AppComponent';
+                    if (this.options.enableTypescript) {
+                        ui5App.appOptions.typescript = true;
+                    }
+                    await ui5Writer.generate(this.destinationPath(sModuleName), ui5App, this.fs);
+                    if (this.options.enableTypescript) {
+                        // manipulate a few files to work with the easy-ui5 structure
+                        const tsconfig = "tsconfig.json";
+                        const tsCfgStr = this.fs.read(this.destinationPath(sModuleName, tsconfig));
+                        this.fs.delete(this.destinationPath(tsconfig));
+                        this.fs.delete(this.destinationPath(sModuleName, tsconfig));
+                        this.fs.write(this.destinationPath(tsconfig), tsCfgStr.replaceAll('webapp', `${sModuleName}/webapp`).replace('dist', `${sModuleName}/dist`));
+                        const babel = ".babelrc.json";
+                        this.fs.move(this.destinationPath(sModuleName, babel), this.destinationPath(babel));
+                        const pckg = "package.json";
+                        const devDeps = this.fs.readJSON(this.destinationPath(sModuleName, pckg)).devDependencies;
+                        this.fs.extendJSON(this.destinationPath(pckg), {
+                            scripts: {
+                                "start:mock": `ui5 serve --config=${sModuleName}/ui5-mock.yaml  --open index.html?sap-ui-xx-viewCache=false`,
+                                "ts:check": "tsc --noEmit"
+                            },
+                            devDependencies: devDeps,
+                            ui5: {
+                                dependencies: [
+                                    "ui5-middleware-livereload",
+                                    "@sap/ux-ui5-tooling",
+                                    "@sap-ux/ui5-middleware-fe-mockserver",
+                                    "ui5-tooling-transpile"
+                                  ]
+                            }
+                        })
+                    }
                 } else {
-                    await generateFreestyleTemplate(this.destinationPath(sModuleName), freestyleApp, this.fs);
+                    await generateFreestyleTemplate(this.destinationPath(sModuleName), { ...ui5App,
+                        template: {
+                            type: TemplateType.Basic,
+                            settings: {
+                                viewName: this.options.oneTimeConfig.viewname
+                            }
+                        }}, this.fs);
                     // make @sap-ux/fiori-freestyle-writer's MainView.controller
                     // aware of easy-ui5's base controller
                     const MainViewController = {
@@ -234,7 +265,9 @@ module.exports = class extends Generator {
                 // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
-                    "ui5.yaml" /* easy-ui5 specific ui5* yamls */,
+                    "ui5.yaml", /* easy-ui5 specific ui5* yamls */
+                    ".gitignore", /* irrelevant */
+                    ".eslintrc.json", /* irrelevant */
                     "package.json" /* irrelevant */
                 ].map(async (file) => {
                     try {

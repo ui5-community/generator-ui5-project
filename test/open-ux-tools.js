@@ -21,7 +21,7 @@ describe("open-ux-tools", function () {
 
     describe("create a project using the fiori-freestyle-writer", () => {
         let context;
-        before(async function () {
+        before(async () => {
             context = await generate({
                 projectname: "myFioriFreestylApp",
                 viewtype: 'XML'
@@ -69,7 +69,7 @@ describe("open-ux-tools", function () {
         const host = "http://localhost:4004";
         const service = "/travel";
         let context;
-        before(async function () {
+        before(async () => {
             nock.disableNetConnect();
 
             nock(host)
@@ -80,6 +80,7 @@ describe("open-ux-tools", function () {
             context = await generate({
                 projectname: "fpmTravelApp",
                 enableFPM: true,
+                enableTypescript: true,
                 serviceUrl: `${host}${service}`,
                 mainEntity: "BookedFlights"
             });
@@ -95,19 +96,29 @@ describe("open-ux-tools", function () {
         it("custom page and local annotation file is generated", () => {
             assert.file([
                 "uimodule/webapp/ext/main/Main.view.xml",
-                "uimodule/webapp/ext/main/Main.controller.js",
+                "uimodule/webapp/ext/main/Main.controller.ts",
                 "uimodule/webapp/annotations/annotation.xml"
             ]);
         });
 
         it("check that fe components are used", () => {
             assert.fileContent("uimodule/webapp/manifest.json", "sap.fe.core.fpm");
-            assert.fileContent("uimodule/webapp/Component.js", "sap/fe/core/AppComponent");
+            assert.fileContent("uimodule/webapp/Component.ts", "sap/fe/core/AppComponent");
         });
 
         it("check that Fiori tools are enabled", () => {
             assert.fileContent('package.json', 'sapux');
             assert.fileContent('package.json', '@sap/ux-specification');
+        });
+
+        it("check that typescript is configured correctly", () => {
+            assert.file([
+                "tsconfig.json",
+                ".babelrc.json"
+            ]);
+            assert.fileContent('tsconfig.json', `"rootDir": "uimodule/webapp"`);
+            assert.fileContent('package.json', 'ui5-tooling-transpile');
+            assert.fileContent('package.json', 'ts:check');
         });
     });
 });

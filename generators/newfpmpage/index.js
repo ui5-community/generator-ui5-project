@@ -2,7 +2,8 @@ const path = require("path");
 const Generator = require("yeoman-generator");
 const fpmWriter = require("@sap-ux/fe-fpm-writer");
 const serviceWriter = require("@sap-ux/odata-service-writer");
-const UI5Config = require("@sap-ux/ui5-config").UI5Config;
+const { isTypescriptEnabled } = require("@sap-ux/ui5-application-writer");
+const { UI5Config } = require("@sap-ux/ui5-config");
 const axios = require("@sap-ux/axios-extension");
 const utils = require("../utils");
 const { join } = require("path");
@@ -149,10 +150,14 @@ module.exports = class extends Generator {
                 fpmWriter.generateListReport(target, { entity: this.answers.mainEntity }, this.fs);
                 break;
             default:
+                if (this.options.enableTypescript === undefined) {
+                    this.options.enableTypescript = isTypescriptEnabled(target, this.fs);
+                }
                 fpmWriter.generateCustomPage(target, {
                     name: this.answers.viewName,
                     entity: this.answers.mainEntity,
-                    navigation: this.answers.navigation
+                    navigation: this.answers.navigation,
+                    typescript: this.options.enableTypescript
                 }, this.fs);
                 break;
         }
