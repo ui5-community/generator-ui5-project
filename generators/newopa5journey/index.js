@@ -111,18 +111,19 @@ export default class extends Generator {
             this.destinationPath(sModule + "test/integration/" + this.options.oneTimeConfig.journey + "Journey.js"),
             this.options.oneTimeConfig
         );
-
-        // add new journey to AllJourneys list
-        const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
-        if (fs.existsSync(allJourneysFile)) {
-            const content = fs
-                .readFileSync(allJourneysFile, "utf8")
-                .replace(
-                    /sap.ui.define\(\[(.*)\s\]/gms,
-                    `sap.ui.define([$1,\n  "./${this.options.oneTimeConfig.journey}Journey"\n]`
-                )
-                .replace(/\s,\s/, ",\n");
-            fs.writeFileSync(allJourneysFile, content);
-        }
+        this.fs.commit([], () => {
+            // add new journey to AllJourneys list
+            const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
+            if (fs.existsSync(allJourneysFile)) {
+                const content = fs
+                    .readFileSync(allJourneysFile, "utf8")
+                    .replace(
+                        /sap.ui.define\(\[(.*)\s\]/gms,
+                        `sap.ui.define([$1,\n  "./${this.options.oneTimeConfig.journey}Journey"\n]`
+                    )
+                    .replace(/\s,\s/, ",\n");
+                fs.writeFileSync(allJourneysFile, content);
+            }
+        })
     }
 };
