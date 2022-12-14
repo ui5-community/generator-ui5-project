@@ -2,12 +2,12 @@
   "name": "<%= projectname %>",
   "version": "0.0.1",
   "engines": {
-    "node": "12.X"
+    "node": "14.X"
   },
   "scripts": {
     "start": "node node_modules/@sap/approuter/approuter.js"
   },
   "dependencies": {
-    "@sap/approuter": "^9.0.0"
+    "@sap/approuter": "^11.0.0"
   }
 }

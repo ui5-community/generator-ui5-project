@@ -1,6 +1,6 @@
 {
   "name": "generator-template-ui5-project",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "(Sub-)generator for a UI5 project",
   "main": "generators/app/index.js",
   "scripts": {
