@@ -4,3 +4,4 @@ package-lock.json
 .yo-rc.json
 .env
 /test/test-output
+.DS_Store
