@@ -5,3 +5,4 @@ package-lock.json
 .env
 /test/test-output
 .DS_Store
+.vscode
