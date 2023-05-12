@@ -207,12 +207,11 @@ module.exports = class extends Generator {
                 karma: "^6.4.2",
                 "karma-chrome-launcher": "^3.2.0",
                 "karma-coverage": "^2.2.0",
-                "karma-ui5": "^3.0.3",
+                "karma-ui5": "latest",
                 "npm-run-all": "^4.1.5",
                 eslint: "latest",
                 prettier: "latest",
-                "@prettier/plugin-xml": "latest",
-                "@sap/eslint-plugin-ui5-jsdocs": "latest"
+                "@prettier/plugin-xml": "latest"
             }
         };
 
