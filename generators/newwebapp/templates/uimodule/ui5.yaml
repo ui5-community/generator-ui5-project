@@ -33,7 +33,7 @@ server:
 builder:
   customTasks:
     -  name: ui5-task-zipper
-       afterTask: uglify
+       afterTask: generateComponentPreload
        configuration:
          includeDependencies: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Local resources (SAPUI5)") %>
          archiveName: <%=modulename%>
