@@ -220,8 +220,6 @@ module.exports = class extends Generator {
             packge.devDependencies["ui5-middleware-cfdestination"] = "latest";
             (packge.devDependencies["ui5-task-zipper"] = "latest"), (packge.devDependencies["cross-var"] = "^1.1.0");
             packge.devDependencies["mbt"] = "latest";
-            packge.ui5.dependencies.push("ui5-middleware-cfdestination");
-            packge.ui5.dependencies.push("ui5-task-zipper");
 
             if (
                 oConfig.platform === "Application Router @ Cloud Foundry" ||
