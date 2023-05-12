@@ -36,7 +36,7 @@ describe("generator:qunit", function () {
     it("Should create test file if sub generator to add tests is called and refer in AllTests.js", async function () {
         await runGenerator("qunit", { addTest: "Y", codeUnderTest: "/folder/foo" });
         assert.file("webapp/test/unit/folder/foo.js");
-        assert.fileContent("webapp/test/unit/folder/foo.js", 'com/myorg/myUI5App/folder/foo"');
+        assert.fileContent("webapp/test/unit/folder/foo.js", 'com/myorg/myui5app/folder/foo"');
         assert.fileContent("webapp/test/unit/AllTests.js", './folder/foo"');
     });
 

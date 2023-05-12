@@ -42,7 +42,7 @@ module.exports = class extends Generator {
                                 }
                                 return "Please use only alpha numeric characters and dots for the project name.";
                             },
-                            default: "myUI5App"
+                            default: "myui5app"
                         }
                     ]);
 

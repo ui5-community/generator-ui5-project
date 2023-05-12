@@ -50,7 +50,7 @@ module.exports = class extends Generator {
                         }
                         return "Please use alpha numeric characters only for the project name.";
                     },
-                    default: "myUI5App"
+                    default: "myui5app"
                 },
                 {
                     type: "input",
