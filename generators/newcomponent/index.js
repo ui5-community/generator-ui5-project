@@ -1,7 +1,8 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new component to an existing project";
 
     prompting() {
@@ -65,7 +66,7 @@ module.exports = class extends Generator {
         const sLazy = this.options.oneTimeConfig.lazy;
         const sModuleName = this.options.oneTimeConfig.modulename;
 
-        await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+        await fileaccess.manipulateJSON.call(this, path.join(sModuleName, "webapp/manifest.json"), {
             sap: {
                 ui5: {
                     componentUsages: {

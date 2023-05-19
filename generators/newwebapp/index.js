@@ -1,19 +1,18 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess"),
-    path = require("path"),
-    glob = require("glob"),
-    chalk = require("chalk"),
-    ui5Writer = require("@sap-ux/ui5-application-writer");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
+import glob from "glob";
+import chalk from "chalk";
+import ui5Writer from "@sap-ux/ui5-application-writer";
+import dirTree from "directory-tree";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// patches the Generator for the install tasks as new custom install
-// tasks produce ugly errors! (Related issue: https://github.com/yeoman/environment/issues/309)
-// to avoid this error: "TypeError: this.installDependencies is not a function"
-require("lodash").extend(Generator.prototype, require("yeoman-generator/lib/actions/install"));
+import pkg from '@sap-ux/fiori-freestyle-writer';
+const { generate: generateFreestyleTemplate, TemplateType, FreestyleApp } = pkg
 
-const { generate: generateFreestyleTemplate, TemplateType, FreestyleApp } = require("@sap-ux/fiori-freestyle-writer");
-const dirTree = require("directory-tree");
-
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new web app to an existing project";
 
     prompting() {
@@ -46,8 +45,13 @@ module.exports = class extends Generator {
                         ? this.options.oneTimeConfig.projectname
                         : this.options.modulename);
 
+                // handle TypedView (JS) specialities in manifest.json
+                if (this.options.oneTimeConfig.viewtype === "JS") {
+                    this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
+                }
+
                 this.composeWith(
-                    require.resolve("../opa5"),
+                    path.join(__dirname, "../opa5"),
                     Object.assign({}, this.options.oneTimeConfig, {
                         isSubgeneratorCall: true,
                         namespaceUI5Input: this.options.oneTimeConfig.namespaceUI5
@@ -110,7 +114,7 @@ module.exports = class extends Generator {
                     type: "list",
                     name: "viewtype",
                     message: "Which view type do you use?",
-                    choices: ["XML", "JSON", "JS", "HTML"],
+                    choices: ["XML", "JS"],
                     default: "XML"
                 }
             ]);
@@ -138,8 +142,13 @@ module.exports = class extends Generator {
                 "/" +
                 (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
 
+            // handle TypedView (JS) specialities in manifest.json
+            if (this.options.oneTimeConfig.viewtype === "JS") {
+                this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
+            }
+
             this.composeWith(
-                require.resolve("../opa5"),
+                path.join(__dirname, "../opa5"),
                 Object.assign({}, this.options.oneTimeConfig, {
                     isSubgeneratorCall: true,
                     namespaceUI5Input: this.options.oneTimeConfig.namespaceUI5
@@ -151,13 +160,9 @@ module.exports = class extends Generator {
     async writing() {
         const sModuleName = this.options.oneTimeConfig.modulename;
         const sProjectName = this.options.oneTimeConfig.projectname;
-        const localResources =
-            this.options.oneTimeConfig.ui5libs === "Local resources (OpenUI5)" ||
-            this.options.oneTimeConfig.ui5libs === "Local resources (SAPUI5)";
         const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
         const platformIsLaunchpad = this.options.oneTimeConfig.platform === "SAP Launchpad service"
         const platformIsHTML5AppRepo = this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
-        const platformIsNetWeaver = this.options.oneTimeConfig.platform.includes("SAP NetWeaver");
 
         this.sourceRoot(path.join(__dirname, "templates"));
 
@@ -262,7 +267,7 @@ module.exports = class extends Generator {
                     );    
                 }
 
-                // clean up @sap-ux/fiori-freestyle-writer artefacts not needed in easy-ui5
+                // clean up @sap-ux/fiori-freestyle-writer artifacts not needed in easy-ui5
                 [
                     "ui5-local.yaml",
                     "ui5.yaml", /* easy-ui5 specific ui5* yamls */
@@ -273,7 +278,7 @@ module.exports = class extends Generator {
                     try {
                         this.fs.delete(this.destinationPath(sModuleName, file));
                     } catch (e) {
-                        //ignore as this probably means the file doens't exist anyway
+                        // ignore as this probably means the file doesn't exist anyway
                     }
                 });
 
@@ -290,7 +295,7 @@ module.exports = class extends Generator {
                 let _ui5libs = "";
                 switch (this.options.oneTimeConfig.ui5libs) {
                     case "Content delivery network (OpenUI5)":
-                        _ui5libs = "https://openui5.hana.ondemand.com/resources/sap-ui-core.js";
+                        _ui5libs = "https://sdk.openui5.org/resources/sap-ui-core.js";
                         break;
 
                     case "Content delivery network (SAPUI5)":
@@ -370,7 +375,7 @@ module.exports = class extends Generator {
 
         if (platformIsAppRouter) {
             this.log("configuring app router settings...");
-            await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+            await fileaccess.manipulateJSON.call(this, "approuter/xs-app.json", {
                 routes: [
                     {
                         source: "^/" + sModuleName + "/(.*)$",
@@ -384,7 +389,7 @@ module.exports = class extends Generator {
 
         if (platformIsLaunchpad) {
             this.log("configuring Launchpad integration...");
-            await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", {
+            await fileaccess.manipulateJSON.call(this, sModuleName + "/webapp/manifest.json", {
                 ["sap.cloud"]: {
                     service: this.options.oneTimeConfig.projectname + ".service"
                 },
@@ -407,32 +412,12 @@ module.exports = class extends Generator {
             });
         }
 
-        // Append to Main package.json
-        await fileaccess.manipulateJSON.call(this, "/package.json", function (packge) {
-            packge.scripts["serve:" + sModuleName] = "ui5 serve --config=" + sModuleName + "/ui5.yaml";
-            packge.scripts["build:ui"] += " build:" + sModuleName;
-            let buildCommand = "ui5 build --config=" + sModuleName + "/ui5.yaml --clean-dest";
-            if (localResources) {
-                buildCommand += " --a";
-            }
-            if (platformIsAppRouter) {
-                buildCommand += ` --dest approuter/${sModuleName}/webapp`;
-            } else if (!platformIsNetWeaver) {
-                buildCommand += ` --dest ${sModuleName}/dist`;
-                buildCommand += " --include-task=generateManifestBundle";
-            } else {
-                buildCommand += " --dest dist/" + sModuleName;
-            }
-            packge.scripts["build:" + sModuleName] = buildCommand;
-            return packge;
-        });
-
         if (
             platformIsHTML5AppRepo ||
             platformIsLaunchpad
         ) {
             this.log("configuring deployment options...");
-            await fileaccess.writeYAML.call(this, "/mta.yaml", (mta) => {
+            await fileaccess.writeYAML.call(this, "mta.yaml", (mta) => {
                 const deployer = mta.modules.find((module) => module.name === "webapp_deployer");
 
                 deployer["build-parameters"]["requires"].push({
@@ -452,7 +437,7 @@ module.exports = class extends Generator {
                     }
                 });
 
-                //add destination content to mta.yaml so it will be displayed under "HTML5 Applications" in SAP BTP Cockpit
+                // add destination content to mta.yaml so it will be displayed under "HTML5 Applications" in SAP BTP Cockpit
                 if (platformIsHTML5AppRepo) {
                     mta.modules.push({
                         "name": `${sProjectName}_destination_content`,
@@ -517,7 +502,13 @@ module.exports = class extends Generator {
             const oSubGen = Object.assign({}, this.options.oneTimeConfig);
             oSubGen.isSubgeneratorCall = true;
             oSubGen.cwd = this.destinationRoot();
-            this.composeWith(require.resolve("../newview"), oSubGen);
+
+            // handle TypedView (JS) specialities in manifest.json
+            if (this.options.oneTimeConfig.viewtype === "JS") {
+                this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
+            }
+
+            this.composeWith(path.join(__dirname, "../newview"), oSubGen);
         }
 
         const modules = this.config.get("uimodules") || [];
@@ -525,12 +516,13 @@ module.exports = class extends Generator {
         this.config.set("uimodules", modules);
 
         if (this.config.get("enableFioriTools")) {
-            this.fs.extendJSON('package.json', { 
+            this.fs.extendJSON(this.destinationPath("package.json"), { 
                 sapux: modules, 
                 devDependencies: {
                     "@sap/ux-specification": "latest"
                 }
             });
         }
+
     }
 };

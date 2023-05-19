@@ -18,9 +18,6 @@ server:
   customMiddleware:
     - name: ui5-middleware-livereload
       afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: <%= modulename %>/webapp
 <% if(platform !== 'Static webserver' && platform !== 'SAP NetWeaver'){ -%>
     - name: ui5-middleware-cfdestination
       afterMiddleware: compression

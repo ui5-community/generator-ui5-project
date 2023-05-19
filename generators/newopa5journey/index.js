@@ -1,8 +1,8 @@
-const Generator = require("yeoman-generator");
-const validFilename = require("valid-filename");
-const fs = require("fs");
+import Generator from "yeoman-generator";
+import validFilename from "valid-filename";
+import fs from "fs";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new OPA5 journey to an existing test suite";
 
     prompting() {
@@ -111,18 +111,22 @@ module.exports = class extends Generator {
             this.destinationPath(sModule + "test/integration/" + this.options.oneTimeConfig.journey + "Journey.js"),
             this.options.oneTimeConfig
         );
-
-        // add new journey to AllJourneys list
-        const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
-        if (fs.existsSync(allJourneysFile)) {
-            const content = fs
-                .readFileSync(allJourneysFile, "utf8")
-                .replace(
-                    /sap.ui.define\(\[(.*)\s\]/gms,
-                    `sap.ui.define([$1,\n  "./${this.options.oneTimeConfig.journey}Journey"\n]`
-                )
-                .replace(/\s,\s/, ",\n");
-            fs.writeFileSync(allJourneysFile, content);
-        }
+        // commit to the file system before reading from it
+        this.fs.commit([], () => {
+            // add new journey to AllJourneys list
+            const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
+            if (fs.existsSync(allJourneysFile)) {
+                const newJourneyAlreadyIncluded = fs.readFileSync(allJourneysFile, "utf8").includes(`"./${this.options.oneTimeConfig.journey}Journey"`)
+                    if (!newJourneyAlreadyIncluded) {
+                        const content = fs.readFileSync(allJourneysFile, "utf8")
+                                        .replace(
+                                            /sap.ui.define\(\[(.*)\s\]/gms,
+                                            `sap.ui.define([$1,\n  "./${this.options.oneTimeConfig.journey}Journey"\n]`
+                                        )
+                                        .replace(/\s,\s/, ",\n");
+                        fs.writeFileSync(allJourneysFile, content);
+                    }
+            }
+        })
     }
 };

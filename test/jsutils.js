@@ -1,5 +1,5 @@
-const assert = require("yeoman-assert");
-const jsUtils = require("../helpers/jsutils");
+import assert from "yeoman-assert";
+import jsUtils from "../helpers/jsutils.js";
 
 describe("", function () {
     it("Should transform file path to relative path", function () {

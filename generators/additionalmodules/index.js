@@ -1,9 +1,12 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess"),
-    path = require("path"),
-    glob = require("glob");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
+import glob from "glob";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static hidden = true;
 
     prompting() {
@@ -25,7 +28,7 @@ module.exports = class extends Generator {
         // Copy approuter module
         if (oConfig.platform !== "SAP Launchpad service") {
             glob.sync("**", {
-                cwd: this.sourceRoot() + "/approuter",
+                cwd: path.join(this.sourceRoot(), "approuter"),
                 nodir: true
             }).forEach((file) => {
                 this.fs.copyTpl(
@@ -39,7 +42,7 @@ module.exports = class extends Generator {
                 ? "uimodule/index.html"
                 : (oConfig.namespaceUI5 + oConfig.projectname + "/").replace(/\./g, "");
 
-            await fileaccess.manipulateJSON.call(this, "/approuter/xs-app.json", {
+            await fileaccess.manipulateJSON.call(this, "approuter/xs-app.json", {
                 welcomeFile: welcomeRoute,
                 authenticationMethod: "none",
                 logout: {
@@ -52,7 +55,7 @@ module.exports = class extends Generator {
         if (oConfig.platform !== "Application Router @ SAP HANA XS Advanced") {
             // Copy deployer module
             glob.sync("**", {
-                cwd: this.sourceRoot() + "/deployer",
+                cwd: path.join(this.sourceRoot(), "deployer"),
                 nodir: true
             }).forEach((file) => {
                 this.fs.copyTpl(
@@ -239,6 +242,6 @@ module.exports = class extends Generator {
             }
         }
 
-        await fileaccess.writeYAML.call(this, "/mta.yaml", mta);
+        await fileaccess.writeYAML.call(this, "mta.yaml", mta);
     }
 };

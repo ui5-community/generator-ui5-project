@@ -1,18 +1,36 @@
-const assert = require("yeoman-assert");
-const path = require("path");
-const helpers = require("yeoman-test");
-const execa = require("execa");
+import assert from "yeoman-assert";
+import path from "path";
+import helpers from "yeoman-test";
+import { execaCommandSync } from "execa";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const IsCIRun = process.env.CI;
 
-function createTest(oPrompt) {
-    describe(Object.values(oPrompt).join("-"), function () {
-        this.timeout(200000);
+function generate(prompts) {
+    const context = helpers.run(path.join(__dirname, "../generators/app"));
+    context.inDir(path.join(__dirname, 'test-output'))
+    context.withPrompts({
+        newdir: false,
+        ...prompts
+    });
+    return context;
+}
 
-        it("should be able to create the project", function () {
-            return helpers.run(path.join(__dirname, "../generators/app")).withPrompts(oPrompt);
+function createTest(oPrompt) {
+    let testDescription = Object.values(oPrompt).join("-");
+    describe(testDescription, function () {
+        this.timeout(200000);
+        let context;
+        before(async () => {
+            context = await generate(oPrompt)
         });
 
+        after(() => {
+            context && context.restore();
+        });
+        
         it("should create the necessary ui5 files", function () {
             return assert.file([
                 "uimodule/ui5.yaml",
@@ -59,22 +77,22 @@ function createTest(oPrompt) {
         }
 
         it("should create an installable project", function () {
-            return execa.commandSync("npm install");
+            return execaCommandSync("npm install");
         });
 
         // run lint-fix after npm install, so that the npm test task won't fail
         it("should run lint-fix", function () {
-            return execa.commandSync("npm run lint-fix");
+            return execaCommandSync("npm run lint-fix");
         });
 
         it("should pass the OPA tests", function () {
-            return execa.commandSync("npm test");
+            return execaCommandSync("npm test");
         });
 
         if (!!oPrompt.platform && oPrompt.platform !== "Static webserver" && oPrompt.platform !== "SAP NetWeaver") {
-            it("should create an buildable project", async function () {
+            it("should create a buildable project", async function () {
                 try {
-                    await execa.commandSync("npm run build:mta");
+                    execaCommandSync("npm run build:mta");
                 } catch (e) {
                     throw new Error(e.stdout + "\n" + e.stderr);
                 }
@@ -85,45 +103,40 @@ function createTest(oPrompt) {
 
 describe("Basic project capabilities", function () {
     const testConfigurations = [
-        { viewtype: "XML" },
-        { viewtype: "JS", platform: "Application Router @ Cloud Foundry" },
-        { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)" },
-        { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver" },
-        { viewtype: "HTML", ui5libs: "Local resources (OpenUI5)", platform: "Application Router @ Cloud Foundry" },
-        { viewtype: "JSON", platform: "SAP Launchpad service" },
-        { viewtype: "XML", platform: "SAP HTML5 Application Repository service for SAP BTP" },
-        { viewtype: "XML", platform: "SAP NetWeaver" },
-        { viewtype: "XML", platform: "Application Router @ SAP HANA XS Advanced" },
         {
-            viewtype: "JS",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "SAP HTML5 Application Repository service for SAP BTP"
+            "viewtype": "JS",
+            "platform": "Application Router @ Cloud Foundry"
         },
         {
-            viewtype: "JSON",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
-        },
-        { viewtype: "HTML", platform: "SAP HTML5 Application Repository service for SAP BTP" },
-        { viewtype: "JS", platform: "SAP HTML5 Application Repository service for SAP BTP" },
-        {
-            viewtype: "JSON",
-            ui5libs: "Local resources (SAPUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
-        },
-        { viewtype: "JSON", ui5libs: "Local resources (SAPUI5)", platform: "SAP NetWeaver" },
-        {
-            viewtype: "HTML",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "Application Router @ SAP HANA XS Advanced"
+            "viewtype": "JS",
+            "ui5libs": "Local resources (SAPUI5)",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
         },
         {
-            viewtype: "JS",
-            ui5libs: "Local resources (OpenUI5)",
-            platform: "SAP HTML5 Application Repository service for SAP BTP"
-        }
-    ];
-
+            "viewtype": "JS",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
+        },
+        {
+            "viewtype": "JS",
+            "ui5libs": "Local resources (OpenUI5)",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
+        },
+        {
+            "viewtype": "XML"
+        },
+        {
+            "viewtype": "XML",
+            "platform": "SAP HTML5 Application Repository service for SAP BTP"
+        },
+        {
+            "viewtype": "XML",
+            "platform": "SAP NetWeaver"
+        },
+        {
+            "viewtype": "XML",
+            "platform": "Application Router @ SAP HANA XS Advanced"
+        }        
+    ]
     testConfigurations.forEach((testConfig, index) => {
         if (!IsCIRun) {
             createTest(testConfig);

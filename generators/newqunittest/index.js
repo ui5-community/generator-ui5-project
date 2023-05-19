@@ -1,9 +1,8 @@
-const Generator = require("yeoman-generator");
-const jsUtils = require("../../helpers/jsutils");
-const validFilename = require("valid-filename");
-const fs = require("fs");
+import Generator from "yeoman-generator";
+import jsUtils from "../../helpers/jsutils.js";
+import fs from "fs";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new QUnit test to an existing test suite";
 
     prompting() {

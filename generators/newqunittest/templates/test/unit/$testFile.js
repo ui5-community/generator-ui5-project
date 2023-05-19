@@ -1,4 +1,5 @@
-sap.ui.define(["<%= appURI %><%=codeUnderTest%>"<% if (useSinonJS) { %>, "sap/ui/thirdparty/sinon-4"<% } %>
+sap.ui.define([
+	"<%= appURI %><%=codeUnderTest%>"<% if (useSinonJS) { %>, "sap/ui/thirdparty/sinon-4"<% } %>
 ], function () {
 	"use strict";
 

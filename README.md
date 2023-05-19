@@ -8,7 +8,7 @@
 [![useses node >= 16][node-img]][node-url]
 [![useses nvm][nvm-img]][nvm-url]
 
-Generator which use the official UI5 tooling and support multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
+Generator which uses the official UI5 tooling and supports multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
 
 > As of version `0.1.0`, we strive to share core functionality (such as webapp scaffolding) with [SAP's `open-ux-tools`](https://github.com/SAP/open-ux-tools) effort, which is "a set of tools and libraries that makes it faster and easier to develop SAP Fiori applications".
 
@@ -64,11 +64,11 @@ This is the most basic option. Choose this option if you want to deploy the web 
 
 ### Application Router @ Cloud Foundry
 
-This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add a standalone [approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
 
 ### Application Router @ SAP HANA XS Advanced
 
-This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add an [Approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
+This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add a standalone [aApprouter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
 
 ### SAP HTML5 Application Repository service for SAP BTP
 
@@ -86,7 +86,7 @@ Use this option if you want to deploy your application(s) to the SAP NetWeaver A
 
 ### Add a new view
 
-This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator.
+This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator (`newopa5po`).
 
 ```shell
 $> yo easy-ui5 project newview
@@ -102,7 +102,7 @@ $> yo easy-ui5 project newcontrol
 
 ### Add a new model
 
-This sub-generator will create a new model in your manifest. Currently, [JSON](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://sapui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
+This sub-generator will create a new model in your manifest. Currently, [JSON](https://ui5.sap.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://ui5.sap.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
 
 ```shell
 $> yo easy-ui5 project newmodel
@@ -118,7 +118,7 @@ $> yo easy-ui5 project newcomponentusage
 
 ### OPA5 tests
 
-This sub-generator will add a basic [OPA5](https://openui5.hana.ondemand.com/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
+This sub-generator will add a basic [OPA5](https://sdk.openui5.org/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
 
 ```shell
 $> yo easy-ui5 project opa5
@@ -148,26 +148,6 @@ This sub-generator will create a new QUnit test either in a basic setup or with 
 
 ```shell
 $> yo easy-ui5 project newqunittest
-```
-
-### UIVeri5 tests
-
-This sub-generator will add a basic [UIVeri5](https://github.com/SAP/ui5-uiveri5) test. It will ask you for test configuration and names of the suite and spec. You can add page objects now or later with another sub-generator.
-
-```shell
-$> yo easy-ui5 project uiveri5
-```
-
-This sub-generator will create a UIVeri5 page object and a new test that shows how to use the page object:
-
-```shell
-$> yo easy-ui5 project newuiveri5po
-```
-
-This sub-generator will create a UIVeri5 spec file:
-
-```shell
-$> yo easy-ui5 project newuiveri5spec
 ```
 
 ## Deployment
@@ -227,7 +207,8 @@ $> npm run deploy
 
 ## Shared functionality with SAP's `open-ux-tools`
 
--   scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
+- Scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
+- Scaffolding a new webapp that uses the Fiori elements flexible program model uses [`@sap-ux/fe-fpm-writer`](https://www.npmjs.com/package/@sap-ux/fe-fpm-writer)
 
 ## Embedded Technologies
 
@@ -251,7 +232,6 @@ Within a few seconds, you'll see that the generator is started, and the debugger
 ![debug](./docs/debugStopped.png)
 
 Now you are ready to go, happy coding 🦁!
-
 
 ## Support
 

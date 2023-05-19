@@ -1,7 +1,7 @@
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new model to an existing project";
 
     prompting() {
@@ -152,7 +152,7 @@ module.exports = class extends Generator {
 
         await fileaccess.manipulateJSON.call(
             this,
-            `${"/" + (this.options.oneTimeConfig.modulename || "")}/webapp/manifest.json`,
+            `${(this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "")}webapp/manifest.json`,
             override
         );
     }
