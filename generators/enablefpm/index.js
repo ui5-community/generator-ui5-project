@@ -1,9 +1,8 @@
-const path = require("path");
-const Generator = require("yeoman-generator");
-const { UI5Config } = require("@sap-ux/ui5-config");
-const fpmWriter = require("@sap-ux/fe-fpm-writer");
-const utils = require("../utils");
-const { join } = require("path");
+import Generator from "yeoman-generator";
+import fpmWriter from "@sap-ux/fe-fpm-writer";
+import utils from "../utils.js";
+import { UI5Config } from "@sap-ux/ui5-config";
+import path from "path";
 
 /**
  * UI5 task and middleware configurations required for TypeScript projects
@@ -30,7 +29,7 @@ const ui5TSSupport = {
     }
 };
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Enable the Fiori elements flexible program model";
 
     async prompting() {
@@ -62,10 +61,10 @@ module.exports = class extends Generator {
             }, this.fs
         );
         if (typescript) {
-            const ui5Yaml = await UI5Config.newInstance(this.fs.read(join(target, 'ui5.yaml')));
+            const ui5Yaml = await UI5Config.newInstance(this.fs.read(path.join(target, 'ui5.yaml')));
             ui5Yaml.addCustomMiddleware([ui5TSSupport.middleware]);
             ui5Yaml.addCustomTasks([ui5TSSupport.task]);
-            this.fs.write(join(target, 'ui5.yaml'), ui5Yaml.toString());
+            this.fs.write(path.join(target, 'ui5.yaml'), ui5Yaml.toString());
         }
     }
 }

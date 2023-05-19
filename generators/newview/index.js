@@ -1,8 +1,12 @@
-const Generator = require("yeoman-generator");
-const fileaccess = require("../../helpers/fileaccess");
-const utils = require("../utils");
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import utils from "../utils.js";
+import path from "path";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new view to an existing project";
 
     prompting() {
@@ -81,7 +85,7 @@ module.exports = class extends Generator {
                     type: "list",
                     name: "viewtype",
                     message: "Which view type do you use?",
-                    choices: ["XML", "JSON", "JS", "HTML"],
+                    choices: ["XML", "JS"],
                     default: "XML"
                 }
             ]);
@@ -121,7 +125,7 @@ module.exports = class extends Generator {
 
             if (this.options.oneTimeConfig.addPO) {
                 this.composeWith(
-                    require.resolve("../newopa5po"),
+                    path.join(__dirname, "../newopa5po"),
                     Object.assign({}, this.options.oneTimeConfig, {
                         isSubgeneratorCall: true
                     })
@@ -168,7 +172,7 @@ module.exports = class extends Generator {
         }
 
         if (this.options.oneTimeConfig.addToRoute) {
-            await fileaccess.manipulateJSON.call(this, "/" + sModuleName + "/webapp/manifest.json", function (json) {
+            await fileaccess.manipulateJSON.call(this, sModuleName + "/webapp/manifest.json", function (json) {
                 const ui5Config = json["sap.ui5"];
                 const targetName = "Target" + sViewName;
 

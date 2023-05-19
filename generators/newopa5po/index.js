@@ -1,8 +1,8 @@
-const Generator = require("yeoman-generator");
-const validFilename = require("valid-filename");
-const fs = require("fs");
+import Generator from "yeoman-generator";
+import validFilename from "valid-filename";
+import fs from "fs";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new OPA5 page object to an existing test suite";
 
     prompting() {
@@ -18,6 +18,7 @@ module.exports = class extends Generator {
             this.options.oneTimeConfig.action = "iPressTheButton";
             this.options.oneTimeConfig.poName = "Main";
             this.options.oneTimeConfig.appId = this.options.appId;
+            this.options.oneTimeConfig.routingViewName = this.options.routingViewName;
 
             const pos = this.config.get("opa5pos") || [];
             pos.push(this.options.oneTimeConfig.poName);

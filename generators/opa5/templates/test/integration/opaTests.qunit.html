@@ -6,21 +6,21 @@
 
         <script
             id="sap-ui-bootstrap"
-            src="../../../../../resources/sap-ui-core.js"
-            data-sap-ui-theme="sap_fiori_3"
+            src="<%=ui5libsprefix%>resources/sap-ui-core.js"
+            data-sap-ui-theme="sap_horizon"
             data-sap-ui-resourceroots='{
-      "<%= appId %>": "../../"
-    }'
+                "<%= appId %>": "../../"
+            }'
             data-sap-ui-language="EN"
             data-sap-ui-animation="false"
             data-sap-ui-compatVersion="edge"
             data-sap-ui-async="true"
         ></script>
 
-        <link rel="stylesheet" type="text/css" href="../../../../../resources/sap/ui/thirdparty/qunit-2.css" />
+        <link rel="stylesheet" type="text/css" href="<%=ui5libsprefix%>resources/sap/ui/thirdparty/qunit-2.css" />
 
-        <script src="../../../../../resources/sap/ui/thirdparty/qunit-2.js"></script>
-        <script src="../../../../../resources/sap/ui/qunit/qunit-junit.js"></script>
+        <script src="<%=ui5libsprefix%>resources/sap/ui/thirdparty/qunit-2.js"></script>
+        <script src="<%=ui5libsprefix%>resources/sap/ui/qunit/qunit-junit.js"></script>
 
         <script src="opaTests.qunit.js"></script>
     </head>

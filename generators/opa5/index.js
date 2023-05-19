@@ -1,8 +1,11 @@
-const Generator = require("yeoman-generator");
-const path = require("path");
-const glob = require("glob");
+import Generator from "yeoman-generator";
+import path from "path";
+import glob from "glob";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a new OPA5 test suite to an existing project";
 
     prompting() {
@@ -105,7 +108,7 @@ module.exports = class extends Generator {
     main() {
         if (this.options.oneTimeConfig.addPO) {
             this.composeWith(
-                require.resolve("../newopa5po"),
+                path.join(__dirname, "../newopa5po"),
                 Object.assign({}, this.options.oneTimeConfig, {
                     isSubgeneratorCall: true
                 })
@@ -113,7 +116,7 @@ module.exports = class extends Generator {
         }
         if (this.options.oneTimeConfig.addJourney) {
             this.composeWith(
-                require.resolve("../newopa5journey"),
+                path.join(__dirname, "../newopa5journey"),
                 Object.assign({}, this.options.oneTimeConfig, {
                     isSubgeneratorCall: true
                 })
@@ -133,6 +136,18 @@ module.exports = class extends Generator {
 
         const sModule =
             (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
+
+        let sPrefix;
+        switch (this.options.oneTimeConfig.ui5libs) {
+            case "Content delivery network (OpenUI5)":
+                sPrefix = "https://sdk.openui5.org/";
+                break;
+            case "Content delivery network (SAPUI5)":
+                sPrefix = "https://ui5.sap.com/";
+                break;
+        }
+        this.options.oneTimeConfig.ui5libsprefixTestSuite = sPrefix || "../";
+        this.options.oneTimeConfig.ui5libsprefix = sPrefix || "../../";
         this.sourceRoot(path.join(__dirname, "templates"));
         glob.sync("**", {
             cwd: this.sourceRoot(),

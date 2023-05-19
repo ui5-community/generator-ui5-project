@@ -1,10 +1,10 @@
-const objectAssignDeep = require("object-assign-deep"),
-    yaml = require("yaml");
+import objectAssignDeep from "object-assign-deep";
+import yaml from "yaml";
 
 // overide can be an object or a function that receives the current object
-exports.writeJSON = async function (filePath, override) {
+async function writeJSON(filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationPath(filePath);
         let oldContent = {};
         if (this.fs.exists(fullFilePath)) {
             oldContent = this.fs.readJSON(fullFilePath);
@@ -26,9 +26,9 @@ exports.writeJSON = async function (filePath, override) {
 };
 
 // overide can be an object or a function that receives the current object
-exports.writeYAML = async function (filePath, override) {
+async function writeYAML(filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationPath(filePath);
         let oldContent = {};
         if (this.fs.exists(fullFilePath)) {
             oldContent = yaml.parse(this.fs.read(fullFilePath));
@@ -50,10 +50,10 @@ exports.writeYAML = async function (filePath, override) {
     }
 };
 
-// overide can be an object or a function that receives the current object
-exports.manipulateJSON = async function (filePath, override) {
+// override can be an object or a function that receives the current object
+async function manipulateJSON(filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationPath(filePath);
         const oldContent = this.fs.readJSON(fullFilePath);
 
         const newContent =
@@ -72,9 +72,9 @@ exports.manipulateJSON = async function (filePath, override) {
 };
 
 // overide can be an object or a function that receives the current object
-exports.manipulateYAML = async function (filePath, override) {
+async function manipulateYAML(filePath, override) {
     try {
-        const fullFilePath = process.cwd() + filePath;
+        const fullFilePath = this.destinationPath(filePath);
         const oldContent = yaml.parse(this.fs.read(fullFilePath));
 
         const newContent =
@@ -90,3 +90,10 @@ exports.manipulateYAML = async function (filePath, override) {
         throw e;
     }
 };
+
+export default {
+    writeJSON,
+    writeYAML,
+    manipulateJSON,
+    manipulateYAML
+}

@@ -5,7 +5,7 @@
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
-      "version": "1.0.0"
+      "version": "0.0.1"
     },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}"
@@ -29,13 +29,12 @@
   "sap.ui5": {
     "flexEnabled": true,
     "rootView": {
-      "viewName": "<%=appId%>.view.<%=viewname%>",
-      "type": "<%=viewtype%>",
+      "viewName": "<%=routingViewName%>",
       "async": true,
       "id": "idAppControl"
     },
     "dependencies": {
-      "minUI5Version": "1.60.0",
+      "minUI5Version": "1.108.0",
       "libs": {
         "sap.ui.core": {},
         "sap.m": {},
@@ -64,8 +63,6 @@
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "viewPath": "<%=appId%>.view",
         "controlId": "idAppControl",
         "controlAggregation": "pages",
         "async": true
@@ -79,10 +76,9 @@
       ],
       "targets": {
         "Target<%=viewname%>": {
-          "viewType": "XML",
           "viewLevel": 1,
           "viewId": "idAppControl",
-          "viewName": "<%=viewname%>"
+          "viewName": "<%=routingViewName%>"
         }
       }
     }

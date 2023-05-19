@@ -1,14 +1,12 @@
-const path = require("path");
-const Generator = require("yeoman-generator");
-const fpmWriter = require("@sap-ux/fe-fpm-writer");
-const serviceWriter = require("@sap-ux/odata-service-writer");
-const { isTypescriptEnabled } = require("@sap-ux/ui5-application-writer");
-const { UI5Config } = require("@sap-ux/ui5-config");
-const axios = require("@sap-ux/axios-extension");
-const utils = require("../utils");
-const { join } = require("path");
+import Generator from "yeoman-generator";
+import fpmWriter from "@sap-ux/fe-fpm-writer";
+import utils from "../utils.js";
+import serviceWriter from "@sap-ux/odata-service-writer";
+import { UI5Config } from "@sap-ux/ui5-config";
+import axios from "@sap-ux/axios-extension";
+import { join } from "path";
 
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Add a page to a Fiori elements FPM application";
 
     async prompting() {

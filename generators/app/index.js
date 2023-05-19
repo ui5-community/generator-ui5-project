@@ -1,13 +1,14 @@
-"use strict";
+import Generator from "yeoman-generator";
+import fileaccess from "../../helpers/fileaccess.js";
+import path from "path";
+import yosay from "yosay";
+import glob from "glob";
+import chalk from "chalk";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const Generator = require("yeoman-generator"),
-    fileaccess = require("../../helpers/fileaccess"),
-    path = require("path"),
-    chalk = require("chalk"),
-    yosay = require("yosay"),
-    glob = require("glob");
-
-module.exports = class extends Generator {
+export default class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
 
     async prompting() {
@@ -82,7 +83,7 @@ module.exports = class extends Generator {
                 type: "list",
                 name: "viewtype",
                 message: "Which view type do you want to use?",
-                choices: ["XML", "JSON", "JS", "HTML"],
+                choices: ["XML", "JS"],
                 default: "XML",
                 when: !initialAnswers.enableFPM
             },
@@ -114,13 +115,6 @@ module.exports = class extends Generator {
             },
             {
                 type: "confirm",
-                name: "codeassist",
-                message: "Would you like to add JavaScript code assist libraries to the project?",
-                default: !initialAnswers.enableTypescript,
-                when: !initialAnswers.enableTypescript
-            },
-            {
-                type: "confirm",
                 name: "initrepo",
                 message: "Would you like to initialize a local git repository for the project?",
                 default: true
@@ -141,6 +135,12 @@ module.exports = class extends Generator {
     }
 
     async writing() {
+        // required so that yeoman detects changes to package.json
+        // and runs install automatically, even if newdir = true
+        // see https://github.com/yeoman/environment/issues/309
+        this.env.cwd = this.destinationPath();
+        this.env.options.nodePackageManager = "npm"
+
         const oConfig = this.config.getAll();
 
         this.sourceRoot(path.join(__dirname, "templates"));
@@ -154,34 +154,20 @@ module.exports = class extends Generator {
             this.fs.copyTpl(sOrigin, sTarget, oConfig);
         });
 
-        if (oConfig.codeassist) {
-            let tsconfig = {
-                compilerOptions: {
-                    module: "none",
-                    noEmit: true,
-                    checkJs: true,
-                    allowJs: true,
-                    types: ["@sapui5/ts-types"],
-                    lib: ["es2015"]
-                }
-            };
-
-            await fileaccess.writeJSON.call(this, "/tsconfig.json", tsconfig);
-        }
-
         const oSubGen = Object.assign({}, oConfig);
         oSubGen.isSubgeneratorCall = true;
         oSubGen.cwd = this.destinationRoot();
         oSubGen.modulename = "uimodule";
 
         if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-            this.composeWith(require.resolve("../additionalmodules"), oSubGen);
+            this.composeWith(path.join(__dirname, "../additionalmodules"), oSubGen);
         }
 
-        this.composeWith(require.resolve("../newwebapp"), oSubGen);
+        this.composeWith(path.join(__dirname, "../newwebapp"), oSubGen);
+        
         if (oConfig.enableFPM) {
-            this.composeWith(require.resolve("../enablefpm"), oSubGen);
-            this.composeWith(require.resolve("../newfpmpage"), oSubGen);
+            this.composeWith(path.join(__dirname, "../enablefpm"), oSubGen);
+            this.composeWith(path.join(__dirname, "../newfpmpage"), oSubGen);
         }
     }
 
@@ -192,7 +178,7 @@ module.exports = class extends Generator {
             version: "0.0.1",
             scripts: {
                 start: `ui5 serve --config=uimodule/ui5.yaml  --open index.html${oConfig.enableFPM ? "?sap-ui-xx-viewCache=false": ""}`,
-                "build:ui": "run-s ",
+                "build:ui": "run-s build:uimodule",
                 test: "run-s lint karma",
                 "karma-ci": "karma start karma-ci.conf.js",
                 clearCoverage: "shx rm -rf coverage",
@@ -249,11 +235,21 @@ module.exports = class extends Generator {
             packge.scripts["deploy"] = "run-s build:ui";
         }
 
-        if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types"] = "~1.108.0"; //keep this line in sync with ui5.yaml version
+        let buildCommand = "ui5 build --config=uimodule/ui5.yaml --clean-dest";
+        if (oConfig.ui5libs.includes("Local")) {
+            buildCommand += " --a";
         }
+        if (oConfig.platform === "Application Router @ Cloud Foundry") {
+            buildCommand += " --dest approuter/uimodule/webapp";
+        } else if (oConfig.platform !== "SAP NetWeaver") {
+            buildCommand += " --dest uimodule/dist";
+            buildCommand += " --include-task=generateManifestBundle";
+        } else {
+            buildCommand += " --dest dist/uimodule";
+        }
+        packge.scripts["build:uimodule"] = buildCommand;
 
-        await fileaccess.writeJSON.call(this, "/package.json", packge);
+        await fileaccess.writeJSON.call(this, "package.json", packge);
     }
 
     install() {

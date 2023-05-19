@@ -17,14 +17,14 @@ function validatHttpUrl(sInput) {
         return true;
       } else {
         return "Please provide a valid http(s) url."
-      }; 
+      };
 }
 
 function isArrayWithMoreThanOneElement(aElements) {
     return !!aElements && aElements.length > 1
 }
 
-module.exports = {
+export default {
     validateAlhpaNumericStartingWithLetter,
     validatHttpUrl,
     isArrayWithMoreThanOneElement
