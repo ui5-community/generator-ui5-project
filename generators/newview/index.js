@@ -63,7 +63,7 @@ module.exports = class extends Generator {
                     message:
                         "Seems like this project has not been generated with Easy-UI5. Please enter the name your project.",
                     validate: utils.validateAlhpaNumericStartingWithLetter,
-                    default: "myUI5App"
+                    default: "myui5app"
                 },
                 {
                     type: "input",

@@ -1,6 +1,3 @@
-/**
- * eslint-disable @sap/ui5-jsdocs/no-jsdoc
- */
 sap.ui.define(
     ["sap/ui/model/json/JSONModel", "sap/ui/Device"],
     /**

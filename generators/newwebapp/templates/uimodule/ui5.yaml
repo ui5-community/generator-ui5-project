@@ -1,4 +1,4 @@
-specVersion: "2.2"
+specVersion: "3.0"
 metadata:
   name: <%= projectname %>_<%= modulename %>
 type: application
@@ -8,12 +8,12 @@ resources:
       webapp: <%= modulename %>/webapp
 framework:
   name: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Content delivery network (OpenUI5)") ? "OpenUI5" : "SAPUI5" %>
-  version: 1.102.0
+  version: 1.108.0
   libraries:
     - name: sap.ui.core
     - name: sap.m
     - name: sap.ui.layout
-    - name: themelib_sap_fiori_3
+    - name: themelib_sap_horizon
 server:
   customMiddleware:
     - name: ui5-middleware-livereload
@@ -27,13 +27,13 @@ server:
       configuration:
         debug: true
         port: 1091
-        xsappJson: <%= platform.includes("Application Router") ? "../approuter/xs-app.json" : "webapp/xs-app.json" %>
+        xsappJson: <%= platform.includes("Application Router") ? "approuter/xs-app.json" : "uimodule/webapp/xs-app.json" %>
         destinations: []
 <% if(platform === 'SAP HTML5 Application Repository service for SAP BTP' || platform === 'SAP Launchpad service'){ -%>
 builder:
   customTasks:
     -  name: ui5-task-zipper
-       afterTask: uglify
+       afterTask: generateComponentPreload
        configuration:
          includeDependencies: <%= (ui5libs === "Local resources (OpenUI5)" || ui5libs === "Local resources (SAPUI5)") %>
          archiveName: <%=modulename%>

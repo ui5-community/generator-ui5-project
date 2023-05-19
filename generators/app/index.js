@@ -26,7 +26,7 @@ module.exports = class extends Generator {
                     }
                     return "Please use alpha numeric characters only for the project name.";
                 },
-                default: "myUI5App"
+                default: "myui5app"
             },
             {
                 type: "input",
@@ -197,34 +197,28 @@ module.exports = class extends Generator {
                 "karma-ci": "karma start karma-ci.conf.js",
                 clearCoverage: "shx rm -rf coverage",
                 karma: "run-s clearCoverage karma-ci",
-                lint: "eslint ./**/webapp/**/*.js && prettier --plugin-search-dir=. --check ./**/webapp/**/*.{js,xml}",
+                lint: "eslint ./**/webapp/**/*.js && prettier --plugin-search-dir=. --check ./**/webapp/**/*.{js,xml} --no-error-on-unmatched-pattern",
                 "lint-fix": "eslint ./**/webapp/**/*.js --fix && prettier --plugin-search-dir=. --write ./**/webapp/**/*.{js,xml} --no-error-on-unmatched-pattern"
             },
             devDependencies: {
-                shx: "^0.3.3",
-                "@ui5/cli": "^2.14.1",
-                "ui5-middleware-livereload": "^0.5.8",
-                karma: "^6.3.9",
-                "karma-chrome-launcher": "^3.1.0",
-                "karma-coverage": "^2.1.0",
-                "karma-ui5": "^2.3.4",
+                shx: "^0.3.4",
+                "@ui5/cli": "^3",
+                "ui5-middleware-livereload": "latest",
+                karma: "^6.4.2",
+                "karma-chrome-launcher": "^3.2.0",
+                "karma-coverage": "^2.2.0",
+                "karma-ui5": "latest",
                 "npm-run-all": "^4.1.5",
-                eslint: "^7.32.0",
-                prettier: "^2.5.1",
-                "@prettier/plugin-xml": "^1.1.0",
-                "@sap/eslint-plugin-ui5-jsdocs": "^2.0.5"
-            },
-            ui5: {
-                dependencies: ["ui5-middleware-livereload"]
+                eslint: "latest",
+                prettier: "latest",
+                "@prettier/plugin-xml": "latest"
             }
         };
 
         if (oConfig.platform !== "Static webserver" && oConfig.platform !== "SAP NetWeaver") {
-            packge.devDependencies["ui5-middleware-cfdestination"] = "^0.7.3";
-            (packge.devDependencies["ui5-task-zipper"] = "^0.4.7"), (packge.devDependencies["cross-var"] = "^1.1.0");
-            packge.devDependencies["mbt"] = "^1.2.7";
-            packge.ui5.dependencies.push("ui5-middleware-cfdestination");
-            packge.ui5.dependencies.push("ui5-task-zipper");
+            packge.devDependencies["ui5-middleware-cfdestination"] = "latest";
+            (packge.devDependencies["ui5-task-zipper"] = "latest"), (packge.devDependencies["cross-var"] = "^1.1.0");
+            packge.devDependencies["mbt"] = "latest";
 
             if (
                 oConfig.platform === "Application Router @ Cloud Foundry" ||
@@ -252,13 +246,11 @@ module.exports = class extends Generator {
         if (oConfig.platform === "SAP NetWeaver") {
             packge.devDependencies["ui5-task-nwabap-deployer"] = "*";
             packge.devDependencies["ui5-middleware-route-proxy"] = "*";
-            packge.ui5.dependencies.push("ui5-task-nwabap-deployer");
-            packge.ui5.dependencies.push("ui5-middleware-route-proxy");
             packge.scripts["deploy"] = "run-s build:ui";
         }
 
         if (oConfig.codeassist) {
-            packge.devDependencies["@sapui5/ts-types"] = "~1.102.7"; //keep this line in sync with ui5.yaml version
+            packge.devDependencies["@sapui5/ts-types"] = "~1.108.0"; //keep this line in sync with ui5.yaml version
         }
 
         await fileaccess.writeJSON.call(this, "/package.json", packge);
