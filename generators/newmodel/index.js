@@ -42,7 +42,7 @@ export default class extends Generator {
             },
             {
                 when: function (props) {
-                    return props.modelType.includes("OData");
+                    return props.modelType?.includes("OData");
                 },
                 type: "input",
                 name: "url",
@@ -68,7 +68,7 @@ export default class extends Generator {
             this.options.oneTimeConfig.bindingMode = answers.bindingMode;
             this.options.oneTimeConfig.modulename = answers.modulename || (!!modules ? modules[0] : "");
 
-            if (answers.modelType.includes("OData")) {
+            if (answers.modelType?.includes("OData")) {
                 this.options.oneTimeConfig.url = answers.url;
                 if (answers.modelType === "OData v2") {
                     this.options.oneTimeConfig.countMode = answers.countMode;
@@ -80,7 +80,7 @@ export default class extends Generator {
     async writing() {
         let override;
 
-        if (this.options.oneTimeConfig.modelType.includes("OData")) {
+        if (this.options.oneTimeConfig.modelType?.includes("OData")) {
             let sDataSource = this.options.oneTimeConfig.url.replace("/sap/opu/odata/sap/", "");
             sDataSource = sDataSource.replace(/\//gi, "");
 

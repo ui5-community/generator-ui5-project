@@ -160,7 +160,7 @@ export default class extends Generator {
     async writing() {
         const sModuleName = this.options.oneTimeConfig.modulename;
         const sProjectName = this.options.oneTimeConfig.projectname;
-        const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router");
+        const platformIsAppRouter = this.options.oneTimeConfig.platform?.includes("Application Router");
         const platformIsLaunchpad = this.options.oneTimeConfig.platform === "SAP Launchpad service"
         const platformIsHTML5AppRepo = this.options.oneTimeConfig.platform === "SAP HTML5 Application Repository service for SAP BTP"
 
@@ -357,9 +357,9 @@ export default class extends Generator {
                 const sTarget = this.destinationPath(file.replace("uimodule", sModuleName).replace(/\/_/, "/"));
 
                 const isUnneededFlpSandbox =
-                    sTarget.includes("flpSandbox") && !platformIsLaunchpad;
+                    sTarget?.includes("flpSandbox") && !platformIsLaunchpad;
                 const isUnneededXsApp =
-                    sTarget.includes("xs-app") &&
+                    sTarget?.includes("xs-app") &&
                     !(
                         platformIsLaunchpad ||
                         platformIsHTML5AppRepo

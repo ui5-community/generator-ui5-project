@@ -23,7 +23,7 @@ export default class extends Generator {
         this.sourceRoot(path.join(__dirname, "templates"));
 
         const oConfig = this.options.oneTimeConfig;
-        const platformIsAppRouter = this.options.oneTimeConfig.platform.includes("Application Router"); // aka no destination service etc needed
+        const platformIsAppRouter = this.options.oneTimeConfig.platform?.includes("Application Router"); // aka no destination service etc needed
 
         // Copy approuter module
         if (oConfig.platform !== "SAP Launchpad service") {
@@ -95,7 +95,7 @@ export default class extends Generator {
             };
             mta.modules.push(approuter);
 
-            if (oConfig.platform.includes("Application Router")) {
+            if (oConfig.platform?.includes("Application Router")) {
                 approuter["build-parameters"] = {
                     builder: "custom",
                     commands: ["npm install", "npm run build:ui --prefix .."]

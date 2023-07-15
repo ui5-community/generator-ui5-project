@@ -156,7 +156,7 @@ export default class extends Generator {
             let tests = this.config.get("qunittests") || [];
             let codeUnderTest = this.options.oneTimeConfig.codeUnderTest;
 
-            this.options.oneTimeConfig.skipTest = tests.includes(codeUnderTest);
+            this.options.oneTimeConfig.skipTest = tests?.includes(codeUnderTest);
             if (!this.options.oneTimeConfig.skipTests) {
                 tests.push(this.options.oneTimeConfig.codeUnderTest);
             }

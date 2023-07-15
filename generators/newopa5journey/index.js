@@ -116,7 +116,7 @@ export default class extends Generator {
             // add new journey to AllJourneys list
             const allJourneysFile = this.destinationPath(sModule + "test/integration/AllJourneys.js");
             if (fs.existsSync(allJourneysFile)) {
-                const newJourneyAlreadyIncluded = fs.readFileSync(allJourneysFile, "utf8").includes(`"./${this.options.oneTimeConfig.journey}Journey"`)
+                const newJourneyAlreadyIncluded = fs.readFileSync(allJourneysFile, "utf8")?.includes(`"./${this.options.oneTimeConfig.journey}Journey"`)
                     if (!newJourneyAlreadyIncluded) {
                         const content = fs.readFileSync(allJourneysFile, "utf8")
                                         .replace(
