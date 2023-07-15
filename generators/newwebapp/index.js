@@ -46,6 +46,7 @@ export default class extends Generator {
                         : this.options.modulename);
 
                 // handle TypedView (JS) specialities in manifest.json
+                this.options.oneTimeConfig.routingViewName = `${this.options.oneTimeConfig.appId}.view.${this.options.oneTimeConfig.viewname}`;
                 if (this.options.oneTimeConfig.viewtype === "JS") {
                     this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
                 }
@@ -143,6 +144,7 @@ export default class extends Generator {
                 (answers.modulename === "uimodule" ? this.options.oneTimeConfig.projectname : answers.modulename);
 
             // handle TypedView (JS) specialities in manifest.json
+            this.options.oneTimeConfig.routingViewName = `${this.options.oneTimeConfig.appId}.view.${this.options.oneTimeConfig.viewname}`;
             if (this.options.oneTimeConfig.viewtype === "JS") {
                 this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
             }
@@ -504,6 +506,7 @@ export default class extends Generator {
             oSubGen.cwd = this.destinationRoot();
 
             // handle TypedView (JS) specialities in manifest.json
+            this.options.oneTimeConfig.routingViewName = `${this.options.oneTimeConfig.appId}.view.${this.options.oneTimeConfig.viewname}`;
             if (this.options.oneTimeConfig.viewtype === "JS") {
                 this.options.oneTimeConfig.routingViewName = `module:${this.options.oneTimeConfig.appId.replace(/\./g, "/")}/view/${this.options.oneTimeConfig.viewname}.view`;
             }
