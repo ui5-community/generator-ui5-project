@@ -1,4 +1,5 @@
 import Generator from "yeoman-generator";
+import semver from "semver";
 import jsUtils from "../../helpers/jsutils.js";
 import path from "path";
 import glob from "glob";
@@ -151,6 +152,14 @@ export default class extends Generator {
         const tests = jsUtils.removeDuplicates(this.config.get("qunittests")) || [];
         this.config.set("qunittests", tests);
         this.options.oneTimeConfig.qunittests = tests;
+
+        // set qunit coverage file
+        if (semver.gte(props.frameworkVersion, "1.113.0")) {
+            this.config.set("qunitCoverageFile", "qunit-coverage-istanbul.js");
+        } else {
+            this.config.set("qunitCoverageFile", "qunit-coverage.js");
+        }
+        this.options.oneTimeConfig.qunitCoverageFile = this.config.get("qunitCoverageFile");
 
         const sModule =
             (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";

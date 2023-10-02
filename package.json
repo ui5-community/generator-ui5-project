@@ -40,6 +40,7 @@
     "directory-tree": "^3.0.1",
     "glob": "^7.2.0",
     "object-assign-deep": "^0.4.0",
+    "semver": "^7.5.4",
     "valid-filename": "^4.0.0",
     "yaml": "^2.2.2",
     "yeoman-environment": "^3.16.2",
