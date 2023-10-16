@@ -219,7 +219,7 @@ export default class extends Generator {
             } else if (oConfig.platform === "Application Router @ SAP HANA XS Advanced") {
                 packge.scripts["build:mta"] = "mbt build -p=xsa";
                 packge.scripts[
-                    "deploy:cf"
+                    "deploy:xs"
                 ] = `cross-var xs deploy mta_archives/${oConfig.projectname}_$npm_package_version.mtar`;
                 packge.scripts["deploy"] = "run-s build:mta deploy:xs";
             }
