@@ -189,6 +189,7 @@ export default class extends Generator {
             devDependencies: {
                 shx: "^0.3.4",
                 "@ui5/cli": "^3",
+                "@ui5/middleware-code-coverage": "latest",
                 "ui5-middleware-livereload": "latest",
                 karma: "^6.4.2",
                 "karma-chrome-launcher": "^3.2.0",
