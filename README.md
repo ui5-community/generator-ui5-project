@@ -36,11 +36,14 @@ This generator is split up into multiple subgenerators to help with recurring ta
 
 <details>
 <summary>uimodule</summary>
+
 <br>
+
 ```bash
 yo easy-ui5 project uimodule
 ```
 This subgenerator adds a new uimodule to an existing project. It reuses the config of the existing project and uimodule(s).
+
 </details>
 
 <details>
