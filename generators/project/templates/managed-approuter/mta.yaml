@@ -1,0 +1,79 @@
+_schema-version: "3.2"
+ID: <%= projectId %>
+version: 0.0.1
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npm run build:workspaces
+
+modules:
+
+  - name: <%= projectId %>-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: <%= projectId %>-uaa
+      - name: <%= projectId %>-html-repo-host
+      - name: <%= projectId %>-destination-service
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: <%= projectId %>-html-repo-host
+              ServiceInstanceName: <%= projectId %>-html-repo-host
+              ServiceKeyName: <%= projectId %>-html-repo-host-key
+              sap.cloud.service: basic.service
+            - Name: <%= projectId %>-uaa
+              ServiceInstanceName: <%= projectId %>-uaa
+              ServiceKeyName: <%= projectId %>-uaa-key
+              sap.cloud.service: basic.service
+              Authentication: OAuth2UserTokenExchange
+    build-parameters:
+      no-source: true
+
+  - name: <%= projectId %>-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: <%= projectId %>-html-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires: [] # zipped uimodules will be added here
+
+  # uimodules will be added here
+
+resources:
+
+  - name: <%= projectId %>-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: <%= projectId %>-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 0.0.1
+
+  - name: <%= projectId %>-html-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-keys: 
+        - name: <%= projectId %>-html-repo-host-key
+
+  - name: <%= projectId %>-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+      service-keys: 
+        - name: <%= projectId %>-uaa-key

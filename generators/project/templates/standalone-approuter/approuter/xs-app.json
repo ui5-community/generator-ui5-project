@@ -1,0 +1,12 @@
+{
+    "welcomeFile": "/index.html",
+    "authenticationMethod": "route",
+    "routes": [
+        {
+            "source": "^(.*)$",
+            "target": "$1",
+            "localDir": "dist",
+            "authenticationType": "none"
+        }
+    ]
+}

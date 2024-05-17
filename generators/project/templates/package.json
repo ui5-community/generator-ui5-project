@@ -1,0 +1,14 @@
+{
+    "name": "<%= title %>",
+    "scripts": {
+        
+        "build": "mbt build --mtar <%= title %>.mtar",
+        "build:workspaces": "npm run build --workspaces --if-present",
+        "deploy": "cf deploy mta_archives/<%= title %>.mtar --retries 0",
+		"lint": "npm run lint --workspaces --if-present"
+    },
+    "dependencies": {
+        "mbt": "<%= mbtVersion %>"
+    },
+    "workspaces": []
+}

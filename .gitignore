@@ -1,8 +1,5 @@
 node_modules/
-yarn.lock
 package-lock.json
-.yo-rc.json
-.env
-/test/test-output
+
 .DS_Store
-.vscode
+.marskman.toml

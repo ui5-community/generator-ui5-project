@@ -1,57 +1,40 @@
 {
-  "name": "generator-template-ui5-project",
-  "version": "0.3.1",
-  "description": "(Sub-)generator for a UI5 project",
-  "main": "generators/app/index.js",
-  "type": "module",
-  "scripts": {
-    "test": "mocha",
-    "workaround": "find . -name '.DS_Store' -delete",
-    "test:manual": "cd test/ui5-app && ui5 serve",
-    "prettier": "prettier --write .",
-    "debug": "yo ."
-  },
-  "keywords": [
-    "yeoman-generator",
-    "sap",
-    "sapui5",
-    "openui5",
-    "ui5",
-    "project-template"
-  ],
-  "author": "SAP SE",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ui5-community/generator-ui5-project.git"
-  },
-  "files": [
-    "helpers",
-    "generators"
-  ],
-  "dependencies": {
-    "@sap-ux/axios-extension": "0.10.2",
-    "@sap-ux/fe-fpm-writer": "0.17.6",
-    "@sap-ux/fiori-freestyle-writer": "0.14.9",
-    "@sap-ux/ui5-application-writer": "0.17.6",
-    "@sap-ux/ui5-config": "0.15.2",
-    "@sap-ux/odata-service-writer": "0.14.10",
-    "chalk": "^4.1.2",
-    "directory-tree": "^3.0.1",
-    "glob": "^7.2.0",
-    "object-assign-deep": "^0.4.0",
-    "valid-filename": "^4.0.0",
-    "yaml": "^2.2.2",
-    "yeoman-environment": "^3.16.2",
-    "yeoman-generator": "^5.8.0",
-    "yosay": "^2.0.2"
-  },
-  "devDependencies": {
-    "execa": "^7.1.1",
-    "mocha": "^10.2.0",
-    "nock": "13.3.1",
-    "prettier": "^2.8.8",
-    "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^7.4.0"
-  }
+	"name": "generator-ui5-project",
+	"version": "0.4.0",
+	"description": "(Sub-)generator for a project UI5 project",
+	"author": "SAP SE",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ui5-community/generator-ui5-project.git"
+	},
+	"type": "module",
+	"files": [
+		"generators"
+	],
+	"keywords": [
+		"yeoman-generator"
+	],
+	"main": "generators/project/index.js",
+	"dependencies": {
+		"@sap-ux/axios-extension": "^1.12.0",
+		"@sap-ux/fe-fpm-writer": "^0.24.3",
+		"@sap-ux/fiori-freestyle-writer": "^0.21.3",
+		"@sap-ux/odata-service-writer": "^0.17.2",
+		"@sap-ux/project-access": "^1.16.2",
+		"chalk": "^5.3.0",
+		"path": "^0.12.7",
+		"yaml": "^2.3.4",
+		"yeoman-environment": "^4.1.3",
+		"yeoman-generator": "^7.1.1"
+	},
+	"scripts": {
+		"dev:project": "yo ui5-project:project",
+		"dev:uimodule": "yo ui5-project:uimodule",
+		"debug:project": "node --inspect node_modules/yo/lib/cli.js ui5-project:project",
+		"debug:uimodule": "node --inspect node_modules/yo/lib/cli.js ui5-project:uimodule"
+	},
+	"devDependencies": {
+		"yo": "^5.0.0"
+	}
 }

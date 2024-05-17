@@ -1,0 +1,8 @@
+<mvc:View <%- controller %>
+    xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	displayBlock="true">
+	<Page id="page" title="<%= viewName %>">
+        <content />
+    </Page>
+</mvc:View>
