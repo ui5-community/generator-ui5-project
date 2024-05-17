@@ -48,29 +48,38 @@ This subgenerator adds a new uimodule to an existing project. It reuses the conf
 
 <details>
 <summary>fpmpage</summary>
+
 <br>
+
 ```bash
 yo easy-ui5 project fpmpage
 ```
 This subgenerator adds a new flexible programming model (fpm) page to one of the existing uimodules. This subgenerator only works for projects that enabled the flexible programming model during project creation.
+
 </details>
 
 <details>
 <summary>model</summary>
+
 <br>
+
 ```bash
 yo easy-ui5 project model
 ```
 This subgenerator adds a new data model to one of the existing uimodules. Supported model types are `OData v4`, `OData v2`, and `JSON`. The subgenerator can optionally set-up a proxy to the respective data source via the `ui5.yaml`.
+
 </details>
 
 <details>
 <summary>view</summary>
+
 <br>
+
 ```bash
 yo easy-ui5 project view
 ```
 This subgenerator adds a new XML view to one of the existing uimodules.Only XML views are supported. The subgenerator can optionally set-up the corresponding route and target in the `manifest.json`.
+
 </details>
 
 ## Deployment
@@ -88,26 +97,38 @@ During the prompting phase, the generator will ask on which target platform you 
 
 <details>
 <summary>Static webserver</summary>
+
 <br>
+
 With this option the project gets deployed to Cloud Foundry via the [Staticfile buildpack](https://docs.cloudfoundry.org/buildpacks/staticfile/) to run on a static webserver without authentication or proxys in place.
+
 </details>
 
 <details>
 <summary>Application Router</summary>
+
 <br>
+
 With this option the project gets deployed to Cloud Foundry in the form of an Application Router, which is a Node.js application ([Node.js buildpack](https://docs.cloudfoundry.org/buildpacks/node/index.html)) that acts as a reverse proxy and can handle authentication as well different routes within your project. The uimodules of your project are served via the local `dist/` directory of the Application Router.
+
 </details>
 
 <details>
 <summary>SAP HTML5 Application Repository Service</summary>
+
 <br>
+
 With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Application Repository Service. This makes the application visible in the "HTML5 Applications" section in your SAP BTP subaccount and is the foundation for accessing with other apps and services on SAP BTP.
+
 </details>
 
 <details>
 <summary>SAP Build Work Zone, standard edition</summary>
+
 <br>
+
 With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Application Repository Service and is also accessible via SAP Build Work Zone, standard edition, which provides a Fiori Launchpad for your applications. 
+
 </details>
 
 ## Debugging
