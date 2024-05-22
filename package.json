@@ -29,12 +29,18 @@
 		"yeoman-generator": "^7.1.1"
 	},
 	"scripts": {
+		"test": "mocha",
+		"debug:test": "node --inspect node_modules/.bin/_mocha",
 		"dev:project": "yo ui5-project:project",
 		"dev:uimodule": "yo ui5-project:uimodule",
 		"debug:project": "node --inspect node_modules/yo/lib/cli.js ui5-project:project",
 		"debug:uimodule": "node --inspect node_modules/yo/lib/cli.js ui5-project:uimodule"
 	},
 	"devDependencies": {
+		"mocha": "^10.4.0",
+		"nock": "^13.5.4",
+		"yeoman-assert": "^3.1.1",
+		"yeoman-test": "^8.3.0",
 		"yo": "^5.0.0"
 	}
 }
