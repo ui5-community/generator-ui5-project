@@ -4,7 +4,11 @@ import path from "path"
 
 export const testCases = [
 	{
+		platform: "Static webserver"
+	},
+	{
 		platform: "Static webserver",
+		newDir: false
 	},
 	{
 		platform: "Static webserver",

@@ -1,7 +1,7 @@
 import { common } from "./common.js"
 import { fileURLToPath } from "url"
 import fs from "fs"
-import helpers from "yeoman-test"
+import helpers, { result } from "yeoman-test"
 import nock from "nock"
 import path, { dirname } from "path"
 import {
@@ -12,9 +12,13 @@ import {
 	testCases as fpmTestCases,
 	tests as fpmTests
 } from "./fpm.js"
+import {
+	testCases as standaloneTestCases,
+	tests as standaloneTests
+} from "./standalone.js"
 
 const runProjectGenerator = (name, testCases, tests) => {
-	describe(`${name} project generator`, function() {
+	describe(name, function() {
 
 		const __dirname = dirname(fileURLToPath(import.meta.url))
 		const testDir = path.join(__dirname, "../test-output")
@@ -42,9 +46,23 @@ const runProjectGenerator = (name, testCases, tests) => {
 					}
 					fs.mkdirSync(testDir)
 
-					await helpers.run(path.join(__dirname, "../generators/project/index.js"))
+					await helpers.create(path.join(__dirname, "../generators/project/index.js"))
 						.cd(testDir)
 						.withAnswers(testCase)
+						.run()
+
+					if (testCase.runModelSubgenerator) {
+						await result.create(path.join(__dirname, "../generators/model/index.js"))
+							.withAnswers(testCase)
+							.run()
+					}
+
+					if (testCase.runViewSubgenerator) {
+						await result.create(path.join(__dirname, "../generators/view/index.js"))
+							.withAnswers(testCase)
+							.run()
+					}
+
 				})
 
 				after(async function() {
@@ -60,7 +78,8 @@ const runProjectGenerator = (name, testCases, tests) => {
 
 }
 
-runProjectGenerator("Freestyle", freestyleTestCases, freestyleTests)
-runProjectGenerator("FPM", fpmTestCases, fpmTests)
+runProjectGenerator("Freestyle project generator", freestyleTestCases, freestyleTests)
+runProjectGenerator("FPM project generator", fpmTestCases, fpmTests)
+runProjectGenerator("Standalone generators", standaloneTestCases, standaloneTests)
 
 
