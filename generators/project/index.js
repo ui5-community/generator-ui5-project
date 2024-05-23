@@ -24,6 +24,8 @@ export default class extends Generator {
 			// see https://github.com/yeoman/environment/issues/309
 			// this.env.cwd = this.destinationPath()
 			// this.env.options.nodePackageManager = "npm"
+		} else {
+			this.destinationRoot(this.destinationPath())
 		}
 		this.config.set(this.answers) // do this after changing the directory so that .yo-rc.json is created in the correct place
 

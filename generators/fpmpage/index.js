@@ -19,9 +19,6 @@ export default class extends Generator {
 	async writing() {
 		this.log(chalk.green(`✨ adding a ${this.options.config.pageType} page to ${this.options.config.uimodule}`))
 
-		// // save package.json to reapply build script later (unfortunately gets overwritten by fpmWriter)
-		// this.options.config.oldPackageJson = JSON.parse(fs.readFileSync(this.destinationPath(`${this.options.config.uimodule}/package.json`)))
-
 		// enable fpm
 		const target = this.destinationPath(this.options.config.uimodule)
 		fpmWriter.enableFPM(target, {
@@ -81,13 +78,5 @@ export default class extends Generator {
 		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
 
 	}
-
-	// install() {
-	// 	// reapply old build script that got overwritten by fpmWriter
-	// 	const packagePath = `${this.options.config.uimodule}/package.json`
-	// 	const packageJson = JSON.parse(fs.readFileSync(this.destinationPath(packagePath)))
-	// 	packageJson["scripts"]["build"] = this.options.config.oldPackageJson["scripts"]["build"]
-	// 	fs.writeFileSync(this.destinationPath(packagePath), JSON.stringify(packageJson, null, 4))
-	// }
 
 }

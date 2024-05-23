@@ -97,7 +97,7 @@ export default class extends Generator {
 		this.config.delete("uimoduleName")
 		this.config.delete("tileName")
 
-		const inProjectDirOrDeeper = process.cwd().includes(this.options.config.projectId)
+		const inProjectDirOrDeeper = process.cwd().includes(this.options.config.projectId) || fs.existsSync(".yo-rc.json")
 		const newPath = inProjectDirOrDeeper ? "" : `cd ${this.options.config.projectId} && `
 		this.log(`${chalk.green(`You can start your new uimodule by running`)} ${chalk.blue(`${newPath}npm run start:${this.options.config.uimoduleName}`)}${chalk.green(`${inProjectDirOrDeeper ? " from the project root." : "."}`)}`)
 

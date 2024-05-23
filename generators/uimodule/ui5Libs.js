@@ -5,7 +5,7 @@ import yaml from "yaml"
 
 export default class extends Generator {
 	writing() {
-		if (this.destinationPath().endsWith(this.options.config.projectId)) {
+		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
 			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 		}
 

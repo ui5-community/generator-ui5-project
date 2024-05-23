@@ -2,11 +2,11 @@ import chalk from "chalk"
 
 export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt = true) {
 	let configExists
-	this.options.config = this.config.getAll()
+	this.options.config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
 	if (Object.keys(this.options.config).length === 0) {
 		// look for ui5 projects in the parent dir
 		this.destinationRoot(this.destinationPath("../"))
-		this.options.config = this.config.getAll()
+		this.options.config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
 		if (Object.keys(this.options.config).length === 0) {
 			this.log(`${chalk.yellow("We couldn't find a parent UI5 project with existing uimodules to run this subgenerator, but you can create one by running")} ${chalk.blue("yo easy-ui5 project")}${chalk.yellow(".")}`)
 			this.cancelCancellableTasks()

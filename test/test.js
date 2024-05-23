@@ -18,12 +18,13 @@ const runProjectGenerator = (name, testCases, tests) => {
 
 		const __dirname = dirname(fileURLToPath(import.meta.url))
 		const testDir = path.join(__dirname, "../test-output")
-		const projectId = "com.myorg.myui5project"
-		const uimoduleName = "myui5app"
-		const uimodulePath = path.join(projectId, uimoduleName)
 
 		testCases.forEach((testCase) => {
 			describe(testCase.platform, function() {
+
+				const projectId = testCase.newDir === false ? "" : "com.myorg.myui5project"
+				const uimoduleName = "myui5app"
+				const uimodulePath = path.join(projectId, uimoduleName)
 
 				this.timeout(200000)
 

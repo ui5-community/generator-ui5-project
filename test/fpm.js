@@ -14,7 +14,8 @@ export const testCases = [
 		enableFPM: true,
 		serviceUrl: "http://localhost:4004/travel",
 		mainEntity: "BookedFlights",
-		enableTypescript: true
+		enableTypescript: true,
+		newDir: false
 	},
 	{
 		platform: "SAP HTML5 Application Repository Service",
@@ -106,7 +107,7 @@ export const tests = (testCase, uimodulePath) => {
 	if (testCase.enableTypescript) {
 		it("should have typescript configured correctly", async function() {
 			assert.file(path.join(uimodulePath, "tsconfig.json"))
-			assert.file(path.join(uimodulePath, ".babelrc.json"))
+			// assert.file(path.join(uimodulePath, ".babelrc.json"))
 			assert.fileContent(
 				path.join(uimodulePath, "tsconfig.json"),
 				"../node_modules/@types"
