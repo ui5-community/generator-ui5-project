@@ -1,44 +1,39 @@
 import assert from "assert"
-import { platform } from "os"
 import path from "path"
 
 export const testCases = [
 	{
+		additionalSubgenerators: ["model", "view"],
 		platform: "Static webserver",
-		newDir: false, // requirement for testing subgeneators after project creation ("standalone")
-		runModelSubgenerator: true,
+		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
 		modelName: "myModel",
 		modelType: "OData v4",
 		modelUrl: "http://localhost:4004/travel",
 		setupProxy: true,
-		runViewSubgenerator: true,
 		viewName: "NewView",
 		setupController: true,
 		setupRouteTarget: true
 
 	},
 	{
+		additionalSubgenerators: ["model", "view"],
 		platform: "Application Router",
-		newDir: false, // requirement for testing subgeneators after project creation ("standalone")
-		runModelSubgenerator: true,
+		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
 		modelName: "myModel",
 		modelType: "OData v2",
 		modelUrl: "http://localhost:4004/travel",
 		setupProxy: false,
-		runViewSubgenerator: true,
 		viewName: "NewView",
 		setupController: true,
 		setupRouteTarget: false
-
 	},
 	{
+		additionalSubgenerators: ["model", "view"],
 		platform: "SAP HTML5 Application Repository Service",
-		newDir: false, // requirement for testing subgeneators after project creation ("standalone")
-		runModelSubgenerator: true,
+		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
 		modelName: "myModel",
 		modelType: "JSON",
 		setupProxy: false,
-		runViewSubgenerator: true,
 		viewName: "NewView",
 		setupController: false,
 		setupRouteTarget: false
@@ -70,7 +65,7 @@ export const tests = (testCase, uimodulePath) => {
 		)
 	})
 
-	it("should use or not use fiori-tools-proxy correctly", async function() {
+	it("should or shouldn't use fiori-tools-proxy correctly", async function() {
 		if (testCase.setupProxy) {
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),

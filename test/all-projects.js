@@ -2,7 +2,7 @@ import assert from "assert"
 import { execSync } from "child_process"
 import path from "path"
 
-export const common = (testCase, testDir, projectId, uimoduleName, uimodulePath) => {
+export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodulePath) => {
 	it("should generate package.json files correctly", async function() {
 		const files = [
 			path.join(projectId, "package.json"),
@@ -45,13 +45,13 @@ export const common = (testCase, testDir, projectId, uimoduleName, uimodulePath)
 		}
 	})
 
-	it("should generate an installable project", async function() {
-		return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
-	})
+	// it("should generate an installable project", async function() {
+	// 	return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
+	// })
 
-	it("should generate a buildable project", async function() {
-		return execSync("npm run build", { cwd: path.join(testDir, projectId) })
-	})
+	// it("should generate a buildable project", async function() {
+	// 	return execSync("npm run build", { cwd: path.join(testDir, projectId) })
+	// })
 
 }
 

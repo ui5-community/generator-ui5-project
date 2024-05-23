@@ -1,4 +1,4 @@
-import { common } from "./common.js"
+import { allProjects } from "./all-projects.js"
 import { fileURLToPath } from "url"
 import fs from "fs"
 import helpers, { result } from "yeoman-test"
@@ -7,15 +7,15 @@ import path, { dirname } from "path"
 import {
 	testCases as freestyleTestCases,
 	tests as freestyleTests
-} from "./freestyle.js"
+} from "./freestyle-projects.js"
 import {
 	testCases as fpmTestCases,
 	tests as fpmTests
-} from "./fpm.js"
+} from "./fpm-projects.js"
 import {
 	testCases as standaloneTestCases,
 	tests as standaloneTests
-} from "./standalone.js"
+} from "./after-project-generation.js"
 
 const runProjectGenerator = (name, testCases, tests) => {
 	describe(name, function() {
@@ -46,30 +46,26 @@ const runProjectGenerator = (name, testCases, tests) => {
 					}
 					fs.mkdirSync(testDir)
 
+
 					await helpers.create(path.join(__dirname, "../generators/project/index.js"))
 						.cd(testDir)
 						.withAnswers(testCase)
 						.run()
 
-					if (testCase.runModelSubgenerator) {
-						await result.create(path.join(__dirname, "../generators/model/index.js"))
-							.withAnswers(testCase)
-							.run()
+					if (testCase.additionalSubgenerators) {
+						for (const subgenerator of testCase.additionalSubgenerators) {
+							await result.create(path.join(__dirname, `../generators/${subgenerator}/index.js`))
+								.withAnswers(testCase)
+								.run()
+						}
 					}
-
-					if (testCase.runViewSubgenerator) {
-						await result.create(path.join(__dirname, "../generators/view/index.js"))
-							.withAnswers(testCase)
-							.run()
-					}
-
 				})
 
 				after(async function() {
 					fs.rmSync(testDir, { recursive: true, force: true })
 				})
 
-				common(testCase, testDir, projectId, uimoduleName, uimodulePath)
+				allProjects(testCase, testDir, projectId, uimoduleName, uimodulePath)
 				tests(testCase, uimodulePath)
 			})
 
@@ -80,6 +76,6 @@ const runProjectGenerator = (name, testCases, tests) => {
 
 runProjectGenerator("Freestyle project generator", freestyleTestCases, freestyleTests)
 runProjectGenerator("FPM project generator", fpmTestCases, fpmTests)
-runProjectGenerator("Standalone generators", standaloneTestCases, standaloneTests)
+runProjectGenerator("Subgenerators after project generation", standaloneTestCases, standaloneTests)
 
 
