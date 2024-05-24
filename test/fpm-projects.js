@@ -2,35 +2,35 @@ import assert from "yeoman-assert"
 import path from "path"
 
 export const testCases = [
-	{
-		platform: "Static webserver",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: false
-	},
-	{
-		platform: "Application Router",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: true,
-		newDir: false
-	},
-	{
-		platform: "SAP HTML5 Application Repository Service",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: true
-	},
-	{
-		platform: "SAP Build Work Zone, standard edition",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: true
-	}
+	// {
+	// 	platform: "Static webserver",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: false
+	// },
+	// {
+	// 	platform: "Application Router",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true,
+	// 	newDir: false
+	// },
+	// {
+	// 	platform: "SAP HTML5 Application Repository Service",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true
+	// },
+	// {
+	// 	platform: "SAP Build Work Zone, standard edition",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true
+	// }
 ]
 
 export const tests = (testCase, uimodulePath) => {

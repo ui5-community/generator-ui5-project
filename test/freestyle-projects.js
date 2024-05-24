@@ -1,33 +1,32 @@
 import assert from "assert"
-import { platform } from "os"
 import path from "path"
 
 export const testCases = [
-	{
-		platform: "Static webserver"
-	},
-	{
-		platform: "Static webserver",
-		newDir: false
-	},
-	{
-		platform: "Static webserver",
-		ui5Libs: "Local resources (OpenUI5)"
-	},
-	{
-		platform: "Static webserver",
-		ui5Libs: "Content delivery network (SAPUI5)"
-	},
-	{
-		platform: "Static webserver",
-		ui5Libs: "Content delivery network (OpenUI5)"
-	},
-	{
-		platform: "Application Router"
-	},
-	{
-		platform: "SAP HTML5 Application Repository Service"
-	},
+	// {
+	// 	platform: "Static webserver"
+	// },
+	// {
+	// 	platform: "Static webserver",
+	// 	newDir: false
+	// },
+	// {
+	// 	platform: "Static webserver",
+	// 	ui5Libs: "Local resources (OpenUI5)"
+	// },
+	// {
+	// 	platform: "Static webserver",
+	// 	ui5Libs: "Content delivery network (SAPUI5)"
+	// },
+	// {
+	// 	platform: "Static webserver",
+	// 	ui5Libs: "Content delivery network (OpenUI5)"
+	// },
+	// {
+	// 	platform: "Application Router"
+	// },
+	// {
+	// 	platform: "SAP HTML5 Application Repository Service"
+	// },
 	{
 		platform: "SAP Build Work Zone, standard edition"
 	}

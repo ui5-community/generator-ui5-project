@@ -13,8 +13,8 @@ import {
 	tests as fpmTests
 } from "./fpm-projects.js"
 import {
-	testCases as standaloneTestCases,
-	tests as standaloneTests
+	testCases as afterProjectGenerationTestCases,
+	tests as afterProjectGenerationTests
 } from "./after-project-generation.js"
 
 const runProjectGenerator = (name, testCases, tests) => {
@@ -29,6 +29,8 @@ const runProjectGenerator = (name, testCases, tests) => {
 				const projectId = testCase.newDir === false ? "" : "com.myorg.myui5project"
 				const uimoduleName = "myui5app"
 				const uimodulePath = path.join(projectId, uimoduleName)
+				const uimoduleName2 = "myui5app2"
+				const uimodulePath2 = path.join(projectId, uimoduleName2)
 
 				this.timeout(200000)
 
@@ -45,7 +47,6 @@ const runProjectGenerator = (name, testCases, tests) => {
 						fs.rmSync(testDir, { recursive: true, force: true })
 					}
 					fs.mkdirSync(testDir)
-
 
 					await helpers.create(path.join(__dirname, "../generators/project/index.js"))
 						.cd(testDir)
@@ -66,7 +67,7 @@ const runProjectGenerator = (name, testCases, tests) => {
 				})
 
 				allProjects(testCase, testDir, projectId, uimoduleName, uimodulePath)
-				tests(testCase, uimodulePath)
+				tests(testCase, uimodulePath, uimodulePath2)
 			})
 
 		})
@@ -76,6 +77,6 @@ const runProjectGenerator = (name, testCases, tests) => {
 
 runProjectGenerator("Freestyle project generator", freestyleTestCases, freestyleTests)
 runProjectGenerator("FPM project generator", fpmTestCases, fpmTests)
-runProjectGenerator("Subgenerators after project generation", standaloneTestCases, standaloneTests)
+runProjectGenerator("Subgenerators after project generation", afterProjectGenerationTestCases, afterProjectGenerationTests)
 
 

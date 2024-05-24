@@ -3,9 +3,9 @@ import path from "path"
 
 export const testCases = [
 	{
-		additionalSubgenerators: ["model", "view"],
+		additionalSubgenerators: ["model", "view", "uimodule"],
 		platform: "Static webserver",
-		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
+		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
 		modelType: "OData v4",
 		modelUrl: "http://localhost:4004/travel",
@@ -16,9 +16,9 @@ export const testCases = [
 
 	},
 	{
-		additionalSubgenerators: ["model", "view"],
+		additionalSubgenerators: ["model", "view", "uimodule"],
 		platform: "Application Router",
-		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
+		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
 		modelType: "OData v2",
 		modelUrl: "http://localhost:4004/travel",
@@ -28,9 +28,9 @@ export const testCases = [
 		setupRouteTarget: false
 	},
 	{
-		additionalSubgenerators: ["model", "view"],
+		additionalSubgenerators: ["model", "view", "uimodule"],
 		platform: "SAP HTML5 Application Repository Service",
-		newDir: false, // requirement for testing subgeneators after project generation ("standalone")
+		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
 		modelType: "JSON",
 		setupProxy: false,
@@ -41,7 +41,7 @@ export const testCases = [
 
 ]
 
-export const tests = (testCase, uimodulePath) => {
+export const tests = (testCase, uimodulePath, uimodulePath2) => {
 	it("should have new model in manifest.json", async function() {
 		let versionString
 		switch (testCase.modelType) {
@@ -120,6 +120,10 @@ export const tests = (testCase, uimodulePath) => {
 			)
 
 		}
+	})
+
+	it("should have new uimodule", async function() {
+		assert.file(uimodulePath2)
 	})
 }
 
