@@ -3,7 +3,7 @@ import path from "path"
 
 export const testCases = [
 	{
-		additionalSubgenerators: ["model", "view", "uimodule"],
+		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Static webserver",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -12,11 +12,12 @@ export const testCases = [
 		setupProxy: true,
 		viewName: "NewView",
 		setupController: true,
-		setupRouteTarget: true
+		setupRouteTarget: true,
+		controlName: "CustomControl"
 
 	},
 	{
-		additionalSubgenerators: ["model", "view", "uimodule"],
+		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Application Router",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -25,10 +26,11 @@ export const testCases = [
 		setupProxy: false,
 		viewName: "NewView",
 		setupController: true,
-		setupRouteTarget: false
+		setupRouteTarget: false,
+		controlName: "CustomControl"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "uimodule"],
+		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "SAP HTML5 Application Repository Service",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -36,7 +38,8 @@ export const testCases = [
 		setupProxy: false,
 		viewName: "NewView",
 		setupController: false,
-		setupRouteTarget: false
+		setupRouteTarget: false,
+		controlName: "CustomControl"
 	}
 
 ]
@@ -120,6 +123,10 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 			)
 
 		}
+	})
+
+	it("should have new custom control", async function() {
+		assert.file(path.join(uimodulePath, `webapp/control/${testCase.controlName}.js`))
 	})
 
 	it("should have new uimodule", async function() {
