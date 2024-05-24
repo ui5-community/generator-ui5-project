@@ -3,7 +3,7 @@ sap.ui.define([
 ], function(SuperControl) {
     "use strict";
 
-    return SuperControl.extend("<%= uimodule %>.controller.<%= controlName %>",{
+    return SuperControl.extend("<%= uimodule %>.control.<%= controlName %>",{
         metadata: {
             properties: {},
             aggregations: {},
