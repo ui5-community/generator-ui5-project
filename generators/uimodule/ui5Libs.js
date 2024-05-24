@@ -5,6 +5,7 @@ import yaml from "yaml"
 
 export default class extends Generator {
 	writing() {
+		// required when called from fpmpage subgenerator
 		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
 			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 		}
