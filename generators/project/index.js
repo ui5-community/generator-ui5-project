@@ -5,7 +5,7 @@ import prompts from "./prompts.js"
 
 export default class extends Generator {
 	static displayName = "Create a new OpenUI5/SAPUI5 project containing one ore more uimodules"
-	static nestedGenerators = ["wdi5"] // TO-DO: doesn't work like that. How can we pass the uimodule path to the wdi5 generator, so it won't add wdi5 to the npm workspaces root? Make wdi5 aware of npm workspaces or handle it via easy-ui5 and make it aware of this context of subgenerator? I prefer the first option [nicoschoenteich]?
+	static nestedGenerators = ["wdi5"] 
 
 	async prompting() {
 		this.answers = {}

@@ -17,6 +17,7 @@ export default class extends Generator {
 		const platformIsApprouter = this.options.config.platform === "Application Router"
 		const platformIsHTML5AppsRepo = this.options.config.platform === "SAP HTML5 Application Repository Service"
 		const platformIsSAPBuildWorkZone = this.options.config.platform === "SAP Build Work Zone, standard edition"
+		const platformIsSAPNetWeaver = this.options.config.platform === "SAP NetWeaver"
 
 		delete uimodulePackageJson.scripts["deploy"]
 		delete uimodulePackageJson.scripts["deploy-config"]
@@ -59,6 +60,40 @@ export default class extends Generator {
 				}
 			})
 			fs.writeFileSync(this.destinationPath("../mta.yaml"), yaml.stringify(rootMtaYaml))
+		} else if (platformIsSAPNetWeaver) {
+			uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml --clean-dest --dest ../dist/${this.options.config.uimoduleName}`
+
+			const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
+			ui5Yaml.builder = {
+				customTask: [
+					{
+						name: "ui5-task-nwabap-deployer",
+						afterTask: "generateVersionInfo",
+						configuration: {
+							resources: {
+								path: `../dist/${this.options.config.uimoduleName}`,
+								pattern: "**/*.*"
+							},
+							connection: {
+								server: "http://<yourserver>:<yourserverport>"
+							},
+							authentication: {
+								user: "<youruser>",
+								password: "<yourpassword>"
+							},
+							ui5: {
+								language: "EN",
+								package: "<yourpackage>",
+								bspContainer: "<yourbspapplication>",
+								bspContainerText: "Generated with easy-ui5",
+								transportNo: "<yourtransport>",
+								calculateApplicationIndex: true
+							}
+						}
+					}
+				]
+			}
+			fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 		}
 
 		if (platformIsSAPBuildWorkZone) {

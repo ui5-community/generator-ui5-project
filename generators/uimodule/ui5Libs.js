@@ -10,7 +10,16 @@ export default class extends Generator {
 			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 		}
 
-		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5-local.yaml")).toString())
+		const ui5YamlLocal = yaml.parse(fs.readFileSync(this.destinationPath("ui5-local.yaml")).toString())
+		const ui5Yaml = ui5YamlLocal
+
+		// pick up ui5.yaml config done by other subgenerators
+		// execution order of subgenerators is unfortunately not very predictable
+		const oldUi5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
+		if (oldUi5Yaml.builder) {
+			ui5Yaml.builder = oldUi5Yaml.builder
+		}
+
 		const indexHtml = fs.readFileSync(this.destinationPath("webapp/index.html")).toString()
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath("webapp/manifest.json")))
 

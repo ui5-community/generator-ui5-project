@@ -60,7 +60,8 @@ export default async function prompts() {
             "Static webserver",
             "Application Router",
             "SAP HTML5 Application Repository Service",
-            "SAP Build Work Zone, standard edition"
+            "SAP Build Work Zone, standard edition",
+			"SAP NetWeaver"
         ],
         default: "Static webserver"
     })).platform
