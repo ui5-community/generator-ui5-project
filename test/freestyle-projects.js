@@ -29,6 +29,9 @@ export const testCases = [
 	},
 	{
 		platform: "SAP Build Work Zone, standard edition"
+	},
+	{
+		platform: "SAP NetWeaver"
 	}
 ]
 

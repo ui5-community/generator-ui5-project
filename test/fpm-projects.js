@@ -30,7 +30,15 @@ export const testCases = [
 		serviceUrl: "http://localhost:4004/travel",
 		mainEntity: "BookedFlights",
 		enableTypescript: true
+	},
+	{
+		platform: "SAP NetWeaver",
+		enableFPM: true,
+		serviceUrl: "http://localhost:4004/travel",
+		mainEntity: "BookedFlights",
+		enableTypescript: true
 	}
+
 ]
 
 export const tests = (testCase, uimodulePath) => {
