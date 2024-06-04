@@ -65,7 +65,7 @@ export default class extends Generator {
 
 			const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
 			ui5Yaml.builder = {
-				customTask: [
+				customTasks: [
 					{
 						name: "ui5-task-nwabap-deployer",
 						afterTask: "generateVersionInfo",
@@ -75,18 +75,18 @@ export default class extends Generator {
 								pattern: "**/*.*"
 							},
 							connection: {
-								server: "http://<yourserver>:<yourserverport>"
+								server: "myServerAndPort"
 							},
 							authentication: {
-								user: "<youruser>",
-								password: "<yourpassword>"
+								user: "myUser",
+								password: "myPassword"
 							},
 							ui5: {
 								language: "EN",
-								package: "<yourpackage>",
-								bspContainer: "<yourbspapplication>",
+								package: "myPassword",
+								bspContainer: "myBspApplication",
 								bspContainerText: "Generated with easy-ui5",
-								transportNo: "<yourtransport>",
+								transportNo: "myTransport",
 								calculateApplicationIndex: true
 							}
 						}
@@ -94,6 +94,9 @@ export default class extends Generator {
 				]
 			}
 			fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
+			const env = "myServerAndPort=<my-server-and-port>\nmyUser=<my-user>\nmyPassword=<my-password>\nmyPackage=<my-package>\nmyBspApplication=<my-bsp-application>\nmyTransport=<my-transport>"
+			fs.writeFileSync(this.destinationPath(".env"), env)
+			uimodulePackageJson.devDependencies["ui5-task-nwabap-deployer"] = dependencies["ui5-task-nwabap-deployer"]
 		}
 
 		if (platformIsSAPBuildWorkZone) {

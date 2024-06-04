@@ -9,5 +9,6 @@ export default {
     "rimraf": "latest",
     "OpenUI5": "1.120.13",
     "SAPUI5": "1.120.13",
-	"ui5-middleware-approuter": "^3"
+	"ui5-middleware-approuter": "^3",
+	"ui5-task-nwabap-deployer": "^2"
 }
