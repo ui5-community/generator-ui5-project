@@ -148,7 +148,9 @@ With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Ap
 
 <br>
 
-With this option the project gets deployed to SAP NetWeaver using the [ui5-task-nwabap-deployer](https://www.npmjs.com/package/ui5-task-nwabap-deployer).
+With this option the uimodules gets deployed to SAP NetWeaver using the [ui5-task-nwabap-deployer](https://www.npmjs.com/package/ui5-task-nwabap-deployer).
+
+> Note: You have to run `npm run build:workspaces` to deploy the uimodules in this case, which is different to the other deployment scenarios.
 
 </details>
 
