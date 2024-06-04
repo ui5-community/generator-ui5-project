@@ -75,7 +75,7 @@ export default class extends Generator {
 								pattern: "**/*.*"
 							},
 							connection: {
-								server: "myServerAndPort"
+								server: "http://<my-server>:<my-port>"
 							},
 							authentication: {
 								user: "myUser",
@@ -83,10 +83,10 @@ export default class extends Generator {
 							},
 							ui5: {
 								language: "EN",
-								package: "myPassword",
-								bspContainer: "myBspApplication",
+								package: "<my-package>",
+								bspContainer: "<my-bsp-application>",
 								bspContainerText: "Generated with easy-ui5",
-								transportNo: "myTransport",
+								transportNo: "<my-transport>",
 								calculateApplicationIndex: true
 							}
 						}
@@ -94,7 +94,7 @@ export default class extends Generator {
 				]
 			}
 			fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
-			const env = "myServerAndPort=<my-server-and-port>\nmyUser=<my-user>\nmyPassword=<my-password>\nmyPackage=<my-package>\nmyBspApplication=<my-bsp-application>\nmyTransport=<my-transport>"
+			const env = "myUser=<my-user>\nmyPassword=<my-password>"
 			fs.writeFileSync(this.destinationPath(".env"), env)
 			uimodulePackageJson.devDependencies["ui5-task-nwabap-deployer"] = dependencies["ui5-task-nwabap-deployer"]
 		}
