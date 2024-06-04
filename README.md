@@ -131,6 +131,16 @@ With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Ap
 
 </details>
 
+<details>
+<summary>SAP NetWeaver</summary>
+
+<br>
+
+With this option the project gets deployed to SAP NetWeaver using the [ui5-task-nwabap-deployer](https://www.npmjs.com/package/ui5-task-nwabap-deployer).
+
+</details>
+
+
 ## Debugging
 
 Follow these steps to debug this generator (or run it in standalone mode for that matter):
