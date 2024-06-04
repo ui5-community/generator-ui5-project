@@ -78,7 +78,19 @@ This subgenerator adds a new data model to one of the existing uimodules. Suppor
 ```bash
 yo easy-ui5 project view
 ```
-This subgenerator adds a new XML view to one of the existing uimodules.Only XML views are supported. The subgenerator can optionally set-up the corresponding route and target in the `manifest.json`.
+This subgenerator adds a new XML view to one of the existing uimodules. Only XML views are supported. The subgenerator can optionally set-up the corresponding route and target in the `manifest.json`.
+
+</details>
+
+<details>
+<summary>customcontrol</summary>
+
+<br>
+
+```bash
+yo easy-ui5 project customcontrol
+```
+This subgenerator adds a new custom control (which extends an existing UI5 control) to one of the existing uimodules.  
 
 </details>
 
