@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import fs from "fs"
 import Generator from "yeoman-generator"
 import prompts from "./prompts.js"
@@ -11,7 +12,7 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(`creating new custom control for ${this.options.config.uimodule}`)
+		this.log(chalk.green(`✨ creating new custom control for ${this.options.config.uimodule}`))
 
 		const webappPath = `${this.options.config.uimodule}/webapp`
 
