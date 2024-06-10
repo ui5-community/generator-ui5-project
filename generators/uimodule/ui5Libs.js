@@ -23,7 +23,7 @@ export default class extends Generator {
 		const indexHtml = fs.readFileSync(this.destinationPath("webapp/index.html")).toString()
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath("webapp/manifest.json")))
 
-		// remove fiori-tools-proxy, expect when its needed for flpSandbox.html to proxy to cdn or for fpm
+		// remove fiori-tools-proxy, except when its needed for flpSandbox.html to proxy to cdn or for fpm
 		if (
 			this.options.config.platform !== "SAP Build Work Zone, standard edition"
 			&& !this.options.config.enableFPM
@@ -68,6 +68,33 @@ export default class extends Generator {
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["SAPUI5"]
 				break
 		}
+
+		if (this.options.config.enableFPM) {
+			ui5Yaml.framework?.libraries?.push({
+				name: "sap.fe.templates"
+			})
+			ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware.filter(middleware => middleware.name !== "sap-fe-mockserver")
+			const ui5YamlMock = yaml.parse(fs.readFileSync(this.destinationPath("ui5-mock.yaml")).toString())
+			ui5YamlMock.framework = {
+				name: "SAPUI5",
+				version: dependencies["SAPUI5"],
+				libraries: [
+					{ name: "sap.m" },
+					{ name: "sap.ui.core" },
+					{ name: "themelib_sap_horizon" },
+					{ name: "sap.fe.templates" }
+				]
+			}
+			for (const file of [ui5Yaml, ui5YamlMock]) {
+				file.server.customMiddleware.forEach(middleware => {
+					if (middleware.name === "fiori-tools-proxy") {
+						delete middleware.configuration["ui5"]
+					}
+				})
+			}
+			fs.writeFileSync(this.destinationPath("ui5-mock.yaml"), yaml.stringify(ui5YamlMock))
+		}
+
 
 		fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 		fs.unlinkSync(this.destinationPath("webapp/manifest.json")) // avoid conflict/auto-prompt by yeoman

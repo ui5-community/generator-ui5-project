@@ -57,7 +57,7 @@ export const tests = (testCase, uimodulePath) => {
 		assert.file(files)
 	})
 
-	it("should alway consume SAPUI5 from local resources", async function() {
+	it("should always consume SAPUI5 from local resources", async function() {
 		assert.noFileContent(
 			path.join(uimodulePath, "webapp/index.html"),
 			"https://ui5.sap.com/"
@@ -65,6 +65,31 @@ export const tests = (testCase, uimodulePath) => {
 		assert.fileContent(
 			path.join(uimodulePath, "ui5.yaml"),
 			"SAPUI5"
+		)
+		assert.fileContent(
+			path.join(uimodulePath, "ui5-mock.yaml"),
+			"SAPUI5"
+		)
+
+		// don't proxy resources/ to CDN
+		assert.noFileContent(
+			path.join(uimodulePath, "ui5.yaml"),
+			"https://ui5.sap.com"
+		)
+		assert.noFileContent(
+			path.join(uimodulePath, "ui5-mock.yaml"),
+			"https://ui5.sap.com"
+		)
+	})
+
+	it("should use sap-fe-mockserver properly", async function() {
+		assert.noFileContent(
+			path.join(uimodulePath, "ui5.yaml"),
+			"sap-fe-mockserver"
+		)
+		assert.fileContent(
+			path.join(uimodulePath, "ui5-mock.yaml"),
+			"sap-fe-mockserver"
 		)
 	})
 
@@ -75,6 +100,10 @@ export const tests = (testCase, uimodulePath) => {
 		)
 		assert.fileContent(
 			path.join(uimodulePath, "ui5.yaml"),
+			new URL(testCase.serviceUrl).origin
+		)
+		assert.fileContent(
+			path.join(uimodulePath, "ui5-mock.yaml"),
 			new URL(testCase.serviceUrl).origin
 		)
 	})
