@@ -63,14 +63,13 @@ export default class extends Generator {
 			}
 			await writeFreestyleApp(this.destinationPath(), appConfig, this.fs)
 
-			// add eslint only to freestyle apps, as fpm apps bring their own config
-			// for some reason the eslint subgenerator can't resolve the template path correctyl by itself, so we are passing it here
-			this.composeWith("./eslint", { templatePath: this.templatePath(".eslintrc") })
-
 			// compose with these subgenerators from here only for freestyle apps
 			// for fpm apps these subgenerators have to be called from within ../fpmpage to ensure they run after the fe-fpm-writer doesn't overwrite them
 			this.composeWith("./platform", { config: this.options.config })
 			this.composeWith("./ui5Libs", { config: this.options.config })
+			this.composeWith("./lint", { config: this.options.config })
+			this.composeWith("../qunit", { config: this.options.config })
+
 		}
 	}
 

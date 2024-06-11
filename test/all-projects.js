@@ -51,6 +51,25 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		}
 	})
 
+	it("should use eslint", async function() {
+		assert.fileContent(
+			path.join(uimodulePath, "package.json"),
+			"\"lint\": \"eslint ./\""
+		)
+		assert.file(path.join(uimodulePath, ".eslintrc"))
+	})
+
+	it("should use @ui5/linter", async function() {
+		assert.fileContent(
+			path.join(uimodulePath, "package.json"),
+			"\"ui5lint\": \"ui5lint\""
+		)
+		assert.fileContent(
+			path.join(uimodulePath, "package.json"),
+			"@ui5/linter"
+		)
+	})
+
 	// it("should generate an installable project", async function() {
 	// 	return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
 	// })

@@ -74,9 +74,10 @@ export default class extends Generator {
 				break
 		}
 
+		// run these here (instead of ../uimodule/index.js) to make sure they get executed after fpmpage
 		this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
-
+		this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
 	}
 
 }
