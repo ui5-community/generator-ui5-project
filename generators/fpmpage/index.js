@@ -78,6 +78,7 @@ export default class extends Generator {
 		this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
+		this.composeWith(require.resolve("../qunit"), { config: this.options.config })
 	}
 
 }

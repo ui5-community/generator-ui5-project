@@ -1,5 +1,6 @@
 import assert from "assert"
 import { execSync } from "child_process"
+import fs from "fs"
 import path from "path"
 
 export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodulePath) => {
@@ -68,6 +69,31 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 			path.join(uimodulePath, "package.json"),
 			"@ui5/linter"
 		)
+	})
+
+	it("should have basic qunit configuration", async function() {
+		const files = []
+		files.push(path.join(uimodulePath, "webapp/test/unit/unitTests.qunit.html"))
+		files.push(path.join(uimodulePath, "webapp/test/unit/unitTests.qunit.js"))
+		files.push(path.join(uimodulePath, "webapp/test/unit/allTests.js"))
+		assert.file(files)
+	})
+
+	it("should have actual qunit tests only if implementation exists as well", async function() {
+		const implementationExists = fs.existsSync(path.join(uimodulePath, "webapp/model/models.js"))
+		if (implementationExists) {
+			assert.file(path.join(uimodulePath, "webapp/test/unit/model/models.js"))
+			assert.fileContent(
+				path.join(uimodulePath, "webapp/test/unit/allTests.js"),
+				"./model/models"
+			)
+		} else {
+			assert.noFile(path.join(uimodulePath, "webapp/test/unit/model/models.js"))
+			assert.noFileContent(
+				path.join(uimodulePath, "webapp/test/unit/allTests.js"),
+				"./model/models"
+			)
+		}
 	})
 
 	// it("should generate an installable project", async function() {
