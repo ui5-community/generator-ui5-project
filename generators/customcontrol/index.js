@@ -12,16 +12,16 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new custom control for ${this.options.config.uimodule}`))
+		this.log(chalk.green(`✨ creating new custom control for ${this.options.config.uimoduleName}`))
 
-		const webappPath = `${this.options.config.uimodule}/webapp`
+		const webappPath = `${this.options.config.uimoduleName}/webapp`
 
 		this.fs.copyTpl(
 			this.templatePath("customControl.js"),
 			this.destinationPath(`${webappPath}/control/${this.options.config.controlName}.js`),
 			{
 				superControl: this.options.config.superControl,
-				uimodule: this.options.config.uimodule,
+				uimodule: this.options.config.uimoduleName,
 				controlName: this.options.config.controlName
 			}
 		)

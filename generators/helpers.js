@@ -17,20 +17,18 @@ export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt =
 		configExists = true
 	}
 	if (configExists) {
-		// a subgenerator might be called before uimodules array gets created during end() as part of ./uimodule/index.js
-		// in this case use uimoduleName
 		if (!this.options.config.uimodules) {
-			this.options.config.uimodule = this.options.config.uimoduleName
-		} else if (this.options.config.uimodules?.length === 1) {
-			this.options.config.uimodule = this.options.config.uimodules[0]
-			if (uimodulePrompt) this.log(chalk.green(`✨ found existing uimodule ${this.options.config.uimodule}`))
+			// do nothing, just use the uimoduleName 
+		} else if (this.options.config.uimodules.length === 1) {
+			this.options.config.uimoduleName = this.options.config.uimodules[0]
+			if (uimodulePrompt) this.log(chalk.green(`✨ found existing uimodule ${this.options.config.uimoduleName}`))
 		} else if (uimodulePrompt) {
-			this.options.config.uimodule = (await this.prompt({
+			this.options.config.uimoduleName = (await this.prompt({
 				type: "list",
-				name: "uimodule",
+				name: "uimoduleName",
 				message: "For which uimodule would you like to call this subgenerator?",
 				choices: this.options.config.uimodules
-			})).uimodule
+			})).uimoduleName
 		}
 		await prompts.call(this)
 	}

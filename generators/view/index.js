@@ -11,19 +11,19 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(`creating new view for ${this.options.config.uimodule}`)
+		this.log(`creating new view for ${this.options.config.uimoduleName}`)
 
-		const webappPath = `${this.options.config.uimodule}/webapp`
+		const webappPath = `${this.options.config.uimoduleName}/webapp`
 
 		let controllerName
 		if (this.options.config.setupController) {
-			controllerName = `controllerName="${this.options.config.uimodule}.controller.${this.options.config.viewName}"`
+			controllerName = `controllerName="${this.options.config.uimoduleName}.controller.${this.options.config.viewName}"`
 
 			this.fs.copyTpl(
 				this.templatePath("Controller.controller.js"),
 				this.destinationPath(`${webappPath}/controller/${this.options.config.viewName}.controller.js`),
 				{
-					uimodule: this.options.config.uimodule,
+					uimodule: this.options.config.uimoduleName,
 					viewName: this.options.config.viewName
 				}
 			)
@@ -54,7 +54,7 @@ export default class extends Generator {
 				viewName: this.options.config.viewName
 			}
 
-			const manifestPath = `${this.options.config.uimodule}/webapp/manifest.json`
+			const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 			const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
 			manifestJSON["sap.ui5"]["routing"]["routes"].push(newRoute)
 			manifestJSON["sap.ui5"]["routing"]["targets"][`Target${this.options.config.viewName}`] = newTarget

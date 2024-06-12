@@ -14,7 +14,9 @@ export default class extends Generator {
 		// standalone call, this.options.config gets passed from ../project generator
 		if (!this.options.config) {
 			await lookForParentUI5ProjectAndPrompt.call(this, prompts, false)
-			// this.config.set("uimoduleName", this.options.config.uimoduleName)
+			// const config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"]
+			// config["something"] = this.options.config.uimoduleName
+			// fs.writeFileSync(this.destinationPath(".yo-rc.json"), JSON.stringify(config, null, 4))
 		}
 	}
 
@@ -69,7 +71,7 @@ export default class extends Generator {
 			this.composeWith("./platform", { config: this.options.config })
 			this.composeWith("./ui5Libs", { config: this.options.config })
 			this.composeWith("./lint", { config: this.options.config })
-			this.composeWith("../qunit", { config: this.options.config })
+			this.composeWith("../qunit", { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
 		}
 	}
 
@@ -93,7 +95,7 @@ export default class extends Generator {
 		} else {
 			this.config.set("uimodules", this.config.get("uimodules").concat(this.options.config.uimoduleName))
 		}
-		this.config.delete("uimoduleName")
+		// this.config.delete("uimoduleName")
 		this.config.delete("tileName")
 
 		const inProjectDirOrDeeper = process.cwd().includes(this.options.config.projectId) || fs.existsSync(".yo-rc.json")

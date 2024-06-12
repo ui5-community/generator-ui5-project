@@ -13,9 +13,9 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new ${this.options.config.modelType} model for ${this.options.config.uimodule}`))
+		this.log(chalk.green(`✨ creating new ${this.options.config.modelType} model for ${this.options.config.uimoduleName}`))
 
-		const manifestPath = `${this.options.config.uimodule}/webapp/manifest.json`
+		const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
 
 		const dataSource = `${this.options.config.modelName || "default"}DataSource`
@@ -86,7 +86,7 @@ export default class extends Generator {
 		// set up proxy
 		if (this.options.config.modelType.includes("OData")) {
 			if (this.options.config.setupProxy) {
-				const ui5YamlPath = `${this.options.config.uimodule}/ui5.yaml`
+				const ui5YamlPath = `${this.options.config.uimoduleName}/ui5.yaml`
 				const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath(ui5YamlPath)).toString())
 				if (!ui5Yaml.server) {
 					ui5Yaml.server = {

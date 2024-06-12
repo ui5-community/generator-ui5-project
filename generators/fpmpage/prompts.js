@@ -7,8 +7,7 @@ import {
 } from "../helpers.js"
 
 export default async function prompts() {
-
-	const manifestPath = `${this.options.config.uimodule}/webapp/manifest.json`
+	const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 	const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
 
 	if (!manifestJSON["sap.ui5"]["models"][""]) {

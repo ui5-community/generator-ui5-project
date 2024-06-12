@@ -16,17 +16,19 @@ export default class extends Generator {
 		if (!this.options.config) {
 			await lookForParentUI5ProjectAndPrompt.call(this, prompts)
 		} else {
-			await lookForParentUI5ProjectAndPrompt.call(this, () => {})
+			await lookForParentUI5ProjectAndPrompt.call(this, () => { }, false)
 			this.options.config.testName = "First"
+			// prioritize manually passed parameter of config from file, as it is not be up to date when subgenerator are composed
+			this.options.config.uimoduleName = this.options.uimoduleName
 		}
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimodule}`))
+		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimoduleName}`))
 
 		// required when called from fpmpage subgenerator
-		if (!this.destinationPath().endsWith(this.options.config.uimodule)) {
-			this.destinationRoot(this.destinationPath(this.options.config.uimodule))
+		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
+			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 		}
 
 		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())

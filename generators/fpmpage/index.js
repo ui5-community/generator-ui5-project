@@ -17,16 +17,16 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ adding a ${this.options.config.pageType} page to ${this.options.config.uimodule}`))
+		this.log(chalk.green(`✨ adding a ${this.options.config.pageType} page to ${this.options.config.uimoduleName}`))
 
 		// enable fpm
-		const target = this.destinationPath(this.options.config.uimodule)
+		const target = this.destinationPath(this.options.config.uimoduleName)
 		fpmWriter.enableFPM(target, {
 			replaceAppComponent: this.options.config.replaceComponent,
 			typescript: this.options.config.enableTypescript || false
 		}, this.fs)
 
-		const manifestPath = `${this.options.config.uimodule}/webapp/manifest.json`
+		const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
 		const targets = manifestJSON["sap.ui5"]?.["routing"]?.["targets"]
 		let navigation
@@ -39,7 +39,7 @@ export default class extends Generator {
 			}
 		}
 
-		const uimodulePath = this.destinationPath(this.options.config.uimodule)
+		const uimodulePath = this.destinationPath(this.options.config.uimoduleName)
 
 		if (this.options.config.serviceUrl) {
 			await serviceWriter.generate(uimodulePath, {
@@ -78,7 +78,7 @@ export default class extends Generator {
 		this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
-		this.composeWith(require.resolve("../qunit"), { config: this.options.config })
+		this.composeWith(require.resolve("../qunit"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
 	}
 
 }
