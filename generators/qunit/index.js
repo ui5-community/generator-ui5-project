@@ -1,5 +1,4 @@
 import chalk from "chalk"
-import dependencies from "../dependencies.js"
 import fs from "fs"
 import Generator from "yeoman-generator"
 import prompts from "./prompts.js"
@@ -13,34 +12,55 @@ export default class extends Generator {
 	static displayName = "Add a new qunit test to your uimodule."
 
 	async prompting() {
-		await lookForParentUI5ProjectAndPrompt.call(this, prompts)
+		// standalone call
+		if (!this.options.config) {
+			await lookForParentUI5ProjectAndPrompt.call(this, prompts)
+		} else {
+			await lookForParentUI5ProjectAndPrompt.call(this, () => {})
+			this.options.config.testName = "First"
+		}
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimoduleName}`))
-	
+		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimodule}`))
+
 		// required when called from fpmpage subgenerator
-		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
-			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
+		if (!this.destinationPath().endsWith(this.options.config.uimodule)) {
+			this.destinationRoot(this.destinationPath(this.options.config.uimodule))
 		}
 
 		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
-
-		ui5Yaml.server.customMiddleware.push({
-			name: "preview-middleware",
-			afterMiddleware: "compression",
-			configuration: {
-				test: [{ framework: "Qunit" }]
+		let previewMiddlewareAlreadyExists
+		for (const middleware of ui5Yaml.server.customMiddleware) {
+			if (middleware.name === "preview-middleware") {
+				previewMiddlewareAlreadyExists = true
+				if (middleware.configuration?.test) {
+					middleware.configuration.test.push({ framework: "Qunit" })
+				} else {
+					middleware.configuration = {
+						test: [{ framework: "Qunit" }]
+					}
+				}
 			}
-		})
+		}
+		if (!previewMiddlewareAlreadyExists) {
+			ui5Yaml.server.customMiddleware.push({
+				name: "preview-middleware",
+				afterMiddleware: "compression",
+				configuration: {
+					test: [{ framework: "Qunit" }]
+				}
+			})
+
+		}
 		fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates"),
-			this.destinationPath("webapp/test/unit"),
+			path.join(__dirname, "templates/Test.js"),
+			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
 			{
-				uimodule: this.options.config.uimodule
+				testName: this.options.config.testName
 			}
 		)
 
