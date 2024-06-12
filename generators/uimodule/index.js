@@ -14,6 +14,7 @@ export default class extends Generator {
 		// standalone call, this.options.config gets passed from ../project generator
 		if (!this.options.config) {
 			await lookForParentUI5ProjectAndPrompt.call(this, prompts, false)
+			this.config.set("uimoduleName", this.options.config.uimoduleName)
 		}
 	}
 

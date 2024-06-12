@@ -38,7 +38,6 @@ export const testCases = [
 		mainEntity: "BookedFlights",
 		enableTypescript: true
 	}
-
 ]
 
 export const tests = (testCase, uimodulePath) => {

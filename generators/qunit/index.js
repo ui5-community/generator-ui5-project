@@ -4,6 +4,7 @@ import fs from "fs"
 import Generator from "yeoman-generator"
 import prompts from "./prompts.js"
 import { lookForParentUI5ProjectAndPrompt } from "../helpers.js"
+import yaml from "yaml"
 import path, { dirname } from "path"
 import { fileURLToPath } from "url"
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -16,44 +17,36 @@ export default class extends Generator {
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimodule}`))
-
-		const webappPath = `${this.options.config.uimodule}/webapp`
-
-		let ui5LibsPath
-		switch (this.options.config.ui5Libs) {
-			case "Content delivery network (OpenUI5)":
-				ui5LibsPath = `https://sdk.openui5.org/${dependencies["OpenUI5"]}/`
-				break
-			case "Content delivery network (SAPUI5)":
-				ui5LibsPath = `https://ui5.sap.com/${dependencies["SAPUI5"]}/`
-				break
-			case "Local resources (OpenUI5)" || "Local resources (SAPUI5)":
-				ui5LibsPath = "../../"
-				break
+		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimoduleName}`))
+	
+		// required when called from fpmpage subgenerator
+		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
+			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 		}
 
-		const config = [
-			"allTests.js",
-			"unitTests.qunit.html",
-			"unitTests.qunit.js"
-		]
-		const modelImplementationExists = fs.existsSync(this.destinationPath(`${webappPath}/model/models.js`))
-		if (modelImplementationExists) {
-			config.push("model")
-		}
-		for (const file of config) {
-			this.fs.copyTpl(
-				// for some reason this.templatePath() doesn't work here
-				path.join(__dirname, "templates", file),
-				this.destinationPath(`${webappPath}/test/unit/${file}`),
-				{
-					uimodule: this.options.config.uimodule,
-					ui5LibsPath: ui5LibsPath,
-					modelImplementationExists: modelImplementationExists
-				}
-			)
-		}
+		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
+
+		ui5Yaml.server.customMiddleware.push({
+			name: "preview-middleware",
+			afterMiddleware: "compression",
+			configuration: {
+				test: [{ framework: "Qunit" }]
+			}
+		})
+		fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
+
+		this.fs.copyTpl(
+			// for some reason this.templatePath() doesn't work here
+			path.join(__dirname, "templates"),
+			this.destinationPath("webapp/test/unit"),
+			{
+				uimodule: this.options.config.uimodule
+			}
+		)
+
+		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
+		uimodulePackageJson.scripts["qunit"] = "fiori run --open test/unitTests.qunit.html"
+		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 
 }

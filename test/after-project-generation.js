@@ -14,7 +14,6 @@ export const testCases = [
 		setupController: true,
 		setupRouteTarget: true,
 		controlName: "CustomControl"
-
 	},
 	{
 		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
@@ -41,7 +40,6 @@ export const testCases = [
 		setupRouteTarget: false,
 		controlName: "CustomControl"
 	}
-
 ]
 
 export const tests = (testCase, uimodulePath, uimodulePath2) => {

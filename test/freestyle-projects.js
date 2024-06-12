@@ -54,19 +54,11 @@ export const tests = (testCase, uimodulePath) => {
 					path.join(uimodulePath, "webapp/index.html"),
 					"https://sdk.openui5.org/"
 				)
-				assert.noFileContent(
-					path.join(uimodulePath, "ui5.yaml"),
-					"framework:"
-				)
 				break
 			case "Content delivery network (SAPUI5)":
 				assert.fileContent(
 					path.join(uimodulePath, "webapp/index.html"),
 					"https://ui5.sap.com/"
-				)
-				assert.noFileContent(
-					path.join(uimodulePath, "ui5.yaml"),
-					"framework:"
 				)
 				break
 			case "Local resources (OpenUI5)":
