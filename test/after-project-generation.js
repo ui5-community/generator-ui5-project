@@ -3,7 +3,7 @@ import path from "path"
 
 export const testCases = [
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Static webserver",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -13,10 +13,11 @@ export const testCases = [
 		viewName: "NewView",
 		setupController: true,
 		setupRouteTarget: true,
-		controlName: "CustomControl"
+		controlName: "CustomControl",
+		testName: "Second"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Application Router",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -26,10 +27,11 @@ export const testCases = [
 		viewName: "NewView",
 		setupController: true,
 		setupRouteTarget: false,
-		controlName: "CustomControl"
+		controlName: "CustomControl",
+		testName: "Second"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "SAP HTML5 Application Repository Service",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -38,7 +40,8 @@ export const testCases = [
 		viewName: "NewView",
 		setupController: false,
 		setupRouteTarget: false,
-		controlName: "CustomControl"
+		controlName: "CustomControl",
+		testName: "Second"
 	}
 ]
 
@@ -125,6 +128,15 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 
 	it("should have new custom control", async function() {
 		assert.file(path.join(uimodulePath, `webapp/control/${testCase.controlName}.js`))
+	})
+
+	it("should have new qunit test", async function() {
+		assert.file(path.join(uimodulePath, `webapp/test/unit/${testCase.testName}Test.js`))
+	})
+
+	it("should have new opa5 journey and page object", async function() {
+		assert.file(path.join(uimodulePath, `webapp/test/integration/${testCase.testName}Journey.js`))
+		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.js`))
 	})
 
 	it("should have new uimodule", async function() {

@@ -63,7 +63,7 @@ const runProjectGenerator = (name, testCases, tests) => {
 				})
 
 				after(async function() {
-					fs.rmSync(testDir, { recursive: true, force: true })
+					// fs.rmSync(testDir, { recursive: true, force: true })
 				})
 
 				allProjects(testCase, testDir, projectId, uimoduleName, uimodulePath)
