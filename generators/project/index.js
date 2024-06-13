@@ -22,8 +22,8 @@ export default class extends Generator {
 			// required so that yeoman detects changes to package.json
 			// and runs install automatically if newDir === true
 			// see https://github.com/yeoman/environment/issues/309
-			// this.env.cwd = this.destinationPath()
-			// this.env.options.nodePackageManager = "npm"
+			this.env.cwd = this.destinationPath()
+			this.env.options.nodePackageManager = "npm"
 		} else {
 			this.destinationRoot(this.destinationPath())
 		}
