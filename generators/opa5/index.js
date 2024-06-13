@@ -9,22 +9,25 @@ import { fileURLToPath } from "url"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class extends Generator {
-	static displayName = "Add a new qunit test to your uimodule."
+	static displayName = "Add a new opa5 test to your uimodule."
 
 	async prompting() {
 		// standalone call
 		if (!this.options.config) {
 			await lookForParentUI5ProjectAndPrompt.call(this, prompts)
+			this.options.config.route = this.options.config.viewName.toLowerCase()
 		} else {
 			await lookForParentUI5ProjectAndPrompt.call(this, () => { }, false)
 			this.options.config.testName = "First"
+			this.options.config.viewName = "MainView"
+			this.options.config.route = ""
 			// prioritize manually passed parameter over config from file, as the latter is not up to date when subgenerator are composed
 			this.options.config.uimoduleName = this.options.uimoduleName
 		}
 	}
 
 	async writing() {
-		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimoduleName}`))
+		this.log(chalk.green(`✨ creating new opa5 journey for ${this.options.config.uimoduleName}`))
 
 		// required when called from fpmpage subgenerator
 		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
@@ -32,16 +35,16 @@ export default class extends Generator {
 		}
 
 		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
-		const testConfig = { framework: "Qunit" }
+		const testConfig = { framework: "OPA5" }
 		let previewMiddlewareAlreadyExists
 		for (const middleware of ui5Yaml.server.customMiddleware) {
 			if (middleware.name === "preview-middleware") {
 				previewMiddlewareAlreadyExists = true
 				if (middleware.configuration?.test) {
-					middleware.configuration.test.push( testConfig )
+					middleware.configuration.test.push(testConfig)
 				} else {
 					middleware.configuration = {
-						test: [ testConfig ]
+						test: [testConfig]
 					}
 				}
 			}
@@ -51,7 +54,7 @@ export default class extends Generator {
 				name: "preview-middleware",
 				afterMiddleware: "compression",
 				configuration: {
-					test: [ testConfig ]
+					test: [testConfig]
 				}
 			})
 
@@ -60,15 +63,27 @@ export default class extends Generator {
 
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/Test.js"),
-			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
+			path.join(__dirname, "templates/pages/View.js"),
+			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.js`),
 			{
-				testName: this.options.config.testName
+				viewName: this.options.config.viewName,
+				uimoduleName: this.options.config.uimoduleName,
+				route: this.options.config.route
+			}
+		)
+		this.fs.copyTpl(
+			// for some reason this.templatePath() doesn't work here
+			path.join(__dirname, "templates/Journey.js"),
+			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.js`),
+			{
+				viewName: this.options.config.viewName,
+				uimoduleName: this.options.config.uimoduleName,
+				route: this.options.config.route
 			}
 		)
 
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
-		uimodulePackageJson.scripts["qunit"] = "fiori run --open test/unitTests.qunit.html"
+		uimodulePackageJson.scripts["opa5"] = "fiori run --open test/opaTests.qunit.html"
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 

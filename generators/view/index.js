@@ -59,6 +59,11 @@ export default class extends Generator {
 			manifestJSON["sap.ui5"]["routing"]["routes"].push(newRoute)
 			manifestJSON["sap.ui5"]["routing"]["targets"][`Target${this.options.config.viewName}`] = newTarget
 
+			const i18nPath = `${this.options.config.uimoduleName}/webapp/i18n/i18n.properties`
+			let i18n = fs.readFileSync(this.destinationPath(i18nPath))
+			i18n += `\n${this.options.config.viewName.toLocaleLowerCase()}=${this.options.config.viewName}`
+			this.writeDestination(i18nPath, i18n)
+
 			// use native yeoman methods for this subgenerator as this prompts the user before overwriting
 			this.writeDestinationJSON(this.destinationPath(manifestPath), manifestJSON, null, 4)
 		}
