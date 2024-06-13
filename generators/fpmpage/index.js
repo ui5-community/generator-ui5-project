@@ -79,7 +79,7 @@ export default class extends Generator {
 		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
 		this.composeWith(require.resolve("../qunit"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
-		this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
+		// this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
 	}
 
 }
