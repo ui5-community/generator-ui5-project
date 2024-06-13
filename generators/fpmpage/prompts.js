@@ -62,16 +62,21 @@ export default async function prompts() {
 
 	}
 
+	const pageOptions = [
+		{ value: "custom", name: "Custom Page", },
+		{ value: "list report", name: "List Report" },
+	]
+	const listReportExists = JSON.stringify(manifestJSON["sap.ui5"]["routing"]["targets"]).includes("sap.fe.templates.ListReport")
+	if (listReportExists) {
+		pageOptions.push({ value: "object", name: "Object Page" }
+		)
+	}
 	// TO-DO: not allow object page if list report is not already in place
 	this.options.config.pageType = (await this.prompt({
 		type: "list",
 		name: "pageType",
 		message: "What type of page do you want to add?",
-		choices: [
-			{ value: "custom", name: "Custom Page", },
-			{ value: "list report", name: "List Report" },
-			{ value: "object", name: "Object Page" }
-		],
+		choices: pageOptions,
 		default: "custom"
 	})).pageType
 

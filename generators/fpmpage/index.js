@@ -13,6 +13,7 @@ export default class extends Generator {
 	static displayName = "Add a page to a Fiori elements FPM application."
 
 	async prompting() {
+		this.isComposedCall = this.options.config
 		await lookForParentUI5ProjectAndPrompt.call(this, prompts)
 	}
 
@@ -74,12 +75,15 @@ export default class extends Generator {
 				break
 		}
 
-		// run these here (instead of ../uimodule/index.js) to make sure they get executed after fpmpage
-		this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
-		this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
-		this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
-		this.composeWith(require.resolve("../qunit"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
-		// this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
+		if (this.isComposedCall) {
+			// run these here (instead of ../uimodule/index.js) to make sure they get executed after fpmpage
+			this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
+			this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
+			this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
+			this.composeWith(require.resolve("../qunit"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
+			// this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
+
+		}
 	}
 
 }
