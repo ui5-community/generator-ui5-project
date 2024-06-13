@@ -37,7 +37,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 
 	it("should have correct deployment config in mta.yaml or ui5.yaml", async function() {
 		const mtaYamlPath = path.join(projectId, "mta.yaml")
-		const ui5YamlPath = path.join(uimodulePath, "ui5.yaml")
+		const ui5DeployYamlPath = path.join(uimodulePath, "ui5-deploy.yaml")
 		switch (testCase.platform) {
 			case "Static webserver":
 				assert.fileContent(mtaYamlPath, "type: staticfile")
@@ -49,7 +49,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 				assert.fileContent(mtaYamlPath, `${projectId}-destination-content`)
 				break
 			case "SAP NetWeaver":
-				assert.fileContent(ui5YamlPath, "ui5-task-nwabap-deployer")
+				assert.fileContent(ui5DeployYamlPath, "deploy-to-abap")
 				break
 		}
 	})
