@@ -69,21 +69,13 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 		)
 	})
 
-	it("should or shouldn't use fiori-tools-proxy correctly", async function() {
+	it("should or shouldn't proxy to service correctly", async function() {
 		if (testCase.setupProxy) {
-			assert.fileContent(
-				path.join(uimodulePath, "ui5.yaml"),
-				"fiori-tools-proxy"
-			)
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),
 				"http://localhost:4004"
 			)
 		} else {
-			assert.noFileContent(
-				path.join(uimodulePath, "ui5.yaml"),
-				"fiori-tools-proxy"
-			)
 			assert.noFileContent(
 				path.join(uimodulePath, "ui5.yaml"),
 				"http://localhost:4004"

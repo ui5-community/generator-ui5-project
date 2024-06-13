@@ -71,7 +71,6 @@ export default async function prompts() {
 		pageOptions.push({ value: "object", name: "Object Page" }
 		)
 	}
-	// TO-DO: not allow object page if list report is not already in place
 	this.options.config.pageType = (await this.prompt({
 		type: "list",
 		name: "pageType",

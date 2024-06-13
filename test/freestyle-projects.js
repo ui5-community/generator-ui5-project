@@ -52,19 +52,27 @@ export const tests = (testCase, uimodulePath) => {
 			case "Content delivery network (OpenUI5)":
 				assert.fileContent(
 					path.join(uimodulePath, "webapp/index.html"),
-					"https://sdk.openui5.org/"
+					"https://sdk.openui5.org"
+				)
+				assert.fileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"https://sdk.openui5.org"
 				)
 				break
 			case "Content delivery network (SAPUI5)":
 				assert.fileContent(
 					path.join(uimodulePath, "webapp/index.html"),
-					"https://ui5.sap.com/"
+					"https://ui5.sap.com"
+				)
+				assert.fileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"https://ui5.sap.com"
 				)
 				break
 			case "Local resources (OpenUI5)":
 				assert.noFileContent(
 					path.join(uimodulePath, "webapp/index.html"),
-					"https://sdk.openui5.org/"
+					"https://sdk.openui5.org"
 				)
 				assert.fileContent(
 					path.join(uimodulePath, "ui5.yaml"),
@@ -74,26 +82,12 @@ export const tests = (testCase, uimodulePath) => {
 			case "Local resources (SAPUI5)":
 				assert.noFileContent(
 					path.join(uimodulePath, "webapp/index.html"),
-					"https://ui5.sap.com/"
+					"https://ui5.sap.com"
 				)
 				assert.fileContent(
 					path.join(uimodulePath, "ui5.yaml"),
 					"SAPUI5"
 				)
-		}
-	})
-
-	it("should not use fiori-tools-proxy, except for SAP Build Work Zone, standard edition", async function() {
-		if (testCase.platform !== "SAP Build Work Zone, standard edition") {
-			assert.noFileContent(
-				path.join(uimodulePath, "ui5.yaml"),
-				"fiori-tools-proxy"
-			)
-		} else {
-			assert.fileContent(
-				path.join(uimodulePath, "ui5.yaml"),
-				"fiori-tools-proxy"
-			)
 		}
 	})
 
