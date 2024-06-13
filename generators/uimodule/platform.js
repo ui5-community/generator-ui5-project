@@ -61,42 +61,54 @@ export default class extends Generator {
 			})
 			fs.writeFileSync(this.destinationPath("../mta.yaml"), yaml.stringify(rootMtaYaml))
 		} else if (platformIsSAPNetWeaver) {
-			uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml --clean-dest --dest ../dist/${this.options.config.uimoduleName}`
+			uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml`
+			uimodulePackageJson.scripts["deploy"] = `npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip`
 
-			const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
-			ui5Yaml.builder = {
-				customTasks: [
-					{
-						name: "ui5-task-nwabap-deployer",
-						afterTask: "generateVersionInfo",
-						configuration: {
-							resources: {
-								path: `../dist/${this.options.config.uimoduleName}`,
-								pattern: "**/*.*"
-							},
-							connection: {
-								server: "http://<my-server>:<my-port>"
-							},
-							authentication: {
-								user: "myUser",
-								password: "myPassword"
-							},
-							ui5: {
-								language: "EN",
-								package: "<my-package>",
-								bspContainer: "<my-bsp-application>",
-								bspContainerText: "Generated with easy-ui5",
-								transportNo: "<my-transport>",
-								calculateApplicationIndex: true
+			const ui5DeployYaml = {
+				specVersion: "3.1",
+				metadata: {
+					name: this.options.config.uimoduleName
+				},
+				type: "application",
+				builder: {
+					resources: {
+						excludes: [
+							"/test/**",
+							"/localService/**"
+						]
+					},
+					customTasks: [
+						{
+							name: "deploy-to-abap",
+							afterTask: "replaceVersion",
+							configuration: {
+								target: {
+									url: "https://<my-server>:<my-port>",
+									client: 200,
+									auth: "basic"
+								},
+								credentials: {
+									username: "env:myUser",
+									password: "env:myPassword"
+								},
+								app: {
+									name: this.options.config.uimoduleName,
+									description: "Generated with easy-ui5",
+									package: "<my-package>",
+									transport: "<my-transport>",
+								},
+								exlude: [
+									"/test/"
+								]
 							}
 						}
-					}
-				]
+					]
+				}
 			}
-			fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
+
+			fs.writeFileSync(this.destinationPath("ui5-deploy.yaml"), yaml.stringify(ui5DeployYaml))
 			const env = "myUser=<my-user>\nmyPassword=<my-password>"
 			fs.writeFileSync(this.destinationPath(".env"), env)
-			uimodulePackageJson.devDependencies["ui5-task-nwabap-deployer"] = dependencies["ui5-task-nwabap-deployer"]
 		}
 
 		if (platformIsSAPBuildWorkZone) {
