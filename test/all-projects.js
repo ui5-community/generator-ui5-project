@@ -91,6 +91,27 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		)
 	})
 
+	if (!testCase.enableFPM) {
+		it("should have basic opa5 configuration", async function() {
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"preview-middleware"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"- framework: OPA5"
+			)
+		})
+
+		it("should have opa5 journey and page object", async function() {
+			assert.fileContent(
+				path.join(uimodulePath, "webapp/test/integration/FirstJourney.js"),
+				"Opa5"
+			)
+			assert.file(path.join(uimodulePath, "webapp/test/integration/pages"))
+		})
+	}
+
 	// it("should generate an installable project", async function() {
 	// 	return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
 	// })
