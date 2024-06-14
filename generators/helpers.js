@@ -1,25 +1,23 @@
 import chalk from "chalk"
+import fs from "fs"
+import yaml from "yaml"
 
 export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt = true) {
-	let configExists
-	this.options.config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
+	const readConfig = () => this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
+	this.options.config = readConfig()
+
 	if (Object.keys(this.options.config).length === 0) {
-		// look for ui5 projects in the parent dir
 		this.destinationRoot(this.destinationPath("../"))
-		this.options.config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
+		this.options.config = readConfig()
+
 		if (Object.keys(this.options.config).length === 0) {
 			this.log(`${chalk.yellow("We couldn't find a parent UI5 project with existing uimodules to run this subgenerator, but you can create one by running")} ${chalk.blue("yo easy-ui5 project")}${chalk.yellow(".")}`)
-			this.cancelCancellableTasks()
-		} else {
-			configExists = true
+			return this.cancelCancellableTasks()
 		}
-	} else {
-		configExists = true
 	}
-	if (configExists) {
-		if (!this.options.config.uimodules) {
-			// do nothing, just use the uimoduleName 
-		} else if (this.options.config.uimodules.length === 1) {
+
+	if (this.options.config.uimodules) {
+		if (this.options.config.uimodules.length === 1) {
 			this.options.config.uimoduleName = this.options.config.uimodules[0]
 			if (uimodulePrompt) this.log(chalk.green(`✨ found existing uimodule ${this.options.config.uimoduleName}`))
 		} else if (uimodulePrompt) {
@@ -30,8 +28,40 @@ export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt =
 				choices: this.options.config.uimodules
 			})).uimoduleName
 		}
-		await prompts.call(this)
 	}
+
+	await prompts.call(this)
+}
+
+export async function ensureCorrectDestinationPath() {
+	// required when called from fpmpage subgenerator
+	if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
+		this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
+	}
+}
+
+export async function addPreviewMiddlewareTestConfig(framework) {
+	const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
+	const testConfig = { framework: framework }
+	const middlewareName = "preview-middleware"
+	const middleware = ui5Yaml.server.customMiddleware.find(m => m.name === middlewareName)
+
+	if (middleware) {
+		if (middleware.configuration?.test) {
+			if (!middleware.configuration.test.find(t => t.framework === framework)) {
+				middleware.configuration.test.push(testConfig)
+			}
+		} else {
+			middleware.configuration = { test: [testConfig] }
+		}
+	} else {
+		ui5Yaml.server.customMiddleware.push({
+			name: middlewareName,
+			afterMiddleware: "compression",
+			configuration: { test: [testConfig] }
+		})
+	}
+	fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 }
 
 export function validateAlphaNumericStartingWithLetterNonEmpty(string) {

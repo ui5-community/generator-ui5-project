@@ -1,14 +1,12 @@
 import dependencies from "../dependencies.js"
+import { ensureCorrectDestinationPath } from "../helpers.js"
 import fs from "fs"
 import Generator from "yeoman-generator"
 import yaml from "yaml"
 
 export default class extends Generator {
 	writing() {
-		// required when called from fpmpage subgenerator
-		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
-			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
-		}
+		ensureCorrectDestinationPath.call(this)
 
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath("webapp/manifest.json")))

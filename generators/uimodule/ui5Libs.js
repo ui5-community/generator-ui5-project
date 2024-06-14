@@ -1,21 +1,18 @@
 import dependencies from "../dependencies.js"
+import { ensureCorrectDestinationPath } from "../helpers.js"
 import fs from "fs"
 import Generator from "yeoman-generator"
 import yaml from "yaml"
 
 export default class extends Generator {
 	writing() {
-		// required when called from fpmpage subgenerator
-		if (!this.destinationPath().endsWith(this.options.config.uimoduleName)) {
-			this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
-		}
+		ensureCorrectDestinationPath.call(this)
 
 		const deleteProxyToUI5 = (file) => {
-			file.server.customMiddleware.forEach(middleware => {
-				if (middleware.name === "fiori-tools-proxy") {
-					delete middleware.configuration["ui5"]
-				}
-			})
+			const middleware = file.server.customMiddleware.find(m => m.name === "fiori-tools-proxy")
+			if (middleware) {
+				delete middleware.configuration["ui5"]
+			}
 		}
 
 		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())

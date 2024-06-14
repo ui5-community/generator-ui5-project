@@ -8,15 +8,11 @@ import prompts from "./prompts.js"
 
 export default class extends Generator {
 	static displayName = "Create a new uimodule within an existing OpenUI5/SAPUI5 project"
-	static nestedGenerators = ["wdi5"] // ignored by easy-ui5 if uimodule is composed with project
 
 	async prompting() {
 		// standalone call, this.options.config gets passed from ../project generator
 		if (!this.options.config) {
 			await lookForParentUI5ProjectAndPrompt.call(this, prompts, false)
-			// const config = this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"]
-			// config["something"] = this.options.config.uimoduleName
-			// fs.writeFileSync(this.destinationPath(".yo-rc.json"), JSON.stringify(config, null, 4))
 		}
 	}
 

@@ -79,7 +79,7 @@ export default async function prompts() {
         name: "ui5Libs",
         message: "Where should your UI5 libs be served from?",
         choices: () => {
-            return this.answers.platform !== "SAP Build Work Zone, standard edition" && !this.answers.enableFPM // limit to SAPUI5 for some use cases
+            return this.answers.platform !== "SAP Build Work Zone, standard edition" && !this.answers.enableFPM 
                 ? [
                       "Content delivery network (OpenUI5)",
                       "Content delivery network (SAPUI5)",
