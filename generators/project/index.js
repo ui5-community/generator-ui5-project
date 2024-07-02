@@ -3,9 +3,15 @@ import dependencies from "../dependencies.js"
 import Generator from "yeoman-generator"
 import prompts from "./prompts.js"
 
+import PlatformGenerator from "./platform.js"
+import UimoduleGenerator from "../uimodule/index.js"
+
+import { createRequire } from "node:module"
+const require = createRequire(import.meta.url)
+
 export default class extends Generator {
 	static displayName = "Create a new OpenUI5/SAPUI5 project containing one ore more uimodules"
-	static nestedGenerators = ["wdi5"] 
+	static nestedGenerators = ["wdi5"]
 
 	async prompting() {
 		this.answers = {}
@@ -51,8 +57,22 @@ export default class extends Generator {
 			)
 		}
 
-		this.composeWith("../uimodule/index.js", { config: this.config.getAll() })
-		this.composeWith("./platform.js", {})
+		this.composeWith(
+			{
+				Generator: UimoduleGenerator,
+				path: require.resolve("../uimodule")
+			},
+			{
+				config: this.config.getAll()
+			}
+		)
+		this.composeWith(
+			{
+				Generator: PlatformGenerator,
+				path: require.resolve("./platform.js")
+			},
+			{}
+		)
 	}
 
 	async end() {
