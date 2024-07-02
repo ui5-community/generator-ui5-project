@@ -2,7 +2,7 @@
 // TO-DO: maybe add as peerDependencies for automated security checks via GitHub, then read programmatically from package.json
 export default {
 	"@sap-ux/eslint-plugin-fiori-tools": "^0.2",
-	"@sap/approuter": "^16",
+	"@sap/approuter": "latest",
 	"@ui5/linter": "latest",
 	"bestzip": "latest",
 	"mbt": "^1",

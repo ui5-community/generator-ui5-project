@@ -59,7 +59,7 @@ export default class extends Generator {
 					entity: this.options.config.mainEntity,
 					navigation: navigation
 				}, this.fs)
-				break;
+				break
 			case "list report":
 				fpmWriter.generateListReport(uimodulePath, {
 					entity: this.options.config.mainEntity

@@ -93,20 +93,16 @@ export default class extends Generator {
 						customMiddleware: []
 					}
 				}
-				let proxyAlreadySetup = false
-				for (let i = 0; i < ui5Yaml.server.customMiddleware.length; i++) {
-					if (ui5Yaml.server.customMiddleware[i].name === "fiori-tools-proxy") {
-						if (!ui5Yaml.server.customMiddleware[i].configuration.backend) {
-							ui5Yaml.server.customMiddleware[i].configuration.backend = []
-						}
-						ui5Yaml.server.customMiddleware[i].configuration.backend.push({
-							path: serviceUrl.pathname,
-							url: serviceUrl.origin
-						})
-						proxyAlreadySetup = true
+				const middleware = ui5Yaml.server.customMiddleware.find(m => m.name === "fiori-tools-proxy")
+				if (middleware) {
+					if (!middleware.configuration.backend) {
+						middleware.configuration.backend = []
 					}
-				}
-				if (!proxyAlreadySetup) {
+					middleware.configuration.backend.push({
+						path: serviceUrl.pathname,
+						url: serviceUrl.origin
+					})
+				} else {
 					ui5Yaml.server.customMiddleware.push({
 						name: "fiori-tools-proxy",
 						afterMiddleware: "compression",

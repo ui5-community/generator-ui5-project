@@ -15,7 +15,7 @@ export default async function prompts() {
 		message: "Do you want to set up a JavaScript controller for your new view?"
 	})).setupController
 
-		this.options.config.setupRouteTarget = (await this.prompt({
+	this.options.config.setupRouteTarget = (await this.prompt({
 		type: "confirm",
 		name: "setupRouteTarget",
 		message: "Do you want to set up a route and target for your new view?"

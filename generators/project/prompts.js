@@ -39,7 +39,7 @@ export default async function prompts() {
     this.answers.enableTypescript = (await this.prompt({
         type: "confirm",
         name: "enableTypescript",
-        message: "Do you want to use the awesomeness of Typescript?",
+        message: "Do you want to use the awesomeness of TypeScript?",
         default: true,
         when: this.answers.enableFPM
     })).enableTypescript

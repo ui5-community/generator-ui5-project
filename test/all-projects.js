@@ -6,7 +6,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 
 	console.log()
 
-	it("should generate package.json files correctlyy", async function() {
+	it("should generate package.json files correctly", async function() {
 		const files = [
 			path.join(projectId, "package.json"),
 			path.join(uimodulePath, "package.json")

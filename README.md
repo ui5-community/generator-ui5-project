@@ -94,6 +94,31 @@ This subgenerator adds a new custom control (which extends an existing UI5 contr
 
 </details>
 
+<details>
+<summary>qunit</summary>
+
+<br>
+
+```bash
+yo easy-ui5 project qunit
+```
+This subgenerator adds a qunit test (unit test) to one of the existing uimodules.  
+
+</details>
+
+<details>
+<summary>opa5</summary>
+
+<br>
+
+```bash
+yo easy-ui5 project opa5
+```
+This subgenerator adds a OPA5 journey (integration test) and page object to one of the existing uimodules.  
+
+</details>
+
+
 ## Deployment
 
 Projects created with this generator use the [Multitarget Application](https://sap.github.io/cloud-mta-build-tool/) approach can be built and deployed out of the box:
