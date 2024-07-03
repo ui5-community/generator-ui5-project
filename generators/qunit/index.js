@@ -1,177 +1,48 @@
-import Generator from "yeoman-generator";
-import jsUtils from "../../helpers/jsutils.js";
-import path from "path";
-import glob from "glob";
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import chalk from "chalk"
+import fs from "fs"
+import Generator from "yeoman-generator"
+import prompts from "./prompts.js"
+import {
+	lookForParentUI5ProjectAndPrompt,
+	addPreviewMiddlewareTestConfig,
+	ensureCorrectDestinationPath
+} from "../helpers.js"
+import path, { dirname } from "path"
+import { fileURLToPath } from "url"
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class extends Generator {
-    static displayName = "Add a new QUnit test suite to an existing project";
+	static displayName = "Add a new qunit test to your uimodule."
 
-    prompting() {
-        let aPrompt = [];
-        this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
+	async prompting() {
+		// standalone call
+		if (!this.options.config) {
+			await lookForParentUI5ProjectAndPrompt.call(this, prompts)
+		} else {
+			await lookForParentUI5ProjectAndPrompt.call(this, () => { }, false)
+			this.options.config.testName = "First"
+			// prioritize manually passed parameter over config from file, as the latter is not up to date when subgenerator is composed
+			this.options.config.uimoduleName = this.options.uimoduleName
+		}
+	}
 
-        if (this.options.isSubgeneratorCall) {
-            this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
-            this.options.oneTimeConfig.modulename = this.options.modulename;
-            this.options.oneTimeConfig.ui5libs = this.options.ui5libs;
+	async writing() {
+		this.log(chalk.green(`✨ creating new qunit test for ${this.options.config.uimoduleName}`))
 
-            var appName =
-                !this.options.oneTimeConfig.modulename || this.options.modulename === "uimodule"
-                    ? this.options.projectname
-                    : this.options.modulename;
-            this.options.oneTimeConfig.namespaceURI = this.options.namespaceUI5Input.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.namespaceUI5Input + "." + appName;
-            this.options.oneTimeConfig.appURI = this.options.namespaceURI + "/" + appName;
-            this.options.oneTimeConfig.title = appName;
+		ensureCorrectDestinationPath.call(this)
 
-            this.options.oneTimeConfig.addModule = true;
-            return;
-        } else {
-            if (!this.config.getAll().viewtype) {
-                if (!this.options.oneTimeConfig.projectname) {
-                    aPrompt = aPrompt.concat([
-                        {
-                            type: "input",
-                            name: "projectname",
-                            message:
-                                "Seems like this project has not been generated with Easy-UI5. Please enter the name of your project.",
-                            validate: (s) => {
-                                if (/^[a-zA-Z][a-zA-Z0-9\.]*$/g.test(s)) {
-                                    return true;
-                                }
-                                return "Please use only alpha numeric characters and dots for the project name.";
-                            },
-                            default: "myui5app"
-                        }
-                    ]);
+		addPreviewMiddlewareTestConfig.call(this, "Qunit")
 
-                    if (!this.options.oneTimeConfig.namespaceUI5Input) {
-                        aPrompt = aPrompt.concat([
-                            {
-                                type: "input",
-                                name: "namespaceUI5Input",
-                                message: "Please enter the namespace you use currently",
-                                validate: (s) => {
-                                    if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
-                                        return true;
-                                    }
-                                    return "Please use only alpha numeric characters, dots and underscores for the namespace.";
-                                },
-                                default: "com.myorg"
-                            }
-                        ]);
-                    }
-                }
-            }
-            if (!this.options.oneTimeConfig.ui5libs) {
-                aPrompt = aPrompt.concat([
-                    {
-                        type: "list",
-                        name: "ui5libs",
-                        message: "Where should your UI5 libs be served from?",
-                        choices: (props) => {
-                            return props.platform !== "SAP Launchpad service"
-                                ? [
-                                      "Content delivery network (OpenUI5)",
-                                      "Content delivery network (SAPUI5)",
-                                      "Local resources"
-                                  ]
-                                : ["Content delivery network (SAPUI5)"];
-                        },
-                        default: (props) => {
-                            return props.platform !== "SAP Launchpad service"
-                                ? "Content delivery network (OpenUI5)"
-                                : "Content delivery network (SAPUI5)";
-                        }
-                    }
-                ]);
-            }
+		this.fs.copyTpl(
+			// for some reason this.templatePath() doesn't work here
+			path.join(__dirname, "templates/Test.js"),
+			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
+			{ testName: this.options.config.testName }
+		)
 
-            const modules = this.config.get("uimodules") || [];
-            if (modules.length) {
-                aPrompt.push({
-                    type: "list",
-                    name: "modulename",
-                    message: "To which module do you want to add QUnit tests?",
-                    choices: modules,
-                    when: modules.length
-                });
-            }
-        }
+		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
+		uimodulePackageJson.scripts["qunit"] = "fiori run --open test/unitTests.qunit.html"
+		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
+	}
 
-        aPrompt = aPrompt.concat({
-            type: "confirm",
-            name: "addTest",
-            message: "Do you want to add a test?",
-            default: true
-        });
-
-        return this.prompt(aPrompt).then((answers) => {
-            for (var key in answers) {
-                this.options.oneTimeConfig[key] = answers[key];
-            }
-
-            var appName =
-                !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule"
-                    ? this.options.oneTimeConfig.projectname
-                    : this.options.oneTimeConfig.modulename;
-            this.options.oneTimeConfig.namespaceUI5Input =
-                this.options.oneTimeConfig.namespaceUI5Input || this.options.oneTimeConfig.namespaceUI5;
-            this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespaceUI5Input.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
-            this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
-            this.options.oneTimeConfig.title = appName;
-        });
-    }
-
-    main() {
-        if (this.options.oneTimeConfig.addTest) {
-            this.composeWith(
-                path.join(__dirname, "../newqunittest/index.js"),
-                Object.assign({}, this.options.oneTimeConfig, {
-                    isSubgeneratorCall: true
-                })
-            );
-        }
-    }
-
-    async writing() {
-        const qunit = {
-            projectname: this.options.oneTimeConfig.projectname,
-            namespaceUI5Input: this.options.oneTimeConfig.namespaceUI5Input,
-            ui5libs: this.options.oneTimeConfig.ui5libs
-        };
-        this.config.set(qunit);
-
-        // get values from subgeneratos
-        const tests = jsUtils.removeDuplicates(this.config.get("qunittests")) || [];
-        this.config.set("qunittests", tests);
-        this.options.oneTimeConfig.qunittests = tests;
-
-        const sModule =
-            (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
-
-        let sPrefix;
-        switch (this.options.oneTimeConfig.ui5libs) {
-            case "Content delivery network (OpenUI5)":
-                sPrefix = "https://sdk.openui5.org/";
-                break;
-            case "Content delivery network (SAPUI5)":
-                sPrefix = "https://ui5.sap.com/";
-                break;
-        }
-        this.options.oneTimeConfig.ui5libsprefixTestSuite = sPrefix || "../";
-        this.options.oneTimeConfig.ui5libsprefix = sPrefix || "../../";
-        this.sourceRoot(path.join(__dirname, "templates"));
-        glob.sync("**", {
-            cwd: this.sourceRoot(),
-            nodir: true
-        }).forEach((file) => {
-            this.fs.copyTpl(this.templatePath(file), this.destinationPath(sModule + file), this.options.oneTimeConfig);
-        });
-    }
-};
+}

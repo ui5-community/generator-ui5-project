@@ -1,159 +1,65 @@
-import Generator from "yeoman-generator";
-import path from "path";
-import glob from "glob";
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import chalk from "chalk"
+import fs from "fs"
+import Generator from "yeoman-generator"
+import prompts from "./prompts.js"
+import {
+	lookForParentUI5ProjectAndPrompt,
+	addPreviewMiddlewareTestConfig,
+	ensureCorrectDestinationPath
+} from "../helpers.js"
+import path, { dirname } from "path"
+import { fileURLToPath } from "url"
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class extends Generator {
-    static displayName = "Add a new OPA5 test suite to an existing project";
+	static displayName = "Add a new opa5 test to your uimodule."
 
-    prompting() {
-        let aPrompt = [];
-        this.options.oneTimeConfig = Object.assign({}, this.config.getAll(), this.options);
+	async prompting() {
+		// standalone call
+		if (!this.options.config) {
+			await lookForParentUI5ProjectAndPrompt.call(this, prompts)
+			this.options.config.route = this.options.config.viewName.toLowerCase()
+		} else {
+			await lookForParentUI5ProjectAndPrompt.call(this, () => { }, false)
+			this.options.config.testName = "First"
+			this.options.config.viewName = "MainView"
+			this.options.config.route = ""
+			// prioritize manually passed parameter over config from file, as the latter is not up to date when subgenerator is composed
+			this.options.config.uimoduleName = this.options.uimoduleName
+		}
+	}
 
-        if (this.options.isSubgeneratorCall) {
-            this.options.oneTimeConfig.projectname = this.options.projectname;
-            this.options.oneTimeConfig.namespaceUI5Input = this.options.namespaceUI5Input;
-            this.options.oneTimeConfig.modulename = this.options.modulename;
+	async writing() {
+		this.log(chalk.green(`✨ creating new opa5 journey for ${this.options.config.uimoduleName}`))
 
-            var appName =
-                !this.options.oneTimeConfig.modulename || this.options.modulename === "uimodule"
-                    ? this.options.projectname
-                    : this.options.modulename;
-            this.options.oneTimeConfig.namespaceURI = this.options.namespaceUI5Input.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.namespaceUI5Input + "." + appName;
-            this.options.oneTimeConfig.appURI = this.options.namespaceURI + "/" + appName;
-            this.options.oneTimeConfig.title = appName;
+		ensureCorrectDestinationPath.call(this)
 
-            this.options.oneTimeConfig.addPO = true;
-            this.options.oneTimeConfig.addJourney = true;
-            return;
-        } else {
-            if (!this.config.getAll().viewtype) {
-                aPrompt = aPrompt.concat([
-                    {
-                        type: "input",
-                        name: "projectname",
-                        message:
-                            "Seems like this project has not been generated with Easy-UI5. Please enter the name of your project.",
-                        validate: (s) => {
-                            if (/^[a-zA-Z][a-zA-Z0-9\.]*$/g.test(s)) {
-                                return true;
-                            }
-                            return "Please use only alpha numeric characters and dots for the project name.";
-                        },
-                        default: "myui5app"
-                    },
-                    {
-                        type: "input",
-                        name: "namespaceUI5Input",
-                        message: "Please enter the namespace you use currently",
-                        validate: (s) => {
-                            if (/^[a-zA-Z0-9_\.]*$/g.test(s)) {
-                                return true;
-                            }
-                            return "Please use only alpha numeric characters, dots and underscores for the namespace.";
-                        },
-                        default: "com.myorg"
-                    }
-                ]);
-            }
+		addPreviewMiddlewareTestConfig.call(this, "OPA5")
 
-            const modules = this.config.get("uimodules") || [];
-            if (modules.length) {
-                aPrompt.push({
-                    type: "list",
-                    name: "modulename",
-                    message: "To which module do you want to add OPA5 tests?",
-                    choices: modules,
-                    when: modules.length
-                });
-            }
-        }
+		this.fs.copyTpl(
+			// for some reason this.templatePath() doesn't work here
+			path.join(__dirname, "templates/pages/View.js"),
+			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.js`),
+			{
+				viewName: this.options.config.viewName,
+				uimoduleName: this.options.config.uimoduleName,
+				route: this.options.config.route
+			}
+		)
+		this.fs.copyTpl(
+			// for some reason this.templatePath() doesn't work here
+			path.join(__dirname, "templates/Journey.js"),
+			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.js`),
+			{
+				viewName: this.options.config.viewName,
+				uimoduleName: this.options.config.uimoduleName,
+				route: this.options.config.route
+			}
+		)
 
-        aPrompt = aPrompt.concat(
-            {
-                type: "confirm",
-                name: "addPO",
-                message: "Do you want to add a page object?",
-                default: true
-            },
-            {
-                type: "confirm",
-                name: "addJourney",
-                message: "Do you want to add a journey?",
-                default: true
-            }
-        );
+		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
+		uimodulePackageJson.scripts["opa5"] = "fiori run --open test/opaTests.qunit.html"
+		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
+	}
 
-        return this.prompt(aPrompt).then((answers) => {
-            for (var key in answers) {
-                this.options.oneTimeConfig[key] = answers[key];
-            }
-
-            var appName =
-                !this.options.oneTimeConfig.modulename || this.options.oneTimeConfig.modulename === "uimodule"
-                    ? this.options.oneTimeConfig.projectname
-                    : this.options.oneTimeConfig.modulename;
-            this.options.oneTimeConfig.namespaceUI5Input =
-                this.options.oneTimeConfig.namespaceUI5Input || this.options.oneTimeConfig.namespaceUI5;
-            this.options.oneTimeConfig.namespaceURI = this.options.oneTimeConfig.namespaceUI5Input.split(".").join("/");
-            this.options.oneTimeConfig.appId = this.options.oneTimeConfig.namespaceUI5Input + "." + appName;
-            this.options.oneTimeConfig.appURI = this.options.oneTimeConfig.namespaceURI + "/" + appName;
-            this.options.oneTimeConfig.title = appName;
-        });
-    }
-
-    main() {
-        if (this.options.oneTimeConfig.addPO) {
-            this.composeWith(
-                path.join(__dirname, "../newopa5po"),
-                Object.assign({}, this.options.oneTimeConfig, {
-                    isSubgeneratorCall: true
-                })
-            );
-        }
-        if (this.options.oneTimeConfig.addJourney) {
-            this.composeWith(
-                path.join(__dirname, "../newopa5journey"),
-                Object.assign({}, this.options.oneTimeConfig, {
-                    isSubgeneratorCall: true
-                })
-            );
-        }
-    }
-
-    async writing() {
-        // get values from subgeneratos
-        const journeys = this.config.get("opa5Journeys") || [];
-        this.config.set("opa5Journeys", journeys);
-        this.options.oneTimeConfig.opa5Journeys = journeys;
-
-        const pos = this.config.get("opa5pos") || [];
-        this.config.set("opa5pos", pos);
-        this.options.oneTimeConfig.opa5pos = pos;
-
-        const sModule =
-            (this.options.oneTimeConfig.modulename ? this.options.oneTimeConfig.modulename + "/" : "") + "webapp/";
-
-        let sPrefix;
-        switch (this.options.oneTimeConfig.ui5libs) {
-            case "Content delivery network (OpenUI5)":
-                sPrefix = "https://sdk.openui5.org/";
-                break;
-            case "Content delivery network (SAPUI5)":
-                sPrefix = "https://ui5.sap.com/";
-                break;
-        }
-        this.options.oneTimeConfig.ui5libsprefixTestSuite = sPrefix || "../";
-        this.options.oneTimeConfig.ui5libsprefix = sPrefix || "../../";
-        this.sourceRoot(path.join(__dirname, "templates"));
-        glob.sync("**", {
-            cwd: this.sourceRoot(),
-            nodir: true
-        }).forEach((file) => {
-            this.fs.copyTpl(this.templatePath(file), this.destinationPath(sModule + file), this.options.oneTimeConfig);
-        });
-    }
-};
+}

@@ -1,0 +1,18 @@
+_schema-version: "3.2"
+ID: <%= projectId %>
+version: 0.0.1
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npm run build:workspaces
+
+modules:
+  - name: <%= projectId %>
+    type: staticfile
+    path: dist
+    parameters:
+      disk-quota: 256M
+      memory: 256M

@@ -4,19 +4,20 @@
 [![Slack OpenUI5 channel][slack-img]][slack-url]  
 [![Build Status][test-image]][test-url]
 [![License Status][license-image]][license-url]
-[![code style: prettier][prettier-img]][prettier-url]
 [![useses node >= 16][node-img]][node-url]
 [![useses nvm][nvm-img]][nvm-url]
 
-Generator which uses the official UI5 tooling and supports multiple deployment targets such as the SAP Business Technology Platform. This generator was build as a plug-in for the community project [Easy-UI5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
+A project generator for projects that contain one or more UI5 applications ("uimodules") and manage them via [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces). The uimodules itself use the official UI5 tooling. The generator contains multiple [subgenerators](#subgenerators) to help with recurring tasks. It also supports [multiple deployment targets](#deployment) on the SAP Business Technology Platform. This generator was build as a plug-in for the community project [easy-ui5](https://github.com/SAP/generator-easy-ui5/) by [SAP](https://github.com/SAP/).
+
+If you are looking to create a simple UI5 project with no deployment configuration and don't plan to add multiple uimodules, check out the [generator-ui5-app](https://github.com/ui5-community/generator-ui5-app).
 
 > As of version `0.1.0`, we strive to share core functionality (such as webapp scaffolding) with [SAP's `open-ux-tools`](https://github.com/SAP/open-ux-tools) effort, which is "a set of tools and libraries that makes it faster and easier to develop SAP Fiori applications".
 
 ## Usage with easy-ui5
 
 ```bash
-$> npm i -g yo
-$> yo easy-ui5 project
+npm i -g yo
+yo easy-ui5 project
 
      _-----_
     |       |    ╭──────────────────────────╮
@@ -29,209 +30,167 @@ $> yo easy-ui5 project
  ´   `  |° ´ Y `
 ```
 
-![generation flow](./docs/embeddedUsage.gif)
+## Subgenerators
 
-Run you can use `npm start` (or `yarn start`) to start the local server for development.
+This generator is split up into multiple subgenerators to help with recurring tasks even after the initial project generation. See the following list for all available subgenerators:
 
-## Standalone usage
+<details>
+<summary>uimodule</summary>
 
-Note the different greeting when the generator starts.
+<br>
 
 ```bash
-$> npm i -g yo
-$> yo ./generator-ui5-project
-
-     _-----_     ╭──────────────────────────╮
-    |       |    │      Welcome to the      │
-    |--(o)--|    │     easy-ui5-project     │
-   `---------´   │        generator!        │
-    ( _´U`_ )    ╰──────────────────────────╯
-    /___A___\   /
-     |  ~  |
-   __'.___.'__
- ´   `  |° ´ Y `
+yo easy-ui5 project uimodule
 ```
+This subgenerator adds a new uimodule to an existing project. It reuses the config of the existing project and uimodule(s).
 
-![generation flow](./docs/standaloneUsage.gif)
+</details>
 
-## Target platforms
+<details>
+<summary>fpmpage</summary>
 
-During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
+<br>
 
-### Static webserver
-
-This is the most basic option. Choose this option if you want to deploy the web app in your custom environment or host it on an arbitrary server.
-
-### Application Router @ Cloud Foundry
-
-This is the most basic way to deploy the web app in Cloud Foundry-based environments. Besides the basic UI5 project, the generator will add a standalone [approuter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-
-### Application Router @ SAP HANA XS Advanced
-
-This is the standard way to deploy the web app in SAP HANA XSA-based environments. Besides the basic UI5 project, the generator will add a standalone [aApprouter](https://github.com/gregorwolf/SAP-NPM-API-collection/tree/master/apis/approuter) node.js-module that serves the web app.
-
-### SAP HTML5 Application Repository service for SAP BTP
-
-This option is a more sophisticate way to serve the web app from Cloud Foundry-based environments. The generator will include all modules that are included in the **Application Router @ Cloud Foundry** and, additionally, install a module to upload the web app to the HTML5 application repository during deploy-time. You can watch [this presentation](https://www.youtube.com/watch?v=emnl-y9btdU&list=PLVf0R17F93RXT2tzhHzAr-iiYTmc9KngS&index=11&t=0s) to learn more about the benefits of using the HTML5 application repository.
-
-### SAP Launchpad service
-
-Use this option if you would like to develop a Fiori Launchpad application that should run on Cloud Foundry. The generator will include all modules that are included in the **SAP HTML5 Application Repository service for SAP BTP** and, additionally, install a module that adds Fiori Launchpad resources to the HTML5 application repository.
-
-### SAP NetWeaver
-
-Use this option if you want to deploy your application(s) to the SAP NetWeaver ABAP Repository.
-
-## Sub-generators to avoid recurring tasks
-
-### Add a new view
-
-This sub-generator will create a new view (of the same type you specified during the creating of your project) and a new controller and route. If you have OPA5 tests, you can add a corresponding page object now or later with another sub-generator (`newopa5po`).
-
-```shell
-$> yo easy-ui5 project newview
+```bash
+yo easy-ui5 project fpmpage
 ```
+This subgenerator adds a new flexible programming model (fpm) page to one of the existing uimodules. This subgenerator only works for projects that enabled the flexible programming model during project creation.
 
-### Create a custom control
+</details>
 
-Run the following command from your project's root to scaffold a custom control.
+<details>
+<summary>model</summary>
 
-```shell
-$> yo easy-ui5 project newcontrol
+<br>
+
+```bash
+yo easy-ui5 project model
 ```
+This subgenerator adds a new data model to one of the existing uimodules. Supported model types are `OData v4`, `OData v2`, and `JSON`. The subgenerator can optionally set-up a proxy to the respective data source via the `ui5.yaml`.
 
-### Add a new model
+</details>
 
-This sub-generator will create a new model in your manifest. Currently, [JSON](https://ui5.sap.com/#/api/sap.ui.model.json.JSONModel) and [OData v2](https://ui5.sap.com/#/api/sap.ui.model.odata.v2.ODataModel) models are supported with various configuration options.
+<details>
+<summary>view</summary>
 
-```shell
-$> yo easy-ui5 project newmodel
+<br>
+
+```bash
+yo easy-ui5 project view
 ```
+This subgenerator adds a new XML view to one of the existing uimodules. Only XML views are supported. The subgenerator can optionally set-up the corresponding route and target in the `manifest.json`.
 
-### Add a new component usage
+</details>
 
-This sub-generator will add a new component usage for component reuse to your manifest.
+<details>
+<summary>customcontrol</summary>
 
-```shell
-$> yo easy-ui5 project newcomponentusage
+<br>
+
+```bash
+yo easy-ui5 project customcontrol
 ```
+This subgenerator adds a new custom control (which extends an existing UI5 control) to one of the existing uimodules.  
 
-### OPA5 tests
+</details>
 
-This sub-generator will add a basic [OPA5](https://sdk.openui5.org/topic/2696ab50faad458f9b4027ec2f9b884d) test setup. You can add page objects now or later with another sub-generator.
+<details>
+<summary>qunit</summary>
 
-```shell
-$> yo easy-ui5 project opa5
+<br>
+
+```bash
+yo easy-ui5 project qunit
 ```
+This subgenerator adds a qunit test (unit test) to one of the existing uimodules.  
 
-This sub-generator will create an OPA5 page object and add it to your journeys:
+</details>
 
-```shell
-$> yo easy-ui5 project newopa5po
+<details>
+<summary>opa5</summary>
+
+<br>
+
+```bash
+yo easy-ui5 project opa5
 ```
+This subgenerator adds a OPA5 journey (integration test) and page object to one of the existing uimodules.  
 
-This sub-generator will create an OPA5 journey and add it to your test page:
+</details>
 
-```shell
-$> yo easy-ui5 project newopa5journey
-```
-
-### QUnit tests
-
-This sub-generator will add a basic [QUnit](https://qunitjs.com/) setup. It will ask you for your app name and namespace if it is not yet part of an easy-ui5 project. You can add QUnit tests now or later with the `newqunittest` sub-generator.
-
-```shell
-$> yo easy-ui5 project qunit
-```
-
-This sub-generator will create a new QUnit test either in a basic setup or with [Sinon.JS](https://sinonjs.org/) to create standalone test spies, stubs and mocks in your QUnit tests:
-
-```shell
-$> yo easy-ui5 project newqunittest
-```
 
 ## Deployment
 
-Depending on your target platform you'll need to install additional tools:
+Projects created with this generator use the [Multitarget Application](https://sap.github.io/cloud-mta-build-tool/) approach can be built and deployed out of the box:
 
-### Cloud Foundry
+> Make sure you have the [Cloud Foundry CLI installed](https://developers.sap.com/tutorials/cp-cf-download-cli.html) and are logged in to your Cloud Foundry environment via the `cf login` command.
 
-Required tools:
-
-1. [Create a free account](https://developers.sap.com/mena/tutorials/hcp-create-trial-account.html) on SAP BTP Trial
-2. [Install](https://developers.sap.com/tutorials/cp-cf-download-cli.html) the Cloud Foundry Command Line Interface
-
-    ```shell
-    cf login
-    ```
-
-3. [Install](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin) the MultiApps CF CLI Plugin
-
-Deployment steps:
-
-Call this command from the root directory to deploy the application to Cloud Foundry
-
-```shell
-$> npm run deploy
+```bash
+npm run build
+npm run deploy
 ```
 
-### SAP HANA XSA
+During the prompting phase, the generator will ask on which target platform you want to deploy your project. See the following list for all available deployment targets:
 
-Required tools:
+<details>
+<summary>Static webserver</summary>
 
-1. SAP HANA or [create a free](https://developers.sap.com/group.hxe-install-binary.html) SAP HANA Express system
-2. [Install](https://developers.sap.com/tutorials/hxe-ua-install-xs-xli-client.html) the XS CLI Client
+<br>
 
-    ```shell
-    $> xs login
-    ```
+With this option the project gets deployed to Cloud Foundry via the [Staticfile buildpack](https://docs.cloudfoundry.org/buildpacks/staticfile/) to run on a static webserver without authentication or proxys in place.
 
-Deployment steps:
+</details>
 
-Call this command from the root directory to deploy the application to HANA XSA
+<details>
+<summary>Application Router</summary>
 
-```shell
-$> npm run deploy
-```
+<br>
 
-### SAP NetWeaver
+With this option the project gets deployed to Cloud Foundry in the form of an Application Router, which is a Node.js application ([Node.js buildpack](https://docs.cloudfoundry.org/buildpacks/node/index.html)) that acts as a reverse proxy and can handle authentication as well different routes within your project. The uimodules of your project are served via the local `dist/` directory of the Application Router.
 
-Deployment steps:
+</details>
 
-Update the ui5.yaml file with your system settings (user, password & server) and ABAP repository settings (package, BSP Container & Transport).
-Run following command to deploy the application to SAP NetWeaver
+<details>
+<summary>SAP HTML5 Application Repository Service</summary>
 
-```shell
-$> npm run deploy
-```
+<br>
 
-## Shared functionality with SAP's `open-ux-tools`
+With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Application Repository Service. This makes the application visible in the "HTML5 Applications" section in your SAP BTP subaccount and is the foundation for accessing with other apps and services on SAP BTP.
 
-- Scaffolding a new webapp with view type `XML` uses [`@sap-ux/fiori-freestyle-writer`](https://www.npmjs.com/package/@sap-ux/fiori-freestyle-writer)
-- Scaffolding a new webapp that uses the Fiori elements flexible program model uses [`@sap-ux/fe-fpm-writer`](https://www.npmjs.com/package/@sap-ux/fe-fpm-writer)
+</details>
 
-## Embedded Technologies
+<details>
+<summary>SAP Build Work Zone, standard edition</summary>
 
-This project leverages (among others) the following Open Source projects:
+<br>
 
--   [UI5 Build and Development Tooling](https://github.com/SAP/ui5-tooling)
--   [OpenUI5. Build Once. Run on any device.](https://github.com/SAP/openui5)
--   [SAP open-ux-tool](https://github.com/SAP/open-ux-tools)
+With this option the project gets deployed to Cloud Foundry via the SAP HTML5 Application Repository Service and is also accessible via SAP Build Work Zone, standard edition, which provides a Fiori Launchpad for your applications. 
 
-## Debugging the generator
+</details>
 
-If you want to modify and debug this (or any other Yeoman) generator, I recommend the following trick that leverages the capabilities of VS Code:
+<details>
+<summary>SAP NetWeaver</summary>
 
-You need to add an `npm script` to trigger this generator from the "npm scripts" panel. To make your life a bit easier, I have already added such a script here.
+<br>
 
-> Note that the generator will be called from the project root, which means all files will be generated here then. This might not be ideal in your situation, but you can always open another project in VS Code and add an npm script that calls this generator from there as well. Be aware that you need to change the path of the generator then.
+With this option the uimodules gets deployed to SAP NetWeaver using the [deploy-to-abap](https://www.npmjs.com/package/@sap/ux-ui5-tooling#deployment-to-abap) task.
 
-Once the npm script is set up, you need to set a breakpoint in the logic of the generator itself (here in the index.js). Once all (conditional) breakpoints are set, hit the debug button of the npm script that you want to trigger. 
-![debug](./docs/debugBreakpoint.png)
-Within a few seconds, you'll see that the generator is started, and the debugger will be attached and eventually stop at your breakpoint. 
-![debug](./docs/debugStopped.png)
+> Note: You have to run `npm run deploy` for the uimodules individually (in their respective directories) to deploy them, which is different to the other deployment scenarios.
 
-Now you are ready to go, happy coding 🦁!
+</details>
+
+
+## Debugging
+
+Follow these steps to debug this generator (or run it in standalone mode for that matter):
+
+1. Clone this repository.
+1. Install the local repository globally via the following command: `npm link`
+1. Start one of the [subgenerators](#subgenerators) in a JavaScript Debug Terminal within VS Code: `yo ui5-project:<subgenerator>`
+
+> If you are feeling really fancy, you can also start a subgenerator via the native Node.js debugger and connect an editor of your choice (any Neovim users here? 👋🏻) via the [Debug Adapter Protocol](https://microsoft.github.io/debug-adapter-protocol/): `node --inspect node_modules/yo/lib/cli.js ui5-project:<subgenerator>`
+
+Happy coding!
 
 ## Support
 
@@ -239,18 +198,16 @@ Please use the GitHub bug tracking system to post questions, bug reports or to c
 
 ## Contributing
 
-We welcome any type of contribution (code contributions, pull requests, issues) to this generator equally.
+We welcome any type of contribution (code contributions, pull requests, issues) to this generator equally. Check out the [debugging](#debugging) section to learn how to set this generator up for development on your machine.
 
 [test-image]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml/badge.svg
 [test-url]: https://github.com/ui5-community/generator-ui5-project/actions/workflows/main.yml
-[prettier-img]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [license-image]: https://img.shields.io/github/license/ui5-community/generator-ui5-project.svg
 [license-url]: https://github.com/ui5-community/generator-ui5-project/blob/main/LICENSES/Apache-2.0.txt
 [slack-img]: https://img.shields.io/badge/openUI5-slack-yellow
 [slack-url]: https://openui5.slack.com
 [node-img]: https://img.shields.io/badge/node-%3E%3D16-green?style=flat&logo=nodedotjs
-[node-url]: https://nodejs.org/dist/latest-v16.x/docs/api/
+[node-url]: https://nodejs.org/docs/latest-v18.x/api/index.html
 [nvm-img]: https://img.shields.io/badge/nvm-enabled-9cf?style=flat&logo=gnubash
 [nvm-url]: https://github.com/nvm-sh/nvm
 [yeoman-img]: https://img.shields.io/badge/easy--ui5-generator-red?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADKADAAQAAAABAAAADQAAAADdVr7uAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgoZXuEHAAAByElEQVQoFU1Sz0tiURS+7/nwKTraqIVCMCCE5CJhFrMQZpgQakCYnYvIvyDXrlyGO9dBGEG7pIWbQR60KogBQaRoFhM6xvgTQ0lByGe+03f8AV34+M497/vOue/cK4hIEe+W0+ncwVaTJOkWKMmynMH+40IizbjX6zlgPO52uxtItFwuF4Hf43RhUBQIvxiGcYDEHqrdg5/8fr/P4/FMsJ9ib7FarXq5XJ57YLgAaDAY/O90OifI/gK4+gRgA8dnwHdASNCq4CvAW6/Xe41G47PFYkFTQ8Y/TBVFMQ2Hw2o6nU5qmvaXTaJYLB6NRqNLmJPAS6VSoWazaVSr1Sm6IkUPwAdIdwUCGQEfcA0Q8Xi8CKJoNPoK5mNRJBK5Bgt0/sptVbfb/QnCdeR8/X7fWSgURD6flzA1UzabFbVa7RnfFOi4wGz9CwaDvzlCx28AL31OxOLZCoVC28v4cDH7P7FY7AYjJNyN0W63KZfL8ZT2Waiq6s+lYQVB2+FwLC9rOVJmvg8CzhGvsmH2NMxm8xbils1mo0AgQKlUihKJBKEq2e12PtYPFvOEeBqKrut3OM4mxpvG/5TC4fAjUB6Pxxmv18tPRgNMb23y4fXMIfWkAAAAAElFTkSuQmCC

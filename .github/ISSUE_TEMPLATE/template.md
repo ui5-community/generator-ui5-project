@@ -1,7 +1,7 @@
 ---
-name: New Issue for the UI5-Project plugin of easy-ui5
+name: New Issue for the project generator plugin of easy-ui5
 about: Use this template if incorrect files were generated or if the generated project doesn't work.
-assignees: nicogeburek
+assignees: nicoschoenteich
 ---
 
 ## Easy-Ui5 version:
