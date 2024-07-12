@@ -5,7 +5,6 @@ import prompts from "./prompts.js"
 
 import PlatformGenerator from "./platform.js"
 import UimoduleGenerator from "../uimodule/index.js"
-
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
 
