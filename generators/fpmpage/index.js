@@ -6,6 +6,10 @@ import prompts from "./prompts.js"
 import serviceWriter from "@sap-ux/odata-service-writer"
 import { lookForParentUI5ProjectAndPrompt } from "../helpers.js"
 
+import PlatformGenerator from "../uimodule/platform.js"
+import UI5LibsGenerator from "../uimodule/ui5Libs.js"
+import LintGenerator from "../uimodule/lint.js"
+import QunitGenerator from "../qunit/index.js"
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url)
 
@@ -77,10 +81,43 @@ export default class extends Generator {
 
 		if (this.isComposedCall) {
 			// run these here (instead of ../uimodule/index.js) to make sure they get executed after fpmpage
-			this.composeWith(require.resolve("../uimodule/platform.js"), { config: this.options.config })
-			this.composeWith(require.resolve("../uimodule/ui5Libs.js"), { config: this.options.config })
-			this.composeWith(require.resolve("../uimodule/lint.js"), { config: this.options.config })
-			this.composeWith(require.resolve("../qunit"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
+			this.composeWith(
+				{
+					Generator: PlatformGenerator,
+					path: require.resolve("../uimodule/platform.js")
+				},
+				{
+					config: this.options.config
+				}
+			)
+			this.composeWith(
+				{
+					Generator: UI5LibsGenerator,
+					path: require.resolve("../uimodule/ui5Libs.js")
+				},
+				{
+					config: this.options.config
+				}
+			)
+			this.composeWith(
+				{
+					Generator: LintGenerator,
+					path: require.resolve("../uimodule/lint.js")
+				},
+				{
+					config: this.options.config
+				}
+			)
+			this.composeWith(
+				{
+					Generator: QunitGenerator,
+					path: require.resolve("../qunit")
+				},
+				{
+					config: this.options.config,
+					uimoduleName: this.options.config.uimoduleName
+				}
+			)
 			// this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
 
 		}
