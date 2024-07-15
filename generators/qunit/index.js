@@ -1,6 +1,7 @@
 import chalk from "chalk"
 import fs from "fs"
 import Generator from "yeoman-generator"
+import dependencies from "../dependencies.js"
 import prompts from "./prompts.js"
 import {
 	lookForParentUI5ProjectAndPrompt,
@@ -33,15 +34,26 @@ export default class extends Generator {
 
 		addPreviewMiddlewareTestConfig.call(this, "Qunit")
 
-		this.fs.copyTpl(
-			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/Test.js"),
-			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
-			{ testName: this.options.config.testName }
-		)
-
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		uimodulePackageJson.scripts["qunit"] = "fiori run --open test/unitTests.qunit.html"
+
+		if (this.options.config.enableTypescript) {
+			this.fs.copyTpl(
+				// for some reason this.templatePath() doesn't work here
+				path.join(__dirname, "templates/Test.ts"),
+				this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.ts`),
+				{testName: this.options.config.testName}
+			)
+			uimodulePackageJson["devDependencies"]["@types/qunit"] = dependencies["@types/qunit"]
+		} else {
+			this.fs.copyTpl(
+				// for some reason this.templatePath() doesn't work here
+				path.join(__dirname, "templates/Test.js"),
+				this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
+				{testName: this.options.config.testName}
+			)
+		}
+
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 

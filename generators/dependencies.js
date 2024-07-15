@@ -4,6 +4,7 @@ export default {
 	"@sap-ux/eslint-plugin-fiori-tools": "^0.2",
 	"@sap/approuter": "latest",
 	"@ui5/linter": "latest",
+	"@types/qunit": "2.5.4",
 	"bestzip": "latest",
 	"mbt": "^1",
 	"npm-run-all": "^4",
