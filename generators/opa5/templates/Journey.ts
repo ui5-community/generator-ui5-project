@@ -17,8 +17,7 @@ opaTest("Should have correct title", function() {
 		componentConfig: {
 			name: "<%= uimoduleName %>",
 			async: true
-		},
-		hash: "<%= route %>"
+		}
 	});
 
 	// Assertions
