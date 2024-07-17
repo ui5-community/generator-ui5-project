@@ -13,6 +13,17 @@ modules:
   - name: <%= projectId %>-approuter
     type: nodejs
     path: approuter
+    requires:
+      - name: <%= projectId %>-destination-service
     parameters:
-      disk-quota: 256M
-      memory: 256M
+      disk-quota: 1024M
+      memory: 1024M
+
+resources:
+  - name: <%= projectId %>-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: <%= projectId %>-destination-service
+      service-plan: lite
+

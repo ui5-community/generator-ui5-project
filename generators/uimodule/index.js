@@ -1,4 +1,5 @@
 import chalk from "chalk"
+import dependencies from "../dependencies.js"
 import fs from "fs"
 import { generate as writeFPMApp } from "@sap-ux/ui5-application-writer"
 import { generate as writeFreestyleApp, TemplateType } from "@sap-ux/fiori-freestyle-writer"
@@ -49,7 +50,9 @@ export default class extends Generator {
 				name: this.options.config.uimoduleName
 			},
 			ui5: {
-				ui5Theme: "sap_horizon"
+				ui5Theme: "sap_horizon",
+				version: this.options.config.ui5Libs.includes("OpenUI5") ? dependencies["OpenUI5"] : dependencies["SAPUI5"]
+				// TO-DO: think about passing more parameters here to be able to remove some logic from ./uiLibs
 			}
 		}
 
@@ -133,10 +136,8 @@ export default class extends Generator {
 		// account for use of npm workspaces (node_modules at root of project, not uimodule level)
 		if (this.options.config.enableFPM && this.options.config.enableTypescript) {
 			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
-			tsconfigJson.compilerOptions.typeRoots = [
-				"../node_modules/@types",
-				"../node_modules/@sapui5/ts-types-esm"
-			]
+			delete tsconfigJson.compilerOptions.typeRoots
+			tsconfigJson.compilerOptions.types = [ "@sapui5/types" ]
 			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
 		}
 	}

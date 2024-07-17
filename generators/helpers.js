@@ -44,23 +44,30 @@ export async function addPreviewMiddlewareTestConfig(framework) {
 	const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
 	const testConfig = { framework: framework }
 	const middlewareName = "preview-middleware"
-	const middleware = ui5Yaml.server.customMiddleware.find(m => m.name === middlewareName)
 
-	if (middleware) {
-		if (middleware.configuration?.test) {
-			if (!middleware.configuration.test.find(t => t.framework === framework)) {
-				middleware.configuration.test.push(testConfig)
-			}
-		} else {
-			middleware.configuration = { test: [testConfig] }
-		}
-	} else {
-		ui5Yaml.server.customMiddleware.push({
+	let middleware = ui5Yaml.server.customMiddleware.find(m => m.name === middlewareName)
+
+	if (!middleware) {
+		middleware = {
 			name: middlewareName,
 			afterMiddleware: "compression",
-			configuration: { test: [testConfig] }
-		})
+			configuration: { test: [] }
+		}
+		ui5Yaml.server.customMiddleware.push(middleware)
 	}
+
+	if (!middleware.configuration) {
+		middleware.configuration = { test: [testConfig] }
+	}
+
+	if (!middleware.configuration.test) {
+		middleware.configuration.test = [testConfig]
+	}
+
+	if (!middleware.configuration.test.find(t => t.framework === framework)) {
+		middleware.configuration.test.push(testConfig)
+	}
+
 	fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 }
 
@@ -81,7 +88,6 @@ export function validateAlphaNumericAndDotsNonEmpty(string) {
 	}
 	return "Please use a non-empty value with alpha numeric characters and dots only."
 }
-
 
 export function validateAlphaNumeric(string) {
 	if (/^[a-zA-Z0-9_-]*$/g.test(string)) {

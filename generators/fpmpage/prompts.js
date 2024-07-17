@@ -62,6 +62,13 @@ export default async function prompts() {
 
 	}
 
+	this.options.config.mainEntity = (await this.prompt({
+		type: "input",
+		name: "mainEntity",
+		message: "What entity should be used for the new page?",
+		validate: validateAlphaNumeric
+	})).mainEntity
+
 	const pageOptions = [
 		{ value: "custom", name: "Custom Page", },
 		{ value: "list report", name: "List Report" },
@@ -87,13 +94,6 @@ export default async function prompts() {
 		choices: Object.keys(targets),
 		when: Object.keys(targets).length > 0
 	})).navigationSourcePage
-
-	this.options.config.mainEntity = (await this.prompt({
-		type: "input",
-		name: "mainEntity",
-		message: "What entity should be used for the new page?",
-		validate: validateAlphaNumeric
-	})).mainEntity
 
 	this.options.config.viewName = (await this.prompt({
 		type: "input",
