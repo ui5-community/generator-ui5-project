@@ -70,15 +70,18 @@ export const tests = (testCase, uimodulePath) => {
 			"SAPUI5"
 		)
 
-		// don't proxy resources/ to CDN
-		assert.noFileContent(
-			path.join(uimodulePath, "ui5.yaml"),
-			"https://ui5.sap.com"
-		)
-		assert.noFileContent(
-			path.join(uimodulePath, "ui5-mock.yaml"),
-			"https://ui5.sap.com"
-		)
+		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via preview-middleware)
+		if (testCase.platform !== "SAP Build Work Zone, standard edition") {
+			assert.noFileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"https://ui5.sap.com"
+			)
+			assert.noFileContent(
+				path.join(uimodulePath, "ui5-mock.yaml"),
+				"https://ui5.sap.com"
+			)
+
+		}
 	})
 
 	it("should use sap-fe-mockserver properly", async function() {
@@ -146,11 +149,7 @@ export const tests = (testCase, uimodulePath) => {
 			// assert.file(path.join(uimodulePath, ".babelrc.json"))
 			assert.fileContent(
 				path.join(uimodulePath, "tsconfig.json"),
-				"../node_modules/@types"
-			)
-			assert.fileContent(
-				path.join(uimodulePath, "tsconfig.json"),
-				"../node_modules/@sapui5/ts-types-esm"
+				"@sapui5/types"
 			)
 			assert.fileContent(
 				path.join(uimodulePath, "package.json"),

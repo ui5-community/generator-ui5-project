@@ -10,6 +10,7 @@ export default class extends Generator {
 
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath("webapp/manifest.json")))
+		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
 
 		delete uimodulePackageJson.scripts["deploy"]
 		delete uimodulePackageJson.scripts["deploy-config"]
@@ -28,21 +29,28 @@ export default class extends Generator {
 
 			case "SAP HTML5 Application Repository Service":
 			case "SAP Build Work Zone, standard edition":
-				uimodulePackageJson.scripts["clean"] = `rimraf ${this.options.config.uimoduleName}-content.zip`
-				uimodulePackageJson.scripts["build:ui5"] = "ui5 build --config=ui5.yaml --clean-dest --dest dist"
-				uimodulePackageJson.scripts["zip"] = `cd dist && bestzip ../${this.options.config.uimoduleName}-content.zip *`
-				uimodulePackageJson.scripts["build"] = "npm-run-all clean build:ui5 zip"
+				uimodulePackageJson.scripts["build"] = "ui5 build --config=ui5.yaml --clean-dest --dest dist"
+				uimodulePackageJson.devDependencies["ui5-task-zipper"] = dependencies["ui5-task-zipper"]
 
-				uimodulePackageJson.devDependencies["npm-run-all"] = dependencies["npm-run-all"]
-				uimodulePackageJson.devDependencies["rimraf"] = dependencies["rimraf"]
-				uimodulePackageJson.devDependencies["bestzip"] = dependencies["bestzip"]
+				if (!ui5Yaml.builder) ui5Yaml.builder = {}
+				if (!ui5Yaml.builder.customTasks) ui5Yaml.builder.customTasks = []
+				ui5Yaml.builder.customTasks.push(
+					{
+						name: "ui5-task-zipper",
+						afterTask: "generateVersionInfo",
+						configuration: {
+							onlyZip: true,
+							archiveName: `${this.options.config.uimoduleName}-content`
+						}
+					}
+				)
 
 				const rootMtaYaml = yaml.parse(fs.readFileSync(this.destinationPath("../mta.yaml")).toString())
 				rootMtaYaml.modules.forEach(module => {
 					if (module.name === `${this.options.config.projectId}-ui-deployer`) {
 						module["build-parameters"]["requires"].push({
 							"artifacts": [
-								`${this.options.config.uimoduleName}-content.zip`
+								`dist/${this.options.config.uimoduleName}-content.zip`
 							],
 							"name": this.options.config.uimoduleName,
 							"target-path": "resources/"
@@ -63,6 +71,7 @@ export default class extends Generator {
 			case "SAP NetWeaver":
 				uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml`
 				uimodulePackageJson.scripts["deploy"] = `npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip`
+				uimodulePackageJson.devDependencies["rimraf"] = dependencies["rimraf"]
 
 				const ui5DeployYaml = {
 					specVersion: "3.1",
@@ -132,19 +141,32 @@ export default class extends Generator {
 				"public": true,
 				"service": "basic.service"
 			}
-		} else {
-			// freestyle app template includes launchpad, which we remove manually
-			if (!this.options.config.enableFPM) {
-				uimodulePackageJson.scripts["start"] = "fiori run --open index.html"
-				delete uimodulePackageJson.scripts["start-noflp"]
-				fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 
-				fs.unlinkSync(this.destinationPath("webapp/test/flpSandbox.html"))
-				fs.unlinkSync(this.destinationPath("webapp/test/locate-reuse-libs.js"))
-			}
+			ui5Yaml.server.customMiddleware.push(
+				{
+					name: "preview-middleware",
+					afterMiddleware: "compression",
+					configuration: {
+						flp: {
+							path: "/test/flpSandbox.html"
+						}
+					}
+
+				}
+			)
+			uimodulePackageJson.scripts["start-flp"] = "fiori run --open test/flpSandbox.html"
+		}
+
+		// freestyle app template includes launchpad, which we don't need as we use the preview-middleware if needed
+		if (!this.options.config.enableFPM) {
+			fs.unlinkSync(this.destinationPath("webapp/test/flpSandbox.html"))
+			fs.unlinkSync(this.destinationPath("webapp/test/locate-reuse-libs.js"))
+			uimodulePackageJson.scripts["start"] = "fiori run --open index.html"
+			delete uimodulePackageJson.scripts["start-noflp"]
 		}
 
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 		fs.writeFileSync(this.destinationPath("webapp/manifest.json"), JSON.stringify(manifestJSON, null, 4))
+		fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))
 	}
 }
