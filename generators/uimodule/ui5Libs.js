@@ -18,6 +18,7 @@ export default class extends Generator {
 		const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
 		const indexHtml = fs.readFileSync(this.destinationPath("webapp/index.html")).toString()
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath("webapp/manifest.json")))
+		const packageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 
 		ui5Yaml.framework = {
 			libraries: [
@@ -27,6 +28,7 @@ export default class extends Generator {
 			]
 		}
 
+		let localResources
 		switch (this.options.config.ui5Libs) {
 			case "Content delivery network (OpenUI5)":
 				delete ui5Yaml.framework
@@ -50,17 +52,24 @@ export default class extends Generator {
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["SAPUI5"]
 				break
 			case "Local resources (OpenUI5)":
+				localResources = true
 				ui5Yaml.framework.name = "OpenUI5"
 				ui5Yaml.framework.version = dependencies["OpenUI5"]
-				deleteProxyToUI5(ui5Yaml)
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["OpenUI5"]
 				break
 			case "Local resources (SAPUI5)":
+				localResources = true
 				ui5Yaml.framework.name = "SAPUI5"
 				ui5Yaml.framework.version = dependencies["SAPUI5"]
-				deleteProxyToUI5(ui5Yaml)
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["SAPUI5"]
 				break
+		}
+
+		if (localResources && this.options.config.platform !== "SAP Build Work Zone, standard edition") {
+			// only if no flpSandbox.html exists (via preview-middleware), as it requires proxy to fetch all libs
+			deleteProxyToUI5(ui5Yaml)
+
+			packageJson.scripts.build = packageJson.scripts.build.replace("ui5 build", "ui5 build self-contained --all --include-task generateVersionInfo")
 		}
 
 		if (this.options.config.enableFPM) {
@@ -79,9 +88,7 @@ export default class extends Generator {
 					{ name: "sap.fe.templates" }
 				]
 			}
-			for (const file of [ui5Yaml, ui5YamlMock]) {
-				deleteProxyToUI5(file)
-			}
+			deleteProxyToUI5(ui5YamlMock)
 			fs.writeFileSync(this.destinationPath("ui5-mock.yaml"), yaml.stringify(ui5YamlMock))
 		}
 
@@ -91,7 +98,6 @@ export default class extends Generator {
 
 		// remove option to bootstrap from local UI5 sources, as UI5 source is part of user selection
 		fs.unlinkSync(this.destinationPath("ui5-local.yaml"))
-		const packageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		delete packageJson.scripts["start-local"]
 		fs.unlinkSync(this.destinationPath("package.json")) // avoid conflict/auto-prompt by yeoman
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(packageJson, null, 4))

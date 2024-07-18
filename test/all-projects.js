@@ -33,6 +33,17 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 				`"title": "${uimoduleName}"`
 			)
 		})
+
+		it("should use the preview-middleware for the flpSandbox.html", async function() {
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"preview-middleware"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"/test/flpSandbox.html"
+			)
+		})
 	}
 
 	it("should have correct deployment config in mta.yaml or ui5.yaml", async function() {
@@ -41,15 +52,31 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		switch (testCase.platform) {
 			case "Static webserver":
 				assert.fileContent(mtaYamlPath, "type: staticfile")
+				assert.noFileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"ui5-task-zipper"
+				)
 				break
 			case "Application Router":
 				assert.fileContent(mtaYamlPath, `${projectId}-approuter`)
+				assert.noFileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"ui5-task-zipper"
+				)
 				break
 			case "SAP HTML5 Application Repository Service" || "SAP Build Work Zone, standard edition":
 				assert.fileContent(mtaYamlPath, `${projectId}-destination-content`)
+				assert.fileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"ui5-task-zipper"
+				)
 				break
 			case "SAP NetWeaver":
 				assert.fileContent(ui5DeployYamlPath, "deploy-to-abap")
+				assert.noFileContent(
+					path.join(uimodulePath, "ui5.yaml"),
+					"ui5-task-zipper"
+				)
 				break
 		}
 	})
