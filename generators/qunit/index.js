@@ -45,6 +45,9 @@ export default class extends Generator {
 		uimodulePackageJson.scripts["qunit"] = "fiori run --open test/unitTests.qunit.html"
 		if (this.options.config.enableTypescript) {
 			uimodulePackageJson["devDependencies"]["@types/qunit"] = dependencies["@types/qunit"]
+			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
+			tsconfigJson.compilerOptions.types.includes("qunit") || tsconfigJson.compilerOptions.types.push( "qunit" )
+			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
 		}
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
