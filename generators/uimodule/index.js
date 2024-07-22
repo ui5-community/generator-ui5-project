@@ -18,6 +18,7 @@ const require = createRequire(import.meta.url)
 
 export default class extends Generator {
 	static displayName = "Create a new uimodule within an existing OpenUI5/SAPUI5 project"
+	static nestedGenerators = ["wdi5"]
 
 	async prompting() {
 		// standalone call, this.options.config gets passed from ../project generator
