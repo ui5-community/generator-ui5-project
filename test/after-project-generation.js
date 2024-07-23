@@ -3,7 +3,7 @@ import path from "path"
 
 export const testCases = [
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Static webserver",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -17,7 +17,7 @@ export const testCases = [
 		testName: "Second"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Application Router",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -31,7 +31,7 @@ export const testCases = [
 		testName: "Second"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "SAP HTML5 Application Repository Service",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
