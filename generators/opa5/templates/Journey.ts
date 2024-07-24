@@ -13,7 +13,7 @@ QUnit.module("<%= viewName %>");
 
 opaTest("Should have correct title", function() {
 	// Arrangements
-	onThe<%= viewName %>Page.iStartMyUIComponent({
+	void onThe<%= viewName %>Page.iStartMyUIComponent({
 		componentConfig: {
 			name: "<%= uimoduleName %>",
 			async: true
@@ -24,5 +24,5 @@ opaTest("Should have correct title", function() {
 	onThe<%= viewName %>Page.theTitleShouldBeCorrect();
 
 	// Cleanup
-	onThe<%= viewName %>Page.iTeardownMyApp();
+	void onThe<%= viewName %>Page.iTeardownMyApp();
 });
