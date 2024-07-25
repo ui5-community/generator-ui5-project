@@ -9,6 +9,10 @@ import {
 import dependencies from "../dependencies.js"
 import yaml from "yaml"
 
+import ModelGenerator from "../model/index.js"
+import { createRequire } from "node:module"
+const require = createRequire(import.meta.url)
+
 export default class extends Generator {
 	static displayName = "Create a new SAP CAP module within an existing OpenUI5/SAPUI5 project"
 
@@ -24,7 +28,6 @@ export default class extends Generator {
 	async writing() {
 		this.log(chalk.green(`✨ creating new SAP CAP module for ${this.options.config.projectName}`))
 
-
 		// TO-DO: check for typescript and configure cap project accordingly
 		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.moduleName}`, "--add", "tiny-sample, data, xsuaa, mta, postgres"],
 			this.destinationPath()
@@ -37,8 +40,7 @@ export default class extends Generator {
 		fs.rmdirSync(this.destinationPath(`${this.options.config.moduleName}/app`))
 
 		const packageJson = JSON.parse(fs.readFileSync(this.destinationPath(`${this.options.config.moduleName}/package.json`)))
-		// go with the defaults (no auth required in dev)
-		delete packageJson["cds"]
+		delete packageJson["cds"] // go with the cds defaults (no auth required at dev time)
 		if (!packageJson["devDependencies"]) packageJson["devDependencies"] = {}
 		packageJson["devDependencies"]["@sap/cds-dk"] = dependencies["@sap/cds-dk"]
 		packageJson["devDependencies"]["cds-plugin-ui5"] = dependencies["cds-plugin-ui5"]
@@ -47,45 +49,81 @@ export default class extends Generator {
 		packageJson["scripts"]["build"] = "cds build --production"
 		fs.writeFileSync(this.destinationPath(`${this.options.config.moduleName}/package.json`), JSON.stringify(packageJson, null, 4))
 
-		// TO-DO: check whether target platform is approuter and connect srv-api by adding route to xs-app.json, redirect uri to xs-security.json, destination to mta.yaml
-		//   - name: com.myorg.myui5project-destination-service
-		// type: org.cloudfoundry.managed-service
-		// requires:
-		//   - name: srv-api
-		// parameters:
-		//   service: destination
-		//   service-name: com.myorg.myui5project-destination-service
-		//   service-plan: lite
-		//   config:
-		//     init_data:
-		//       instance:
-		//         existing_destinations_policy: update
-		//         destinations:
-		//           - Name: srv-api
-		//             Authentication: NoAuthentication
-		//             ProxyType: Internet
-		//             Type: HTTP
-		//             URL: ~{srv-api/srv-url}
-		//             HTML5.DynamicDestination: true
-		//             HTML5.ForwardAuthToken: true
-
-		// use generated mta.yaml from "cds init" to enrich root mta.yaml
-		const moduleMtaYaml = yaml.parse(fs.readFileSync(this.destinationPath(`${this.options.config.moduleName}/mta.yaml`)).toString())
-		const srv = moduleMtaYaml.modules.find(module => module.name === `${this.options.config.moduleName}-srv`)
-		srv.path = this.options.config.moduleName + "/" + srv.path
-		const deployer = moduleMtaYaml.modules.find(module => module.name === `${this.options.config.moduleName}-postgres-deployer`)
-		deployer.path = this.options.config.moduleName + "/" + deployer.path
-		const auth = moduleMtaYaml.resources.find(resource => resource.name === `${this.options.config.moduleName}-auth`)
-		auth.parameters.path = this.options.config.moduleName + "/xs-security.json"
-		const postgres = moduleMtaYaml.resources.find(resource => resource.name === `${this.options.config.moduleName}-postgres`)
+		// use parts of generated mta.yaml from "cds init" to enrich root mta.yaml
+		const capMtaYaml = yaml.parse(fs.readFileSync(this.destinationPath(`${this.options.config.moduleName}/mta.yaml`)).toString())
 		const rootMtaYaml = yaml.parse(fs.readFileSync(this.destinationPath("mta.yaml")).toString())
-		rootMtaYaml.modules.push(srv)
-		rootMtaYaml.modules.push(deployer)
 		if (!rootMtaYaml.resources) rootMtaYaml.resources = []
-		rootMtaYaml.resources.push(postgres)
-		rootMtaYaml.resources.push(auth)
+
+		const authName = `${this.options.config.projectId}-auth`
+		// use auth and xs-security.json from cap module
+		if (["Static webserver", "Application Router"].includes(this.options.config.platform)) {
+			const capAuth = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.moduleName}-auth`)
+			capAuth.name = authName
+			capAuth.parameters.path = `${this.options.config.moduleName}/xs-security.json`
+			if (this.options.config.platform === "Application Router") {
+				capAuth.parameters.config["oauth2-configuration"] = {
+					"redirect-uris": ["~{approuter/callback-url}"]
+				}
+				if (!capAuth.requires) capAuth.requires = []
+				capAuth.requires.push({ name: "approuter" })
+				const approuter = rootMtaYaml.modules.find(module => module.name === `${this.options.config.projectId}-approuter`)
+				if (!approuter.requires) approuter.requires = []
+				approuter.requires.push({ name: capAuth.name })
+			}
+			rootMtaYaml.resources.push(capAuth)
+		}
+		// use auth and xs-security.json from root
+		else if (["SAP HTML5 Application Repository", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
+			fs.rename(this.destinationPath("xs-security.json"), `${this.options.config.moduleName}/xs-security.json`, err => { })
+			const rootAuth = rootMtaYaml.resources.find(resource => resource.name === authName)
+			rootAuth.parameters.path = `${this.options.config.moduleName}/xs-security.json`
+		}
+
+		const capPostgres = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.moduleName}-postgres`)
+		capPostgres.name = `${this.options.config.projectId}-${capPostgres.name}`
+		rootMtaYaml.resources.push(capPostgres)
+
+		const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.moduleName}-postgres-deployer`)
+		capDeployer.path = this.options.config.moduleName + "/" + capDeployer.path
+		capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
+		capDeployer.requires = [
+			{ name: capPostgres.name }
+		]
+		rootMtaYaml.modules.push(capDeployer)
+
+		const capSrv = capMtaYaml.modules.find(module => module.name === `${this.options.config.moduleName}-srv`)
+		capSrv.path = this.options.config.moduleName + "/" + capSrv.path
+		capSrv.name = `${this.options.config.projectId}-${capSrv.name}`
+		capSrv.requires = [
+			{ name: capPostgres.name },
+			{ name: authName }
+		]
+		rootMtaYaml.modules.push(capSrv)
+
 		fs.unlinkSync(this.destinationPath(`${this.options.config.moduleName}/mta.yaml`))
 		this.writeDestination(this.destinationPath("mta.yaml"), yaml.stringify(rootMtaYaml))
-	}
 
+		if (this.options.config.runModelSubgenerator) {
+			this.composeWith(
+				{
+					Generator: ModelGenerator,
+					path: require.resolve("../model")
+				},
+				{
+					config: {
+						projectId: this.options.config.projectId,
+						uimoduleName: this.options.config.uimoduleName,
+						platform: this.options.config.platform,
+						modelName: "",
+						modelType: "OData v4",
+						modelUrl: "http://localhost:4004/odata/v4/catalog",
+						setupProxy: true,
+						setupRouteAndDest: ["Application Router", "SAP HTML5 Application Repository", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform),
+						destName: this.options.config.moduleName
+					}
+
+				}
+			)
+		}
+	}
 }

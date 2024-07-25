@@ -1,5 +1,5 @@
 {
-    "xsappname": "<%= projectName %>-uaa",
+    "xsappname": "<%= projectName %>-auth",
     "tenant-mode": "dedicated",
     "description": "Security profile of called application",
     "scopes": [

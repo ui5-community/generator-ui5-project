@@ -12,4 +12,10 @@ export default async function prompts() {
 		validate: validateAlphaNumericStartingWithLetterNonEmpty
 	})).moduleName
 	
+	this.options.config.runModelSubgenerator = (await this.prompt({
+		type: "confirm",
+		name: "runModelSubgenerator",
+		message: "Do you want to add the SAP CAP service as the default model to your uimodule?",
+		default: true
+	})).runModelSubgenerator
 }
