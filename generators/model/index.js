@@ -154,7 +154,7 @@ export default class extends Generator {
 					xsappJsonPath = this.destinationPath("approuter/xs-app.json")
 					break
 
-				case "SAP HTML5 Application Repository":
+				case "SAP HTML5 Application Repository Service":
 				case "SAP Build Work Zone, standard edition":
 					xsappJsonPath = this.destinationPath(`${this.options.config.uimoduleName}/webapp/xs-app.json`)
 					break

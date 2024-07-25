@@ -42,23 +42,21 @@ export default async function prompts() {
 		})).setupProxy
 	}
 
-	if (!this.options.config.setupRouteAndDest) {
-		if (["Application Router", "SAP HTML5 Application Repository", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
+	if (this.options.config.setupProxy && !this.options.config.setupRouteAndDest) {
+		if (["Application Router", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
 			this.options.config.setupRouteAndDest = (await this.prompt({
 				type: "confirm",
 				name: "setupRouteAndDest",
 				message: "Do you want to set up a route (xs-app.json) and destination for your new model?",
-				when: this.options.config.setUpProxy
 			})).setupRouteAndDest
 		}
 	}
 
-	if (!this.options.config.destName) {
+	if (this.options.config.setupRouteAndDest && !this.options.config.destName) {
 		this.options.config.destName = (await this.prompt({
 			type: "input",
 			name: "destName",
 			message: "How do you want to name your new destination?",
-			when: this.options.config.setupRouteAndDest,
 			validate: validateAlphaNumeric
 		})).destName
 	}
