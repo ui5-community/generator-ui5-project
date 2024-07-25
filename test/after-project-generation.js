@@ -3,7 +3,7 @@ import path from "path"
 
 export const testCases = [
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Static webserver",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -14,10 +14,11 @@ export const testCases = [
 		setupController: true,
 		setupRouteTarget: true,
 		controlName: "CustomControl",
-		testName: "Second"
+		testName: "Second",
+		capName: "server"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "Application Router",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -28,10 +29,11 @@ export const testCases = [
 		setupController: true,
 		setupRouteTarget: false,
 		controlName: "CustomControl",
-		testName: "Second"
+		testName: "Second",
+		capName: "server"
 	},
 	{
-		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
 		platform: "SAP HTML5 Application Repository Service",
 		newDir: false, // requirement for testing subgenerators after project generation
 		modelName: "myModel",
@@ -41,7 +43,22 @@ export const testCases = [
 		setupController: false,
 		setupRouteTarget: false,
 		controlName: "CustomControl",
-		testName: "Second"
+		testName: "Second",
+		capName: "server"
+	},
+	{
+		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
+		platform: "SAP NetWeaver",
+		newDir: false, // requirement for testing subgenerators after project generation
+		modelName: "myModel",
+		modelType: "JSON",
+		setupProxy: false,
+		viewName: "NewView",
+		setupController: false,
+		setupRouteTarget: false,
+		controlName: "CustomControl",
+		testName: "Second",
+		capName: "server" // include it and make sure it doesn't execute with SAP NetWeaver	
 	}
 ]
 
@@ -70,7 +87,7 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 	})
 
 	it("should or shouldn't proxy to service correctly", async function() {
-		if (testCase.setupProxy) {
+		if (testCase.setupProxy || (testCase.capName && testCase.platform !== "SAP NetWeaver")) {
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),
 				"http://localhost:4004"
@@ -130,6 +147,62 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 		assert.file(path.join(uimodulePath, `webapp/test/integration/${testCase.testName}Journey.js`))
 		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.js`))
 	})
+
+
+	// no cap module for SAP NetWeaver
+	if (testCase.platform !== "SAP NetWeaver") {
+		it("should have new cap module", async function() {
+			assert.file(path.join(uimodulePath, `../${testCase.capName}`))
+		})
+
+		it("should have cap artifacts in mta.yaml", async function() {
+			assert.fileContent(
+				path.join(uimodulePath, "../mta.yaml"),
+				"server-postgres"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "../mta.yaml"),
+				"server-postgres-deployer"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "../mta.yaml"),
+				"server-srv"
+			)
+		})
+
+		// route and destination onyl if approuter (standalone or managed) in place
+		if (!["Static webserver", "SAP NetWeaver"].includes(testCase.platform)) {
+			it("should have the destination in mta.yaml", async function() {
+				assert.fileContent(
+					path.join(uimodulePath, "../mta.yaml"),
+					`- Name: ${testCase.capName}`
+				)
+				assert.fileContent(
+					path.join(uimodulePath, "../mta.yaml"),
+					"URL: ~{srv-api/srv-url}"
+				)
+			})
+
+			it("should have the route set up in xs-app.json", async function() {
+				let xsappJsonPath
+				switch (testCase.platform) {
+					case "Application Router":
+						xsappJsonPath = path.join(uimodulePath, "../approuter/xs-app.json")
+						break
+
+					case "SAP HTML5 Application Repository Service":
+					case "SAP Build Work Zone, standard edition":
+						xsappJsonPath = path.join(uimodulePath, "/webapp/xs-app.json")
+						break
+				}
+				assert.fileContent(
+					xsappJsonPath,
+					`"destination": "${testCase.capName}"`
+				)
+			})
+		}
+	}
+
 
 	it("should have new uimodule", async function() {
 		assert.file(uimodulePath2)

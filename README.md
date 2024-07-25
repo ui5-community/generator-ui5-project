@@ -118,10 +118,21 @@ This subgenerator adds a OPA5 journey (integration test) and page object to one 
 
 </details>
 
+<details>
+<summary>cap</summary>
+
+<br>
+
+```bash
+yo easy-ui5 project cap
+```
+This subgenerator adds an SAP Cloud Application Programming Model (CAP) server to the project and connects one of the existing uimodules to it (via the [cds-plugin-ui5](https://www.npmjs.com/package/cds-plugin-ui5) and a dev dependency). This subgenerator is basically a convenvience wrapper around the [cds init](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart) command - with the added benefit of constructing a deployment-ready `mta.yaml` file on root level of the project, that includes all necessary artifacts in line with the selected [deployment target](#deployment).
+
+</details>
 
 ## Deployment
 
-Projects created with this generator use the [Multitarget Application](https://sap.github.io/cloud-mta-build-tool/) approach can be built and deployed out of the box:
+Projects created with this generator use the [Multitarget Application](https://sap.github.io/cloud-mta-build-tool/) approach and can be built and deployed out of the box:
 
 > Make sure you have the [Cloud Foundry CLI installed](https://developers.sap.com/tutorials/cp-cf-download-cli.html) and are logged in to your Cloud Foundry environment via the `cf login` command.
 

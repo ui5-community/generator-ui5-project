@@ -15,6 +15,10 @@ modules:
     path: approuter
     requires:
       - name: <%= projectId %>-destination-service
+    provides:
+      - name: approuter
+        properties:
+          callback-url: ${default-url}/login/callback
     parameters:
       disk-quota: 1024M
       memory: 1024M
