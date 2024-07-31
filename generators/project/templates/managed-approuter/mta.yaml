@@ -14,7 +14,7 @@ modules:
   - name: <%= projectId %>-destination-content
     type: com.sap.application.content
     requires:
-      - name: <%= projectId %>-uaa
+      - name: <%= projectId %>-auth
       - name: <%= projectId %>-html-repo-host
       - name: <%= projectId %>-destination-service
         parameters:
@@ -28,9 +28,9 @@ modules:
               ServiceInstanceName: <%= projectId %>-html-repo-host
               ServiceKeyName: <%= projectId %>-html-repo-host-key
               sap.cloud.service: basic.service
-            - Name: <%= projectId %>-uaa
-              ServiceInstanceName: <%= projectId %>-uaa
-              ServiceKeyName: <%= projectId %>-uaa-key
+            - Name: <%= projectId %>-auth
+              ServiceInstanceName: <%= projectId %>-auth
+              ServiceKeyName: <%= projectId %>-auth-key
               sap.cloud.service: basic.service
               Authentication: OAuth2UserTokenExchange
     build-parameters:
@@ -69,11 +69,11 @@ resources:
       service-keys: 
         - name: <%= projectId %>-html-repo-host-key
 
-  - name: <%= projectId %>-uaa
+  - name: <%= projectId %>-auth
     type: org.cloudfoundry.managed-service
     parameters:
       path: ./xs-security.json
       service: xsuaa
       service-plan: application
       service-keys: 
-        - name: <%= projectId %>-uaa-key
+        - name: <%= projectId %>-auth-key

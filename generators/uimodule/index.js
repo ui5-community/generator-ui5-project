@@ -4,7 +4,7 @@ import fs from "fs"
 import { generate as writeFPMApp } from "@sap-ux/ui5-application-writer"
 import { generate as writeFreestyleApp, TemplateType } from "@sap-ux/fiori-freestyle-writer"
 import Generator from "yeoman-generator"
-import { lookForParentUI5ProjectAndPrompt } from "../helpers.js"
+import { lookForParentUI5ProjectAndPrompt, addModuleToNPMWorkspaces } from "../helpers.js"
 import prompts from "./prompts.js"
 
 import FPMPageGenerator from "../fpmpage/index.js"
@@ -18,6 +18,7 @@ const require = createRequire(import.meta.url)
 
 export default class extends Generator {
 	static displayName = "Create a new uimodule within an existing OpenUI5/SAPUI5 project"
+	static nestedGenerators = ["wdi5"]
 
 	async prompting() {
 		// standalone call, this.options.config gets passed from ../project generator
@@ -29,11 +30,7 @@ export default class extends Generator {
 	async writing() {
 		this.log(chalk.green(`✨ creating new uimodule ${this.options.config.uimoduleName}`))
 
-		// add uimodule to root package.json
-		const rootPackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
-		rootPackageJson.workspaces.push(this.options.config.uimoduleName)
-		rootPackageJson.scripts[`start:${this.options.config.uimoduleName}`] = `npm start --workspace ${this.options.config.uimoduleName}`
-		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(rootPackageJson, null, 4))
+		addModuleToNPMWorkspaces.call(this, this.options.config.uimoduleName)
 
 		this.destinationRoot(this.destinationPath(this.options.config.uimoduleName))
 

@@ -2,7 +2,7 @@ import chalk from "chalk"
 import fs from "fs"
 import yaml from "yaml"
 
-export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt = true) {
+export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt = true, alternativePromptMessage) {
 	const readConfig = () => this.readDestinationJSON(".yo-rc.json")?.["generator-ui5-project"] || {}
 	this.options.config = readConfig()
 
@@ -24,13 +24,21 @@ export async function lookForParentUI5ProjectAndPrompt(prompts, uimodulePrompt =
 			this.options.config.uimoduleName = (await this.prompt({
 				type: "list",
 				name: "uimoduleName",
-				message: "For which uimodule would you like to call this subgenerator?",
+				message: alternativePromptMessage || "For which uimodule would you like to call this subgenerator?",
 				choices: this.options.config.uimodules
 			})).uimoduleName
 		}
 	}
 
 	await prompts.call(this)
+}
+
+export function addModuleToNPMWorkspaces(moduleName) {
+	const rootPackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
+	rootPackageJson.workspaces.push(moduleName)
+	rootPackageJson.scripts[`start:${moduleName}`] = `npm start --workspace ${moduleName}`
+	fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(rootPackageJson, null, 4))
+
 }
 
 export async function ensureCorrectDestinationPath() {
