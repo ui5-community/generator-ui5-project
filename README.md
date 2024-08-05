@@ -126,7 +126,7 @@ This subgenerator adds a OPA5 journey (integration test) and page object to one 
 ```bash
 yo easy-ui5 project cap
 ```
-This subgenerator adds an SAP Cloud Application Programming Model (CAP) server to the project and connects one of the existing uimodules to it (via the [cds-plugin-ui5](https://www.npmjs.com/package/cds-plugin-ui5) and a dev dependency). This subgenerator is basically a convenvience wrapper around the [cds init](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart) command - with the added benefit of constructing a deployment-ready `mta.yaml` file on root level of the project, that includes all necessary artifacts in line with the selected [deployment target](#deployment).
+This subgenerator adds an SAP Cloud Application Programming Model (CAP) server for the Node.js runtime to the project and connects one of the existing uimodules to it (via the [cds-plugin-ui5](https://www.npmjs.com/package/cds-plugin-ui5) and a dev dependency). This subgenerator is basically a convenvience wrapper around the [cds init](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart) command - with the added benefit of constructing a deployment-ready `mta.yaml` file on root level of the project, that includes all necessary artifacts in line with the selected [deployment target](#deployment).
 
 </details>
 
