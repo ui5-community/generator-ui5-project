@@ -40,6 +40,7 @@ export default class extends Generator {
 						afterTask: "generateVersionInfo",
 						configuration: {
 							onlyZip: true,
+							relativePaths: this.options.config.platform === "SAP Build Work Zone, standard edition",
 							archiveName: `${this.options.config.uimoduleName}-content`
 						}
 					}
@@ -154,6 +155,7 @@ export default class extends Generator {
 
 				}
 			)
+
 			uimodulePackageJson.scripts["start-flp"] = "fiori run --open test/flpSandbox.html"
 		}
 

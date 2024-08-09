@@ -11,5 +11,5 @@ export default {
 	"OpenUI5": "1.120.13",
 	"SAPUI5": "1.120.13",
 	"ui5-middleware-approuter": "^3",
-	"ui5-task-zipper": "^3"
+	"ui5-task-zipper": "^3.2.1"
 }
