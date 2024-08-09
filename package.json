@@ -1,6 +1,6 @@
 {
 	"name": "generator-ui5-project",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "(Sub-)generator for a project UI5 project",
 	"author": "SAP SE & UI5 Community",
 	"license": "Apache-2.0",
