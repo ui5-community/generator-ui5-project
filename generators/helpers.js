@@ -104,6 +104,16 @@ export function validateAlphaNumeric(string) {
 	return "Please use alpha numeric characters only."
 }
 
+export function validateAlphaNumericNonEmpty(string) {
+	if (/^[a-zA-Z0-9_-]*$/g.test(string)) {
+		if (string !== "") {
+			return true
+		}
+	}
+	return "Please use a non-empty value with alpha numeric characters only."
+}
+
+
 export function validateUrl(string) {
 	if (new URL(string) instanceof Error) {
 		return 	// no error message required, yeoman will forward an error to the user
