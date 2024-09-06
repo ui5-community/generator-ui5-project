@@ -9,6 +9,7 @@ import {
 } from "../helpers.js"
 import path, { dirname } from "path"
 import { fileURLToPath } from "url"
+import dependencies from "../dependencies.js";
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class extends Generator {
@@ -38,8 +39,8 @@ export default class extends Generator {
 
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/pages/View.js"),
-			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.js`),
+			path.join(__dirname, `templates/pages/View.${this.options.config.enableTypescript ? "ts": "js"}`),
+			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.${this.options.config.enableTypescript ? "ts": "js"}`),
 			{
 				viewName: this.options.config.viewName,
 				uimoduleName: this.options.config.uimoduleName,
@@ -48,8 +49,8 @@ export default class extends Generator {
 		)
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/Journey.js"),
-			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.js`),
+			path.join(__dirname, `templates/Journey.${this.options.config.enableTypescript ? "ts": "js"}`),
+			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.${this.options.config.enableTypescript ? "ts": "js"}`),
 			{
 				viewName: this.options.config.viewName,
 				uimoduleName: this.options.config.uimoduleName,
@@ -59,6 +60,12 @@ export default class extends Generator {
 
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		uimodulePackageJson.scripts["opa5"] = "fiori run --open test/opaTests.qunit.html"
+		if (this.options.config.enableTypescript) {
+			uimodulePackageJson["devDependencies"]["@types/qunit"] = dependencies["@types/qunit"]
+			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
+			tsconfigJson.compilerOptions.types.includes("qunit") || tsconfigJson.compilerOptions.types.push( "qunit" )
+			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
+		}
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 
