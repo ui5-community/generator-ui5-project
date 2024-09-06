@@ -1,6 +1,7 @@
 import {
 	validateAlphaNumeric,
-	validateUrl
+	validateUrl,
+	validateAlphaNumericNonEmpty
 } from "../helpers.js"
 
 export default async function prompts() {
@@ -57,7 +58,7 @@ export default async function prompts() {
 			type: "input",
 			name: "destName",
 			message: "How do you want to name your new destination?",
-			validate: validateAlphaNumeric
+			validate: validateAlphaNumericNonEmpty
 		})).destName
 	}
 }
