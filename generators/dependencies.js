@@ -8,8 +8,8 @@ export default {
 	"cds-plugin-ui5": "latest",
 	"mbt": "^1",
 	"rimraf": "latest",
-	"OpenUI5": "1.120.13",
-	"SAPUI5": "1.120.13",
+	"OpenUI5": "1.127.1",
+	"SAPUI5": "1.128.1",
 	"ui5-middleware-approuter": "^3",
 	"ui5-task-zipper": "^3.2.1"
 }
