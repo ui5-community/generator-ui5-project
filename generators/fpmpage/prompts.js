@@ -10,7 +10,14 @@ export default async function prompts() {
 	const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 	const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
 
-	if (!manifestJSON["sap.ui5"]["models"][""]) {
+	this.options.config.serviceIsReady = (await this.prompt({
+		type: "confirm",
+		name: "serviceIsReady",
+		message: "Does your main service already exist, so we can fetch its metadata?",
+		default: true
+	})).serviceIsReady
+
+	if (this.options.config.serviceIsReady && !manifestJSON["sap.ui5"]["models"][""]) {
 		this.options.config.serviceUrl = (await this.prompt({
 			type: "input",
 			name: "serviceUrl",
