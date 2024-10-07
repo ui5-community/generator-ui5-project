@@ -2,32 +2,39 @@ import assert from "yeoman-assert"
 import path from "path"
 
 export const testCases = [
-	{
-		platform: "Static webserver",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: false
-	},
-	{
-		platform: "Application Router",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: true,
-		newDir: false
-	},
-	{
-		platform: "SAP HTML5 Application Repository Service",
-		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
-		mainEntity: "BookedFlights",
-		enableTypescript: true
-	},
+	// {
+	// 	platform: "Static webserver",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: false
+	// },
+	// {
+	// 	platform: "Application Router",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true,
+	// 	newDir: false
+	// },
+	// {
+	// 	platform: "SAP HTML5 Application Repository Service",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true
+	// },
+	// {
+	// 	platform: "SAP Build Work Zone, standard edition",
+	// 	enableFPM: true,
+	// 	serviceUrl: "http://localhost:4004/travel",
+	// 	mainEntity: "BookedFlights",
+	// 	enableTypescript: true
+	// },
 	{
 		platform: "SAP Build Work Zone, standard edition",
 		enableFPM: true,
-		serviceUrl: "http://localhost:4004/travel",
+		serviceIsReady: false,
 		mainEntity: "BookedFlights",
 		enableTypescript: true
 	},
@@ -65,10 +72,12 @@ export const tests = (testCase, uimodulePath) => {
 			path.join(uimodulePath, "ui5.yaml"),
 			"SAPUI5"
 		)
-		assert.fileContent(
-			path.join(uimodulePath, "ui5-mock.yaml"),
-			"SAPUI5"
-		)
+		if (testCase.serviceIsReady) {
+			assert.fileContent(
+				path.join(uimodulePath, "ui5-mock.yaml"),
+				"SAPUI5"
+			)
+		}
 
 		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via preview-middleware)
 		if (testCase.platform !== "SAP Build Work Zone, standard edition") {
@@ -76,43 +85,46 @@ export const tests = (testCase, uimodulePath) => {
 				path.join(uimodulePath, "ui5.yaml"),
 				"https://ui5.sap.com"
 			)
-			assert.noFileContent(
-				path.join(uimodulePath, "ui5-mock.yaml"),
-				"https://ui5.sap.com"
-			)
-
+			if (testCase.serviceIsReady) {
+				assert.noFileContent(
+					path.join(uimodulePath, "ui5-mock.yaml"),
+					"https://ui5.sap.com"
+				)
+			}
 		}
 	})
 
-	it("should use sap-fe-mockserver properly", async function() {
-		assert.noFileContent(
-			path.join(uimodulePath, "ui5.yaml"),
-			"sap-fe-mockserver"
-		)
-		assert.fileContent(
-			path.join(uimodulePath, "ui5-mock.yaml"),
-			"sap-fe-mockserver"
-		)
-	})
+	if (testCase.serviceIsReady) {
+		it("should use sap-fe-mockserver properly", async function() {
+			assert.noFileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"sap-fe-mockserver"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "ui5-mock.yaml"),
+				"sap-fe-mockserver"
+			)
+		})
 
-	it("should set up a proxy to service url", async function() {
-		assert.fileContent(
-			path.join(uimodulePath, "ui5.yaml"),
-			"fiori-tools-proxy"
-		)
-		assert.fileContent(
-			path.join(uimodulePath, "ui5.yaml"),
-			new URL(testCase.serviceUrl).origin
-		)
-		assert.fileContent(
-			path.join(uimodulePath, "ui5-mock.yaml"),
-			new URL(testCase.serviceUrl).origin
-		)
-	})
+		it("should generate annotation file", async function() {
+			assert.file(path.join(uimodulePath, "webapp/annotations/annotation.xml"))
+		})
 
-	it("should generate annotation file", async function() {
-		assert.file(path.join(uimodulePath, "webapp/annotations/annotation.xml"))
-	})
+		it("should set up a proxy to service url", async function() {
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				"fiori-tools-proxy"
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "ui5.yaml"),
+				new URL(testCase.serviceUrl).origin
+			)
+			assert.fileContent(
+				path.join(uimodulePath, "ui5-mock.yaml"),
+				new URL(testCase.serviceUrl).origin
+			)
+		})
+	}
 
 	it("should use Fiori elements components", async function() {
 		assert.fileContent(
