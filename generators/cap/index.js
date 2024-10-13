@@ -29,7 +29,7 @@ export default class extends Generator {
 		this.log(chalk.green(`✨ creating new SAP CAP module for ${this.options.config.projectName}`))
 
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", "tiny-sample, data, xsuaa, mta, postgres"],
+		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", this.options.config.capCapabilities.join(",")],
 			this.destinationPath()
 		)
 
