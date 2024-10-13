@@ -17,7 +17,7 @@ export default [
     // Security
     { name: "xsuaa", checked: true },
     // Lintin
-    { name: "lint", checked: true },
+    { name: "lint", checked: false },
     // Typing
     { name: "typer", checked: false },
     { name: "typescript", checked: false },

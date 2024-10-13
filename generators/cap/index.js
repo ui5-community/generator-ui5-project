@@ -55,8 +55,9 @@ export default class extends Generator {
 		if (!rootMtaYaml.resources) rootMtaYaml.resources = []
 
 		const authName = `${this.options.config.projectId}-auth`
+		const xsuaaCapability = this.options.config.capCapabilities.includes("xsuaa")
 		// use auth and xs-security.json from cap module
-		if (["Static webserver", "Application Router"].includes(this.options.config.platform)) {
+		if (xsuaaCapability && ["Static webserver", "Application Router"].includes(this.options.config.platform)) {
 			const capAuth = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-auth`)
 			capAuth.name = authName
 			capAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
@@ -73,31 +74,51 @@ export default class extends Generator {
 			rootMtaYaml.resources.push(capAuth)
 		}
 		// use auth and xs-security.json from root
-		else if (["SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
+		else if (xsuaaCapability && ["SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
 			fs.rename(this.destinationPath("xs-security.json"), `${this.options.config.capName}/xs-security.json`, err => { })
 			const rootAuth = rootMtaYaml.resources.find(resource => resource.name === authName)
 			rootAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
 		}
 
-		const capPostgres = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-postgres`)
-		capPostgres.name = `${this.options.config.projectId}-${capPostgres.name}`
-		rootMtaYaml.resources.push(capPostgres)
+		const postgresCapability = this.options.config.capCapabilities.includes("postgres")
+		let capPostgres = null
+		if(postgresCapability) {
+			capPostgres = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-postgres`)
+			capPostgres.name = `${this.options.config.projectId}-${capPostgres.name}`
+			rootMtaYaml.resources.push(capPostgres)
+		
 
-		const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-postgres-deployer`)
-		capDeployer.path = this.options.config.capName + "/" + capDeployer.path
-		capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
-		capDeployer.requires = [
-			{ name: capPostgres.name }
-		]
-		rootMtaYaml.modules.push(capDeployer)
-
+			const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-postgres-deployer`)
+			capDeployer.path = this.options.config.capName + "/" + capDeployer.path
+			capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
+			capDeployer.requires = [
+				{ name: capPostgres.name }
+			]
+			rootMtaYaml.modules.push(capDeployer)
+		}
+	
 		const capSrv = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-srv`)
-		capSrv.path = this.options.config.capName + "/" + capSrv.path
+		capSrv.path = `${this.options.config.capName}/${capSrv.path}`;
 		capSrv.name = `${this.options.config.projectId}-${capSrv.name}`
-		capSrv.requires = [
-			{ name: capPostgres.name },
-			{ name: authName }
-		]
+		capSrv.requires = capSrv.requires ?? []
+		if (xsuaaCapability) {
+			const xsuaaDependency = capSrv.requires.find(dependency => dependency.name === `${this.options.config.capName}-auth`)
+			if(xsuaaDependency) {
+				xsuaaDependency.name = authName
+			} else {
+				capSrv.requires.push({ name: authName })
+			}
+		}
+		if (postgresCapability) {
+			const postgresServiceName = `${this.options.config.capName}-postgres`
+			const postgresDependency = capSrv.requires.find(dependency => dependency.name === postgresServiceName)
+			if(postgresDependency) {
+				postgresDependency.name = capPostgres.name
+			} else {
+				capSrv.requires.push({ name: `${this.options.config.projectId}-${capPostgres.name}` })
+			}
+		}
+	
 		rootMtaYaml.modules.push(capSrv)
 
 		fs.unlinkSync(this.destinationPath(`${this.options.config.capName}/mta.yaml`))
