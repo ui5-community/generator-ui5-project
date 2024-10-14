@@ -156,7 +156,13 @@ export default class extends Generator {
 
 				case "SAP HTML5 Application Repository Service":
 				case "SAP Build Work Zone, standard edition":
-					xsappJsonPath = this.destinationPath(`${this.options.config.uimoduleName}/webapp/xs-app.json`)
+					// check if file is stored in webapp folder or project root
+					const webappPath = this.destinationPath(`${this.options.config.uimoduleName}/webapp/xs-app.json`)
+					if (fs.existsSync(webappPath)) {
+						xsappJsonPath = webappPath
+					} else {
+						xsappJsonPath = this.destinationPath(`${this.options.config.uimoduleName}/xs-app.json`)
+					}
 					break
 			}
 			const xsappJson = JSON.parse(fs.readFileSync(xsappJsonPath))
