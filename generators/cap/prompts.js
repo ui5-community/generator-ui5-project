@@ -17,7 +17,7 @@ export default async function prompts() {
 		type: "checkbox",
 		name: "capCapabilities",
 		message: "Which CAP capabilities do you want to add?",
-        choices: capabilities.map(capability => ({ name: capability.name, value: capability.name, checked: capability.checked })),
+		choices: capabilities.map(capability => ({ name: capability.name, value: capability.name, checked: capability.checked })),
 	})).capCapabilities
 	
 	this.options.config.runModelSubgenerator = (await this.prompt({
