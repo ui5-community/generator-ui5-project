@@ -28,8 +28,11 @@ export default class extends Generator {
 	async writing() {
 		this.log(chalk.green(`✨ creating new SAP CAP module for ${this.options.config.projectName}`))
 
+		// mta is not an option in the prompts, but it is required for the root mta.yaml
+		const capCapabilities = [...this.options.config.capCapabilities, 'mta']
+
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", this.options.config.capCapabilities.join(",")],
+		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
 			this.destinationPath()
 		)
 

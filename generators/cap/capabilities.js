@@ -8,8 +8,6 @@ export default [
     { name: "html5-repo", checked: true },
     { name: "portal", checked: false },
     // Deployment
-    { name: "mta", checked: true },
-    { name: "cf-manifest", checked: false },
     { name: "helm", checked: false },
     { name: "helm-unified-runtime", checked: false },
     { name: "containerize", checked: false },
