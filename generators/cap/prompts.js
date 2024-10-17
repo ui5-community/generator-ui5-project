@@ -1,6 +1,7 @@
 import {
 	validateAlphaNumericStartingWithLetterNonEmpty
 } from "../helpers.js"
+import capabilities from "./capabilities.js"
 
 export default async function prompts() {
 
@@ -11,6 +12,13 @@ export default async function prompts() {
 		default: "server",
 		validate: validateAlphaNumericStartingWithLetterNonEmpty
 	})).capName
+
+	this.options.config.capCapabilities = (await this.prompt({
+		type: "checkbox",
+		name: "capCapabilities",
+		message: "Which CAP capabilities do you want to add?",
+		choices: capabilities.map(capability => ({ name: capability.name, value: capability.name, checked: capability.checked })),
+	})).capCapabilities
 	
 	this.options.config.runModelSubgenerator = (await this.prompt({
 		type: "confirm",
