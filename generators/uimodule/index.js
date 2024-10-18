@@ -137,6 +137,11 @@ export default class extends Generator {
 			tsconfigJson.compilerOptions.types = [ "@sapui5/types" ]
 			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
 		}
+		if (this.options.config.enableTypescript && this.options.config.enableTests) {
+			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
+			tsconfigJson.compilerOptions.types.includes("qunit") || tsconfigJson.compilerOptions.types.push( "qunit" )
+			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
+		}
 	}
 
 	end() {

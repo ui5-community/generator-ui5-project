@@ -9,7 +9,6 @@ import {
 } from "../helpers.js"
 import path, { dirname } from "path"
 import { fileURLToPath } from "url"
-import dependencies from "../dependencies.js";
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class extends Generator {
@@ -28,6 +27,8 @@ export default class extends Generator {
 			// prioritize manually passed parameter over config from file, as the latter is not up to date when subgenerator is composed
 			this.options.config.uimoduleName = this.options.uimoduleName
 		}
+		// remember tests were generated for post-processing to add the respective types to .tsconfig as well
+		this.options.config.enableTests = true
 	}
 
 	async writing() {
@@ -60,12 +61,6 @@ export default class extends Generator {
 
 		const uimodulePackageJson = JSON.parse(fs.readFileSync(this.destinationPath("package.json")))
 		uimodulePackageJson.scripts["opa5"] = "fiori run --open test/opaTests.qunit.html"
-		if (this.options.config.enableTypescript) {
-			uimodulePackageJson["devDependencies"]["@types/qunit"] = dependencies["@types/qunit"]
-			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
-			tsconfigJson.compilerOptions.types.includes("qunit") || tsconfigJson.compilerOptions.types.push( "qunit" )
-			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
-		}
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 
