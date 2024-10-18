@@ -112,10 +112,17 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 	})
 
 	it("should have qunit test", async function() {
-		assert.fileContent(
-			path.join(uimodulePath, "webapp/test/unit/FirstTest.js"),
-			"QUnit"
-		)
+		if (testCase.enableTypescript) {
+			assert.fileContent(
+				path.join(uimodulePath, "webapp/test/unit/FirstTest.ts"),
+				"QUnit"
+			)
+		} else {
+			assert.fileContent(
+				path.join(uimodulePath, "webapp/test/unit/FirstTest.js"),
+				"QUnit"
+			)
+		}
 	})
 
 	if (!testCase.enableFPM) {
@@ -131,10 +138,17 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		})
 
 		it("should have opa5 journey and page object", async function() {
-			assert.fileContent(
-				path.join(uimodulePath, "webapp/test/integration/FirstJourney.js"),
-				"Opa5"
-			)
+			if (testCase.enableTypescript) {
+				assert.fileContent(
+					path.join(uimodulePath, "webapp/test/integration/FirstJourney.ts"),
+					"Opa5"
+				)
+			} else {
+				assert.fileContent(
+					path.join(uimodulePath, "webapp/test/integration/FirstJourney.js"),
+					"Opa5"
+				)
+			}
 			assert.file(path.join(uimodulePath, "webapp/test/integration/pages"))
 		})
 	}

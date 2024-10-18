@@ -27,6 +27,8 @@ export default class extends Generator {
 			// prioritize manually passed parameter over config from file, as the latter is not up to date when subgenerator is composed
 			this.options.config.uimoduleName = this.options.uimoduleName
 		}
+		// remember tests were generated for post-processing to add the respective types to .tsconfig as well
+		this.options.config.enableTests = true
 	}
 
 	async writing() {
@@ -38,8 +40,8 @@ export default class extends Generator {
 
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/pages/View.js"),
-			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.js`),
+			path.join(__dirname, `templates/pages/View.${this.options.config.enableTypescript ? "ts": "js"}`),
+			this.destinationPath(`webapp/test/integration/pages/${this.options.config.viewName}.${this.options.config.enableTypescript ? "ts": "js"}`),
 			{
 				viewName: this.options.config.viewName,
 				uimoduleName: this.options.config.uimoduleName,
@@ -48,8 +50,8 @@ export default class extends Generator {
 		)
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/Journey.js"),
-			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.js`),
+			path.join(__dirname, `templates/Journey.${this.options.config.enableTypescript ? "ts": "js"}`),
+			this.destinationPath(`webapp/test/integration/${this.options.config.testName}Journey.${this.options.config.enableTypescript ? "ts": "js"}`),
 			{
 				viewName: this.options.config.viewName,
 				uimoduleName: this.options.config.uimoduleName,

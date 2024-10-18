@@ -4,3 +4,8 @@ test-output/
 
 .DS_Store
 .marskman.toml
+
+# IntelliJ project settings
+.idea
+# VSCode project settings
+.vscode
