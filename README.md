@@ -16,7 +16,7 @@ If you are looking to create a simple UI5 project with no deployment configurati
 ## Usage with easy-ui5
 
 ```bash
-npm i -g yo
+npm i -g yo generator-easy-ui5
 yo easy-ui5 project
 
      _-----_
