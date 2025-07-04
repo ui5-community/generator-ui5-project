@@ -23,8 +23,6 @@ export default [
     { name: "tiny-sample", checked: true },
     { name: "sample", checked: false },
     { name: "data", checked: true },
-    // HTTP
-    { name: "http", checked: true },
     // Connectivity
     { name: "connectivity", checked: false },
     { name: "destination", checked: false },
@@ -47,5 +45,7 @@ export default [
     // Multitenancy
     { name: "multitenancy", checked: false },
      // Extensibility
-     { name: "extensibility" , checked: false }
+     { name: "extensibility" , checked: false },
+    // HTTP
+    { name: "http", checked: true }
 ];
