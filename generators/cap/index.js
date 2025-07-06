@@ -32,8 +32,7 @@ export default class extends Generator {
 		const capCapabilities = [...this.options.config.capCapabilities, 'mta']
 
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("cds", ["init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
-		// this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
+		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
 			this.destinationPath()
 		)
 
