@@ -88,7 +88,8 @@ export default class extends Generator {
 						{ name: "sap.m" },
 						{ name: "sap.ui.core" },
 						{ name: "themelib_sap_horizon" },
-						{ name: "sap.fe.templates" }
+						{ name: "sap.fe.templates" },
+						{ name: "sap.ui.export" }
 					]
 				}
 				deleteProxyToUI5(ui5YamlMock)
