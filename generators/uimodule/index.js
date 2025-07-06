@@ -134,12 +134,15 @@ export default class extends Generator {
 		if (this.options.config.enableFPM && this.options.config.enableTypescript) {
 			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
 			delete tsconfigJson.compilerOptions.typeRoots
-			tsconfigJson.compilerOptions.types = [ "@sapui5/types" ]
+			tsconfigJson.compilerOptions.types = [ "@sapui5/types", "@types/qunit" ]
+			// wdi5 generator will add its own tsconfig
+			tsconfigJson.exclude = [ "./webapp/test/e2e/**/*" ]
 			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
 		}
 	}
 
 	end() {
+
 		// add new uimodule to .yo-rc.json
 		this.destinationRoot(this.destinationPath("../"))
 		if (!this.config.get("uimodules")) {
