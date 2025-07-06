@@ -76,6 +76,9 @@ export default class extends Generator {
 			ui5Yaml.framework.libraries.push({
 				name: "sap.fe.templates"
 			})
+			ui5Yaml.framework.libraries.push({
+				name: "sap.ui.export"
+			})
 			ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware.filter(middleware => middleware.name !== "sap-fe-mockserver")
 			const ui5YamlMockPath = this.destinationPath("ui5-mock.yaml")
 			let ui5YamlMock

@@ -32,7 +32,8 @@ export default class extends Generator {
 		const capCapabilities = [...this.options.config.capCapabilities, 'mta']
 
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
+		this.spawnCommandSync("cds", ["init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
+		// this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
 			this.destinationPath()
 		)
 
@@ -77,7 +78,7 @@ export default class extends Generator {
 			rootMtaYaml.resources.push(capAuth)
 		}
 		// use auth and xs-security.json from root
-		else if (xsuaaCapability && ["SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
+		else if (xsuaaCapability && ["Application Frontend Service", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
 			fs.rename(this.destinationPath("xs-security.json"), `${this.options.config.capName}/xs-security.json`, err => { })
 			const rootAuth = rootMtaYaml.resources.find(resource => resource.name === authName)
 			rootAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
@@ -96,6 +97,23 @@ export default class extends Generator {
 			capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
 			capDeployer.requires = [
 				{ name: capPostgres.name }
+			]
+			rootMtaYaml.modules.push(capDeployer)
+		}
+
+		const hanaCapability = this.options.config.capCapabilities.includes("hana")
+		let capHana = null
+		if(hanaCapability) {
+			capHana = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-db`)
+			capHana.name = `${this.options.config.projectId}-${capHana.name}`
+			rootMtaYaml.resources.push(capHana)
+		
+
+			const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-db-deployer`)
+			capDeployer.path = this.options.config.capName + "/" + capDeployer.path
+			capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
+			capDeployer.requires = [
+				{ name: capHana.name }
 			]
 			rootMtaYaml.modules.push(capDeployer)
 		}
@@ -142,7 +160,7 @@ export default class extends Generator {
 						modelType: "OData v4",
 						modelUrl: "http://localhost:4004/odata/v4/catalog",
 						setupProxy: true,
-						setupRouteAndDest: ["Application Router", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform),
+						setupRouteAndDest: ["Application Router", "Application Frontend Service", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform),
 						destName: this.options.config.capName
 					}
 

@@ -59,6 +59,7 @@ export default async function prompts() {
         choices: [
             "Static webserver",
             "Application Router",
+			"Application Frontend Service",
             "SAP HTML5 Application Repository Service",
             "SAP Build Work Zone, standard edition",
 			"SAP NetWeaver"

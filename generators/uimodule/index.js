@@ -49,7 +49,7 @@ export default class extends Generator {
 			ui5: {
 				ui5Theme: "sap_horizon",
 				version: this.options.config.ui5Libs.includes("OpenUI5") ? dependencies["OpenUI5"] : dependencies["SAPUI5"]
-				// TO-DO: think about passing more parameters here to be able to remove some logic from ./uiLibs
+				// TO-DO: think about passing more parameters here to be able to remove some logic from ./ui5Libs
 			}
 		}
 
