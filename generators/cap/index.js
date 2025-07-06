@@ -83,6 +83,7 @@ export default class extends Generator {
 			rootAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
 		}
 
+		// TO-DO: move into on cleaner block
 		const postgresCapability = this.options.config.capCapabilities.includes("postgres")
 		let capPostgres = null
 		if(postgresCapability) {
@@ -106,7 +107,6 @@ export default class extends Generator {
 			capHana = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-db`)
 			capHana.name = `${this.options.config.projectId}-${capHana.name}`
 			rootMtaYaml.resources.push(capHana)
-		
 
 			const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-db-deployer`)
 			capDeployer.path = this.options.config.capName + "/" + capDeployer.path
@@ -120,6 +120,7 @@ export default class extends Generator {
 		const capSrv = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-srv`)
 		capSrv.path = `${this.options.config.capName}/${capSrv.path}`;
 		capSrv.name = `${this.options.config.projectId}-${capSrv.name}`
+		delete capSrv["build-parameters"]
 		capSrv.requires = capSrv.requires ?? []
 		if (xsuaaCapability) {
 			const xsuaaDependency = capSrv.requires.find(dependency => dependency.name === `${this.options.config.capName}-auth`)
@@ -136,6 +137,15 @@ export default class extends Generator {
 				postgresDependency.name = capPostgres.name
 			} else {
 				capSrv.requires.push({ name: `${this.options.config.projectId}-${capPostgres.name}` })
+			}
+		}
+		if (hanaCapability) {
+			const hanaServiceName = `${this.options.config.capName}-db`
+			const hanaDependency = capSrv.requires.find(dependency => dependency.name === hanaServiceName)
+			if(hanaDependency) {
+				hanaDependency.name = capHana.name
+			} else {
+				capSrv.requires.push({ name: `${this.options.config.projectId}-${capHana.name}` })
 			}
 		}
 	

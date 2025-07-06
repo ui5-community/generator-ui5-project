@@ -135,9 +135,12 @@ export default class extends Generator {
 					{
 						name: this.options.config.destName,
 						url: this.standaloneCall ? serviceUrl : "~{srv-api/srv-url}",
-						forwardAuthToken: true }
+						forwardAuthToken: true
+					}
 				)
-				uiDeployer.requires.push({ name: this.options.config.destName })
+				if (!this.standaloneCall) {
+					uiDeployer.requires.push({ name: "srv-api" })
+				}
 			} else {
 				const destination = rootMtaYaml.resources.find(resource => resource.name === `${this.options.config.projectId}-destination-service`)
 				if (!destination.parameters.config) destination.parameters.config = {}
