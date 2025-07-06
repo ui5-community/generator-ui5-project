@@ -25,6 +25,29 @@ export default class extends Generator {
 					}
 				)
 				break
+			
+			case "Application Frontend Service":
+				this.fs.copyTpl(
+					this.templatePath("application-frontend/mta.yaml"),
+					this.destinationPath("mta.yaml"),
+					{
+						projectId: this.config.get("projectId"),
+						projectName: this.config.get("projectName")
+					}
+				)
+				this.fs.copyTpl(
+					this.templatePath("application-frontend/xs-security.json"),
+					this.destinationPath("xs-security.json"),
+					{
+						projectId: this.config.get("projectId"),
+						projectName: this.config.get("projectName")
+					}
+				)
+				this.fs.copyTpl(
+					this.templatePath("application-frontend/xs-app.json"),
+					this.destinationPath(`${this.config.get("uimoduleName")}/webapp/xs-app.json`)
+				)
+				break
 
 			case "SAP HTML5 Application Repository Service":
 			case "SAP Build Work Zone, standard edition":

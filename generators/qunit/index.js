@@ -33,10 +33,11 @@ export default class extends Generator {
 
 		addPreviewMiddlewareTestConfig.call(this, "Qunit")
 
+		const fileEnding = this.options.config.enableTypescript ? "ts" : "js"
 		this.fs.copyTpl(
 			// for some reason this.templatePath() doesn't work here
-			path.join(__dirname, "templates/Test.js"),
-			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.js`),
+			path.join(__dirname, `templates/Test.${fileEnding}`),
+			this.destinationPath(`webapp/test/unit/${this.options.config.testName}Test.${fileEnding}`),
 			{ testName: this.options.config.testName }
 		)
 

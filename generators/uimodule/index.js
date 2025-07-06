@@ -49,7 +49,7 @@ export default class extends Generator {
 			ui5: {
 				ui5Theme: "sap_horizon",
 				version: this.options.config.ui5Libs.includes("OpenUI5") ? dependencies["OpenUI5"] : dependencies["SAPUI5"]
-				// TO-DO: think about passing more parameters here to be able to remove some logic from ./uiLibs
+				// TO-DO: think about passing more parameters here to be able to remove some logic from ./ui5Libs
 			}
 		}
 
@@ -134,12 +134,15 @@ export default class extends Generator {
 		if (this.options.config.enableFPM && this.options.config.enableTypescript) {
 			const tsconfigJson = JSON.parse(fs.readFileSync(this.destinationPath("tsconfig.json")))
 			delete tsconfigJson.compilerOptions.typeRoots
-			tsconfigJson.compilerOptions.types = [ "@sapui5/types" ]
+			tsconfigJson.compilerOptions.types = [ "@sapui5/types", "@types/qunit" ]
+			// wdi5 generator will add its own tsconfig
+			tsconfigJson.exclude = [ "./webapp/test/e2e/**/*" ]
 			fs.writeFileSync(this.destinationPath("tsconfig.json"), JSON.stringify(tsconfigJson, null, 4))
 		}
 	}
 
 	end() {
+
 		// add new uimodule to .yo-rc.json
 		this.destinationRoot(this.destinationPath("../"))
 		if (!this.config.get("uimodules")) {

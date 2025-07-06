@@ -76,6 +76,9 @@ export default class extends Generator {
 			ui5Yaml.framework.libraries.push({
 				name: "sap.fe.templates"
 			})
+			ui5Yaml.framework.libraries.push({
+				name: "sap.ui.export"
+			})
 			ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware.filter(middleware => middleware.name !== "sap-fe-mockserver")
 			const ui5YamlMockPath = this.destinationPath("ui5-mock.yaml")
 			let ui5YamlMock
@@ -88,7 +91,8 @@ export default class extends Generator {
 						{ name: "sap.m" },
 						{ name: "sap.ui.core" },
 						{ name: "themelib_sap_horizon" },
-						{ name: "sap.fe.templates" }
+						{ name: "sap.fe.templates" },
+						{ name: "sap.ui.export" }
 					]
 				}
 				deleteProxyToUI5(ui5YamlMock)
