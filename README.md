@@ -162,6 +162,15 @@ With this option the project gets deployed to Cloud Foundry in the form of an Ap
 </details>
 
 <details>
+<summary>Application Frontend Service</summary>
+
+<br>
+
+With this option the project gets deployed to Cloud Foundry via the [Application Frontend Service](https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service) using the MTA-based approach (Multi-Target Application).
+
+</details>
+
+<details>
 <summary>SAP HTML5 Application Repository Service</summary>
 
 <br>
