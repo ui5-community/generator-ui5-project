@@ -143,12 +143,14 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 	})
 
 	it("should have new qunit test", async function() {
-		assert.file(path.join(uimodulePath, `webapp/test/unit/${testCase.testName}Test.js`))
+		const fileEnding = testCase.enableTypescript ? "ts" : "js"
+		assert.file(path.join(uimodulePath, `webapp/test/unit/${testCase.testName}Test.${fileEnding}`))
 	})
 
 	it("should have new opa5 journey and page object", async function() {
-		assert.file(path.join(uimodulePath, `webapp/test/integration/${testCase.testName}Journey.js`))
-		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.js`))
+		const fileEnding = testCase.enableTypescript ? "ts" : "js"
+		assert.file(path.join(uimodulePath, `webapp/test/integration/${testCase.testName}Journey.${fileEnding}`))
+		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.page.${fileEnding}`))
 	})
 
 
