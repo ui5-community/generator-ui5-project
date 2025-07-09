@@ -27,6 +27,7 @@ export default class extends Generator {
 				uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml --clean-dest --dest ../approuter/dist/${this.options.config.uimoduleName}`
 				break
 
+			case "Application Frontend Service":
 			case "SAP HTML5 Application Repository Service":
 			case "SAP Build Work Zone, standard edition":
 				uimodulePackageJson.scripts["build"] = "ui5 build --config=ui5.yaml --clean-dest --dest dist"
@@ -40,6 +41,7 @@ export default class extends Generator {
 						afterTask: "generateVersionInfo",
 						configuration: {
 							onlyZip: true,
+							relativePaths: this.options.config.platform === "SAP Build Work Zone, standard edition",
 							archiveName: `${this.options.config.uimoduleName}-content`
 						}
 					}
@@ -154,6 +156,7 @@ export default class extends Generator {
 
 				}
 			)
+
 			uimodulePackageJson.scripts["start-flp"] = "fiori run --open test/flpSandbox.html"
 		}
 

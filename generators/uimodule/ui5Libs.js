@@ -76,20 +76,28 @@ export default class extends Generator {
 			ui5Yaml.framework.libraries.push({
 				name: "sap.fe.templates"
 			})
+			ui5Yaml.framework.libraries.push({
+				name: "sap.ui.export"
+			})
 			ui5Yaml.server.customMiddleware = ui5Yaml.server.customMiddleware.filter(middleware => middleware.name !== "sap-fe-mockserver")
-			const ui5YamlMock = yaml.parse(fs.readFileSync(this.destinationPath("ui5-mock.yaml")).toString())
-			ui5YamlMock.framework = {
-				name: "SAPUI5",
-				version: dependencies["SAPUI5"],
-				libraries: [
-					{ name: "sap.m" },
-					{ name: "sap.ui.core" },
-					{ name: "themelib_sap_horizon" },
-					{ name: "sap.fe.templates" }
-				]
+			const ui5YamlMockPath = this.destinationPath("ui5-mock.yaml")
+			let ui5YamlMock
+			if (fs.existsSync(ui5YamlMockPath)) {
+				ui5YamlMock = yaml.parse(fs.readFileSync(this.destinationPath("ui5-mock.yaml")).toString())
+				ui5YamlMock.framework = {
+					name: "SAPUI5",
+					version: dependencies["SAPUI5"],
+					libraries: [
+						{ name: "sap.m" },
+						{ name: "sap.ui.core" },
+						{ name: "themelib_sap_horizon" },
+						{ name: "sap.fe.templates" },
+						{ name: "sap.ui.export" }
+					]
+				}
+				deleteProxyToUI5(ui5YamlMock)
+				fs.writeFileSync(this.destinationPath("ui5-mock.yaml"), yaml.stringify(ui5YamlMock))
 			}
-			deleteProxyToUI5(ui5YamlMock)
-			fs.writeFileSync(this.destinationPath("ui5-mock.yaml"), yaml.stringify(ui5YamlMock))
 		}
 
 		fs.writeFileSync(this.destinationPath("ui5.yaml"), yaml.stringify(ui5Yaml))

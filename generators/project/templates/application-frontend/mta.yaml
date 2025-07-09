@@ -1,0 +1,48 @@
+_schema-version: "3.2"
+ID: <%= projectId %>
+version: 0.0.1
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npm run build:workspaces
+
+modules:
+
+  - name: <%= projectId %>-ui-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      # - name: srv-api
+      - name: <%= projectId %>-auth
+      - name: <%= projectId %>-app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires: [] # zipped uimodules will be added here
+    # parameters:
+    #   config:
+    #     destinations:
+    #     - name: srv-api
+    #       url:  '~{srv-api/srv-url}'
+
+
+  # uimodules will be added here
+
+resources:
+
+  - name: <%= projectId %>-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-plan: developer
+
+  - name: <%= projectId %>-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application

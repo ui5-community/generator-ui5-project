@@ -16,7 +16,7 @@ If you are looking to create a simple UI5 project with no deployment configurati
 ## Usage with easy-ui5
 
 ```bash
-npm i -g yo
+npm i -g yo generator-easy-ui5
 yo easy-ui5 project
 
      _-----_
@@ -126,7 +126,7 @@ This subgenerator adds a OPA5 journey (integration test) and page object to one 
 ```bash
 yo easy-ui5 project cap
 ```
-This subgenerator adds an SAP Cloud Application Programming Model (CAP) server to the project and connects one of the existing uimodules to it (via the [cds-plugin-ui5](https://www.npmjs.com/package/cds-plugin-ui5) and a dev dependency). This subgenerator is basically a convenvience wrapper around the [cds init](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart) command - with the added benefit of constructing a deployment-ready `mta.yaml` file on root level of the project, that includes all necessary artifacts in line with the selected [deployment target](#deployment).
+This subgenerator adds an SAP Cloud Application Programming Model (CAP) server for the Node.js runtime to the project and connects one of the existing uimodules to it (via the [cds-plugin-ui5](https://www.npmjs.com/package/cds-plugin-ui5) and a dev dependency). This subgenerator is basically a convenvience wrapper around the [cds init](https://cap.cloud.sap/docs/get-started/in-a-nutshell#jumpstart) command - with the added benefit of constructing a deployment-ready `mta.yaml` file on root level of the project, that includes all necessary artifacts in line with the selected [deployment target](#deployment).
 
 </details>
 
@@ -158,6 +158,15 @@ With this option the project gets deployed to Cloud Foundry via the [Staticfile 
 <br>
 
 With this option the project gets deployed to Cloud Foundry in the form of an Application Router, which is a Node.js application ([Node.js buildpack](https://docs.cloudfoundry.org/buildpacks/node/index.html)) that acts as a reverse proxy and can handle authentication as well different routes within your project. The uimodules of your project are served via the local `dist/` directory of the Application Router.
+
+</details>
+
+<details>
+<summary>Application Frontend Service</summary>
+
+<br>
+
+With this option the project gets deployed to Cloud Foundry via the [Application Frontend Service](https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service) using the MTA-based approach (Multi-Target Application).
 
 </details>
 

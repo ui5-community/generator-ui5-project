@@ -15,7 +15,8 @@ export const testCases = [
 		setupRouteTarget: true,
 		controlName: "CustomControl",
 		testName: "Second",
-		capName: "server"
+		capName: "server",
+		capCapabilities: ["postgres", "mta", "xsuaa", "data", "tiny-sample"]
 	},
 	{
 		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
@@ -30,7 +31,8 @@ export const testCases = [
 		setupRouteTarget: false,
 		controlName: "CustomControl",
 		testName: "Second",
-		capName: "server"
+		capName: "server",
+		capCapabilities: ["postgres", "mta", "xsuaa", "data", "tiny-sample"]
 	},
 	{
 		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules
@@ -44,7 +46,8 @@ export const testCases = [
 		setupRouteTarget: false,
 		controlName: "CustomControl",
 		testName: "Second",
-		capName: "server"
+		capName: "server",
+		capCapabilities: ["postgres", "mta", "xsuaa", "data", "tiny-sample"]
 	},
 	{
 		additionalSubgenerators: ["model", "view", "customcontrol", "qunit", "opa5", "cap", "uimodule"], // run uimodule last to avoid prompts to select between uimodules

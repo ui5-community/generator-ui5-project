@@ -126,25 +126,42 @@ export default class extends Generator {
 		// set up route and destination
 		if (this.options.config.setupRouteAndDest) {
 			const rootMtaYaml = yaml.parse(fs.readFileSync(this.destinationPath("mta.yaml")).toString())
-			const destination = rootMtaYaml.resources.find(resource => resource.name === `${this.options.config.projectId}-destination-service`)
-			if (!destination.parameters.config) destination.parameters.config = {}
-			if (!destination.parameters.config.init_data) destination.parameters.config.init_data = {}
-			if (!destination.parameters.config.init_data.instance) destination.parameters.config.init_data.instance = {
-				existing_destinations_policy: "update",
-				destinations: []
-			}
-			destination.parameters.config.init_data.instance.destinations.push({
-				Name: this.options.config.destName,
-				Authentication: "NoAuthentication",
-				ProxyType: "Internet",
-				Type: "HTTP",
-				URL: this.standaloneCall ? serviceUrl.origin : "~{srv-api/srv-url}",
-				"HTML5.DynamicDestination": true,
-				"HTML5.ForwardAuthToken": true
-			})
-			if (!this.standaloneCall) {
-				if (!destination.requires) destination.requires = []
-				destination.requires.push({ name: "srv-api" })
+			if (this.options.config.platform === "Application Frontend Service") {
+				const uiDeployer = rootMtaYaml.modules.find(module => module.name === `${this.options.config.projectId}-ui-deployer`)
+				if (!uiDeployer.parameters) uiDeployer.parameters = {}
+				if (!uiDeployer.parameters.config) uiDeployer.parameters.config = {}
+				if (!uiDeployer.parameters.config.destinations) uiDeployer.parameters.config.destinations = []
+				uiDeployer.parameters.config.destinations.push(
+					{
+						name: this.options.config.destName,
+						url: this.standaloneCall ? serviceUrl : "~{srv-api/srv-url}",
+						forwardAuthToken: true
+					}
+				)
+				if (!this.standaloneCall) {
+					uiDeployer.requires.push({ name: "srv-api" })
+				}
+			} else {
+				const destination = rootMtaYaml.resources.find(resource => resource.name === `${this.options.config.projectId}-destination-service`)
+				if (!destination.parameters.config) destination.parameters.config = {}
+				if (!destination.parameters.config.init_data) destination.parameters.config.init_data = {}
+				if (!destination.parameters.config.init_data.instance) destination.parameters.config.init_data.instance = {
+					existing_destinations_policy: "update",
+					destinations: []
+				}
+				destination.parameters.config.init_data.instance.destinations.push({
+					Name: this.options.config.destName,
+					Authentication: "NoAuthentication",
+					ProxyType: "Internet",
+					Type: "HTTP",
+					URL: this.standaloneCall ? serviceUrl.origin : "~{srv-api/srv-url}",
+					"HTML5.DynamicDestination": true,
+					"HTML5.ForwardAuthToken": true
+				})
+				if (!this.standaloneCall) {
+					if (!destination.requires) destination.requires = []
+					destination.requires.push({ name: "srv-api" })
+				}
 			}
 			this.writeDestination(this.destinationPath("mta.yaml"), yaml.stringify(rootMtaYaml))
 
@@ -154,19 +171,29 @@ export default class extends Generator {
 					xsappJsonPath = this.destinationPath("approuter/xs-app.json")
 					break
 
+				case "Application Frontend Service":
 				case "SAP HTML5 Application Repository Service":
 				case "SAP Build Work Zone, standard edition":
-					xsappJsonPath = this.destinationPath(`${this.options.config.uimoduleName}/webapp/xs-app.json`)
+					// check if file is stored in webapp folder or project root
+					const webappPath = this.destinationPath(`${this.options.config.uimoduleName}/webapp/xs-app.json`)
+					if (fs.existsSync(webappPath)) {
+						xsappJsonPath = webappPath
+					} else {
+						xsappJsonPath = this.destinationPath(`${this.options.config.uimoduleName}/xs-app.json`)
+					}
 					break
 			}
 			const xsappJson = JSON.parse(fs.readFileSync(xsappJsonPath))
 			xsappJson.routes.unshift({
 				source: `${serviceUrl.pathname}(.*)`,
 				destination: this.options.config.destName,
-				authenticationType: "none"
+				authenticationType: this.options.config.platform === "Application Frontend Service" ? "ias" : "xsuaa",
+				csrfProtection: this.options.config.platform !== "Application Frontend Service"
 			})
-			const wildcardRoute = xsappJson.routes.find(route => route.source === "^(.*)$")
-			wildcardRoute.authenticationType = "xsuaa"
+			if (this.options.config.platform !== "Application Frontend Service") {
+				const wildcardRoute = xsappJson.routes.find(route => route.source === "^(.*)$")
+				wildcardRoute.authenticationType = "xsuaa"
+			}
 			this.writeDestinationJSON(xsappJsonPath, xsappJson, null, 4)
 		}
 	}

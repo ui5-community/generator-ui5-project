@@ -28,8 +28,11 @@ export default class extends Generator {
 	async writing() {
 		this.log(chalk.green(`✨ creating new SAP CAP module for ${this.options.config.projectName}`))
 
+		// mta is not an option in the prompts, but it is required for the root mta.yaml
+		const capCapabilities = [...this.options.config.capCapabilities, 'mta']
+
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", "tiny-sample, data, xsuaa, mta, postgres"],
+		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--add", capCapabilities.join(",")],
 			this.destinationPath()
 		)
 
@@ -55,8 +58,9 @@ export default class extends Generator {
 		if (!rootMtaYaml.resources) rootMtaYaml.resources = []
 
 		const authName = `${this.options.config.projectId}-auth`
+		const xsuaaCapability = this.options.config.capCapabilities.includes("xsuaa")
 		// use auth and xs-security.json from cap module
-		if (["Static webserver", "Application Router"].includes(this.options.config.platform)) {
+		if (xsuaaCapability && ["Static webserver", "Application Router"].includes(this.options.config.platform)) {
 			const capAuth = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-auth`)
 			capAuth.name = authName
 			capAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
@@ -73,31 +77,78 @@ export default class extends Generator {
 			rootMtaYaml.resources.push(capAuth)
 		}
 		// use auth and xs-security.json from root
-		else if (["SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
+		else if (xsuaaCapability && ["Application Frontend Service", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform)) {
 			fs.rename(this.destinationPath("xs-security.json"), `${this.options.config.capName}/xs-security.json`, err => { })
 			const rootAuth = rootMtaYaml.resources.find(resource => resource.name === authName)
 			rootAuth.parameters.path = `${this.options.config.capName}/xs-security.json`
 		}
 
-		const capPostgres = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-postgres`)
-		capPostgres.name = `${this.options.config.projectId}-${capPostgres.name}`
-		rootMtaYaml.resources.push(capPostgres)
+		// TO-DO: move into on cleaner block
+		const postgresCapability = this.options.config.capCapabilities.includes("postgres")
+		let capPostgres = null
+		if(postgresCapability) {
+			capPostgres = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-postgres`)
+			capPostgres.name = `${this.options.config.projectId}-${capPostgres.name}`
+			rootMtaYaml.resources.push(capPostgres)
+		
 
-		const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-postgres-deployer`)
-		capDeployer.path = this.options.config.capName + "/" + capDeployer.path
-		capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
-		capDeployer.requires = [
-			{ name: capPostgres.name }
-		]
-		rootMtaYaml.modules.push(capDeployer)
+			const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-postgres-deployer`)
+			capDeployer.path = this.options.config.capName + "/" + capDeployer.path
+			capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
+			capDeployer.requires = [
+				{ name: capPostgres.name }
+			]
+			rootMtaYaml.modules.push(capDeployer)
+		}
 
+		const hanaCapability = this.options.config.capCapabilities.includes("hana")
+		let capHana = null
+		if(hanaCapability) {
+			capHana = capMtaYaml.resources.find(resource => resource.name === `${this.options.config.capName}-db`)
+			capHana.name = `${this.options.config.projectId}-${capHana.name}`
+			rootMtaYaml.resources.push(capHana)
+
+			const capDeployer = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-db-deployer`)
+			capDeployer.path = this.options.config.capName + "/" + capDeployer.path
+			capDeployer.name = `${this.options.config.projectId}-${capDeployer.name}`
+			capDeployer.requires = [
+				{ name: capHana.name }
+			]
+			rootMtaYaml.modules.push(capDeployer)
+		}
+	
 		const capSrv = capMtaYaml.modules.find(module => module.name === `${this.options.config.capName}-srv`)
-		capSrv.path = this.options.config.capName + "/" + capSrv.path
+		capSrv.path = `${this.options.config.capName}/${capSrv.path}`;
 		capSrv.name = `${this.options.config.projectId}-${capSrv.name}`
-		capSrv.requires = [
-			{ name: capPostgres.name },
-			{ name: authName }
-		]
+		delete capSrv["build-parameters"]
+		capSrv.requires = capSrv.requires ?? []
+		if (xsuaaCapability) {
+			const xsuaaDependency = capSrv.requires.find(dependency => dependency.name === `${this.options.config.capName}-auth`)
+			if(xsuaaDependency) {
+				xsuaaDependency.name = authName
+			} else {
+				capSrv.requires.push({ name: authName })
+			}
+		}
+		if (postgresCapability) {
+			const postgresServiceName = `${this.options.config.capName}-postgres`
+			const postgresDependency = capSrv.requires.find(dependency => dependency.name === postgresServiceName)
+			if(postgresDependency) {
+				postgresDependency.name = capPostgres.name
+			} else {
+				capSrv.requires.push({ name: `${this.options.config.projectId}-${capPostgres.name}` })
+			}
+		}
+		if (hanaCapability) {
+			const hanaServiceName = `${this.options.config.capName}-db`
+			const hanaDependency = capSrv.requires.find(dependency => dependency.name === hanaServiceName)
+			if(hanaDependency) {
+				hanaDependency.name = capHana.name
+			} else {
+				capSrv.requires.push({ name: `${this.options.config.projectId}-${capHana.name}` })
+			}
+		}
+	
 		rootMtaYaml.modules.push(capSrv)
 
 		fs.unlinkSync(this.destinationPath(`${this.options.config.capName}/mta.yaml`))
@@ -118,7 +169,7 @@ export default class extends Generator {
 						modelType: "OData v4",
 						modelUrl: "http://localhost:4004/odata/v4/catalog",
 						setupProxy: true,
-						setupRouteAndDest: ["Application Router", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform),
+						setupRouteAndDest: ["Application Router", "Application Frontend Service", "SAP HTML5 Application Repository Service", "SAP Build Work Zone, standard edition"].includes(this.options.config.platform),
 						destName: this.options.config.capName
 					}
 
