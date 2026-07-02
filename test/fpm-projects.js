@@ -79,7 +79,7 @@ export const tests = (testCase, uimodulePath) => {
 			)
 		}
 
-		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via preview-middleware)
+		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via fiori-tools-preview)
 		if (testCase.platform !== "SAP Build Work Zone, standard edition") {
 			assert.noFileContent(
 				path.join(uimodulePath, "ui5.yaml"),

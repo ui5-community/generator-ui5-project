@@ -66,7 +66,7 @@ export default class extends Generator {
 		}
 
 		if (localResources && this.options.config.platform !== "SAP Build Work Zone, standard edition") {
-			// only if no flpSandbox.html exists (via preview-middleware), as it requires proxy to fetch all libs
+			// only if no flpSandbox.html exists (via fiori-tools-preview), as it requires proxy to fetch all libs
 			deleteProxyToUI5(ui5Yaml)
 
 			packageJson.scripts.build = packageJson.scripts.build.replace("ui5 build", "ui5 build self-contained --all --include-task generateVersionInfo")

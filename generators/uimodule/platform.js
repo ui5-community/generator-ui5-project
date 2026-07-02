@@ -146,7 +146,7 @@ export default class extends Generator {
 
 			ui5Yaml.server.customMiddleware.push(
 				{
-					name: "preview-middleware",
+					name: "fiori-tools-preview",
 					afterMiddleware: "compression",
 					configuration: {
 						flp: {
@@ -160,7 +160,7 @@ export default class extends Generator {
 			uimodulePackageJson.scripts["start-flp"] = "fiori run --open test/flpSandbox.html"
 		}
 
-		// freestyle app template includes launchpad, which we don't need as we use the preview-middleware if needed
+		// freestyle app template includes launchpad, which we don't need as we use the fiori-tools-preview if needed
 		if (!this.options.config.enableFPM) {
 			fs.unlinkSync(this.destinationPath("webapp/test/flpSandbox.html"))
 			fs.unlinkSync(this.destinationPath("webapp/test/locate-reuse-libs.js"))
