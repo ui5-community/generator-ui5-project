@@ -16,11 +16,11 @@ export default class extends Generator {
 		uimodulePackageJson["devDependencies"]["@ui5/linter"] = dependencies["@ui5/linter"]
 		uimodulePackageJson["scripts"]["ui5lint"] = "ui5lint"
 
-		if (!fs.existsSync(this.destinationPath(".eslintrc"))) {
+		if (!fs.existsSync(this.destinationPath(".eslintrc")) && !fs.existsSync(this.destinationPath("eslint.config.mjs"))) {
 			this.fs.copyTpl(
 				// for some reason this.templatePath() doesn't work here
-				path.join(__dirname, "templates/.eslintrc"),
-				this.destinationPath(".eslintrc"),
+				path.join(__dirname, "templates/eslint.config.mjs"),
+				this.destinationPath("eslint.config.mjs"),
 				{}
 			)
 			uimodulePackageJson["devDependencies"]["@sap-ux/eslint-plugin-fiori-tools"] = dependencies["@sap-ux/eslint-plugin-fiori-tools"]
