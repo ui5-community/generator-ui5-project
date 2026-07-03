@@ -1,9 +1,9 @@
 import chalk from "chalk"
-import fpmWriter from "@sap-ux/fe-fpm-writer"
+import { enableFPM, generateObjectPage, generateListReport, generateCustomPage } from "@sap-ux/fe-fpm-writer"
 import fs from "fs"
 import Generator from "yeoman-generator"
 import prompts from "./prompts.js"
-import serviceWriter from "@sap-ux/odata-service-writer"
+import { generate as serviceWriterGenerate, OdataVersion } from "@sap-ux/odata-service-writer"
 import { lookForParentUI5ProjectAndPrompt } from "../helpers.js"
 
 import PlatformGenerator from "../uimodule/platform.js"
@@ -26,7 +26,7 @@ export default class extends Generator {
 
 		// enable fpm
 		const target = this.destinationPath(this.options.config.uimoduleName)
-		fpmWriter.enableFPM(target, {
+		enableFPM(target, {
 			replaceAppComponent: this.options.config.replaceComponent,
 			typescript: this.options.config.enableTypescript || false
 		}, this.fs)
@@ -47,11 +47,11 @@ export default class extends Generator {
 		const uimodulePath = this.destinationPath(this.options.config.uimoduleName)
 
 		if (this.options.config.serviceUrl) {
-			await serviceWriter.generate(uimodulePath, {
+			await serviceWriterGenerate(uimodulePath, {
 				url: this.options.config.host,
 				client: this.options.config.client,
 				path: this.options.config.path,
-				version: serviceWriter.OdataVersion.v4,
+				version: OdataVersion.v4,
 				metadata: this.options.config.metadata,
 				localAnnotationsName: "annotation"
 			}, this.fs)
@@ -59,18 +59,18 @@ export default class extends Generator {
 
 		switch (this.options.config.pageType) {
 			case "object":
-				fpmWriter.generateObjectPage(uimodulePath, {
+				generateObjectPage(uimodulePath, {
 					entity: this.options.config.mainEntity,
 					navigation: navigation
 				}, this.fs)
 				break
 			case "list report":
-				fpmWriter.generateListReport(uimodulePath, {
+				generateListReport(uimodulePath, {
 					entity: this.options.config.mainEntity
 				}, this.fs)
 				break
 			default:
-				fpmWriter.generateCustomPage(uimodulePath, {
+				generateCustomPage(uimodulePath, {
 					name: this.options.config.viewName,
 					entity: this.options.config.mainEntity,
 					navigation: navigation,

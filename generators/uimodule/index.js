@@ -60,7 +60,8 @@ export default class extends Generator {
 			if (this.options.config.enableTypescript) {
 				appConfig.appOptions.typescript = true
 			}
-			await writeFPMApp(this.destinationPath(), appConfig, this.fs)
+			const fpmFs = await writeFPMApp(this.destinationPath(), appConfig)
+			await new Promise(resolve => fpmFs.commit(resolve))
 			this.composeWith(
 				{
 					Generator: FPMPageGenerator,
@@ -75,7 +76,11 @@ export default class extends Generator {
 					viewName: "MainView"
 				}
 			}
-			await writeFreestyleApp(this.destinationPath(), appConfig, this.fs)
+			// fiori-freestyle-writer reads ui5-local.yaml before generating it (upstream sap-ux bug)
+			fs.mkdirSync(this.destinationPath(), { recursive: true })
+			fs.writeFileSync(this.destinationPath("ui5-local.yaml"), "specVersion: \"2.6\"")
+			const freestyleFs = await writeFreestyleApp(this.destinationPath(), appConfig)
+			await new Promise(resolve => freestyleFs.commit(resolve))
 
 			// compose with these subgenerators from here only for freestyle apps
 			// for fpm apps these subgenerators have to be called from within ../fpmpage to ensure they run after the fe-fpm-writer doesn't overwrite them
