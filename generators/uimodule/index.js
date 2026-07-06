@@ -56,7 +56,6 @@ export default class extends Generator {
 		}
 
 		if (this.options.config.enableFPM) {
-			console.log(this.options.config.enableFioriTools)
 			appConfig.appOptions.sapux = this.options.config.enableFioriTools
 			appConfig.app.baseComponent = "sap/fe/core/AppComponent"
 			if (this.options.config.enableTypescript) {
