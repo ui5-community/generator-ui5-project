@@ -32,8 +32,8 @@ export default class extends Generator {
 		const capCapabilities = [...this.options.config.capCapabilities, 'mta']
 
 		// TO-DO: check for typescript and configure cap project accordingly
-		this.spawnCommandSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--nodejs", "--add", capCapabilities.join(",")],
-			this.destinationPath()
+		this.spawnSync("npx", ["-p", "@sap/cds-dk", "cds", "init", `${this.options.config.capName}`, "--nodejs", "--add", capCapabilities.join(",")],
+			{ cwd: this.destinationPath() }
 		)
 
 		addModuleToNPMWorkspaces.call(this, this.options.config.capName)

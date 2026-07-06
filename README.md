@@ -202,7 +202,7 @@ With this option the uimodules gets deployed to SAP NetWeaver using the [deploy-
 Follow these steps to debug this generator (or run it in standalone mode for that matter):
 
 1. Clone this repository.
-1. Start one of the [subgenerators](#subgenerators) in a JavaScript debug terminal within VS Code: `yo ./generators/<subgenerator>`, e.g. `yo ./generators/project`
+1. Start one of the [subgenerators](#subgenerators) in a JavaScript debug terminal within VS Code: `yo ./generators/<subgenerator>`, e.g. `yo ./generators/project` (adjust the path accordingly if running from within an existing application directory)
 
 > If you are feeling really fancy, you can also start a subgenerator via the native Node.js debugger and connect an editor of your choice (any Neovim users here? 👋🏻) via the [Debug Adapter Protocol](https://microsoft.github.io/debug-adapter-protocol/): `node --inspect node_modules/yo/lib/cli.js ui5-project:<subgenerator>`
 

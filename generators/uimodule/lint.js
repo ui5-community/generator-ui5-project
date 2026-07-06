@@ -16,3 +16,4 @@ export default class extends Generator {
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}
 }
+

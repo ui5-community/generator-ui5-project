@@ -79,6 +79,17 @@ export default class extends Generator {
 			await new Promise(resolve => freestyleFs.commit(resolve))
 		}
 
+			if (this.options.config.enableFPM) {
+				this.composeWith(
+					{
+						Generator: FPMPageGenerator,
+						path: require.resolve("../fpmpage")
+					},
+					{ config: this.options.config }
+				)
+			}
+
+
 			this.composeWith(
 				{
 					Generator: PlatformGenerator,
@@ -126,15 +137,6 @@ export default class extends Generator {
 					uimoduleName: this.options.config.uimoduleName
 				}
 			)
-			if (this.options.config.enableFPM) {
-				this.composeWith(
-					{
-						Generator: FPMPageGenerator,
-						path: require.resolve("../fpmpage")
-					},
-					{ config: this.options.config }
-				)
-			}
 
 	}
 

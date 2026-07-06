@@ -15,6 +15,9 @@ export default class extends Generator {
 		delete uimodulePackageJson.scripts["deploy"]
 		delete uimodulePackageJson.scripts["deploy-config"]
 
+		// we do have a .gitignore at root level
+		fs.unlinkSync(this.destinationPath(".gitignore"))
+
 		switch (this.options.config.platform) {
 			case "Static webserver":
 				uimodulePackageJson.scripts["build"] = `ui5 build --config=ui5.yaml --clean-dest --dest ../dist/${this.options.config.uimoduleName}`
