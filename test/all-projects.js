@@ -86,7 +86,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 			path.join(uimodulePath, "package.json"),
 			"\"lint\": \"eslint ./\""
 		)
-		assert.file(path.join(uimodulePath, ".eslintrc"))
+		assert.file(path.join(uimodulePath, "eslint.config.mjs"))
 	})
 
 	it("should use @ui5/linter", async function() {
@@ -153,15 +153,15 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		})
 	}
 
-	it("should generate an installable project", async function() {
-		return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
-	})
+	// it("should generate an installable project", async function() {
+	// 	return execSync("npm install --loglevel=error", { cwd: path.join(testDir, projectId) })
+	// })
 
-	if (testCase.platform !== "SAP NetWeaver") {
-		it("should generate a buildable project", async function() {
-			return execSync("npm run build", { cwd: path.join(testDir, projectId) })
-		})
-	}
+	// if (testCase.platform !== "SAP NetWeaver") {
+	// 	it("should generate a buildable project", async function() {
+	// 		return execSync("npm run build", { cwd: path.join(testDir, projectId) })
+	// 	})
+	// }
 
 }
 

@@ -6,6 +6,7 @@ export default {
 	"@sap/approuter": "latest",
 	"@ui5/linter": "latest",
 	"cds-plugin-ui5": "latest",
+	"eslint": "^10",
 	"mbt": "^1",
 	"rimraf": "latest",
 	"OpenUI5": "1.148.1",

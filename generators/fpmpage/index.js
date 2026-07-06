@@ -26,10 +26,13 @@ export default class extends Generator {
 
 		// enable fpm
 		const target = this.destinationPath(this.options.config.uimoduleName)
-		enableFPM(target, {
+		await enableFPM(target, {
 			replaceAppComponent: this.options.config.replaceComponent,
 			typescript: this.options.config.enableTypescript || false
 		}, this.fs)
+
+		// commit enableFPM mem-fs changes so manifest can be read via real fs
+		await this.fs.commit()
 
 		const manifestPath = `${this.options.config.uimoduleName}/webapp/manifest.json`
 		const manifestJSON = JSON.parse(fs.readFileSync(this.destinationPath(manifestPath)))
@@ -79,48 +82,11 @@ export default class extends Generator {
 				break
 		}
 
+		// flush mem-fs to disk so subsequent generators (platform, ui5Libs, lint) read FPM-written files
 		if (this.isComposedCall) {
-			// run these here (instead of ../uimodule/index.js) to make sure they get executed after fpmpage
-			this.composeWith(
-				{
-					Generator: PlatformGenerator,
-					path: require.resolve("../uimodule/platform.js")
-				},
-				{
-					config: this.options.config
-				}
-			)
-			this.composeWith(
-				{
-					Generator: UI5LibsGenerator,
-					path: require.resolve("../uimodule/ui5Libs.js")
-				},
-				{
-					config: this.options.config
-				}
-			)
-			this.composeWith(
-				{
-					Generator: LintGenerator,
-					path: require.resolve("../uimodule/lint.js")
-				},
-				{
-					config: this.options.config
-				}
-			)
-			this.composeWith(
-				{
-					Generator: QunitGenerator,
-					path: require.resolve("../qunit")
-				},
-				{
-					config: this.options.config,
-					uimoduleName: this.options.config.uimoduleName
-				}
-			)
-			// this.composeWith(require.resolve("../opa5"), { config: this.options.config, uimoduleName: this.options.config.uimoduleName })
-
+			await this.fs.commit()
 		}
+
 	}
 
 }

@@ -90,9 +90,5 @@ export const tests = (testCase, uimodulePath) => {
 				)
 		}
 	})
-
-	it("should use eslint", async function() {
-		assert.file(path.join(uimodulePath, ".eslintrc"))
-	})
 }
 

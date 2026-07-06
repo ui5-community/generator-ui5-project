@@ -23,9 +23,10 @@ export default class extends Generator {
 				this.destinationPath("eslint.config.mjs"),
 				{}
 			)
-			uimodulePackageJson["devDependencies"]["@sap-ux/eslint-plugin-fiori-tools"] = dependencies["@sap-ux/eslint-plugin-fiori-tools"]
-			uimodulePackageJson["scripts"]["lint"] = "eslint ./"
 		}
+		uimodulePackageJson["devDependencies"]["eslint"] = dependencies["eslint"]
+		uimodulePackageJson["devDependencies"]["@sap-ux/eslint-plugin-fiori-tools"] = dependencies["@sap-ux/eslint-plugin-fiori-tools"]
+		uimodulePackageJson["scripts"]["lint"] = "eslint ./"
 
 		fs.writeFileSync(this.destinationPath("package.json"), JSON.stringify(uimodulePackageJson, null, 4))
 	}

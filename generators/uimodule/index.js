@@ -79,11 +79,11 @@ export default class extends Generator {
 			// fiori-freestyle-writer reads ui5-local.yaml before generating it (upstream sap-ux bug)
 			fs.mkdirSync(this.destinationPath(), { recursive: true })
 			fs.writeFileSync(this.destinationPath("ui5-local.yaml"), "specVersion: \"2.6\"")
+
 			const freestyleFs = await writeFreestyleApp(this.destinationPath(), appConfig)
 			await new Promise(resolve => freestyleFs.commit(resolve))
+		}
 
-			// compose with these subgenerators from here only for freestyle apps
-			// for fpm apps these subgenerators have to be called from within ../fpmpage to ensure they run after the fe-fpm-writer doesn't overwrite them
 			this.composeWith(
 				{
 					Generator: PlatformGenerator,
@@ -131,7 +131,7 @@ export default class extends Generator {
 					uimoduleName: this.options.config.uimoduleName
 				}
 			)
-		}
+
 	}
 
 	install() {

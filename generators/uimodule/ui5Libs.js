@@ -39,26 +39,30 @@ export default class extends Generator {
 				})
 				fs.writeFileSync(
 					this.destinationPath("webapp/index.html"),
-					indexHtml.replace(`src="resources/sap-ui-core.js"`, `src="https://sdk.openui5.org/${dependencies["OpenUI5"]}/resources/sap-ui-core.js"`)
+					indexHtml.replace("https://ui5.sap.com", "https://sdk.openui5.org")
 				)
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["OpenUI5"]
 				break
 			case "Content delivery network (SAPUI5)":
 				delete ui5Yaml.framework
-				fs.writeFileSync(
-					this.destinationPath("webapp/index.html"),
-					indexHtml.replace(`src="resources/sap-ui-core.js"`, `src="https://ui5.sap.com/${dependencies["SAPUI5"]}/resources/sap-ui-core.js"`)
-				)
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["SAPUI5"]
 				break
 			case "Local resources (OpenUI5)":
 				localResources = true
+				fs.writeFileSync(
+					this.destinationPath("webapp/index.html"),
+					indexHtml.replace(`https://ui5.sap.com/${dependencies["OpenUI5"]}/resources/sap-ui-core.js`, "resources/sap-ui-core.js")
+				)
 				ui5Yaml.framework.name = "OpenUI5"
 				ui5Yaml.framework.version = dependencies["OpenUI5"]
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["OpenUI5"]
 				break
 			case "Local resources (SAPUI5)":
 				localResources = true
+				fs.writeFileSync(
+					this.destinationPath("webapp/index.html"),
+					indexHtml.replace(`https://ui5.sap.com/${dependencies["SAPUI5"]}/resources/sap-ui-core.js`, "resources/sap-ui-core.js")
+				)
 				ui5Yaml.framework.name = "SAPUI5"
 				ui5Yaml.framework.version = dependencies["SAPUI5"]
 				manifestJSON["sap.ui5"]["dependencies"]["minUI5Version"] = dependencies["SAPUI5"]
