@@ -70,9 +70,6 @@ export default class extends Generator {
 					viewName: "MainView"
 				}
 			}
-			// fiori-freestyle-writer reads ui5-local.yaml before generating it (upstream sap-ux bug)
-			fs.mkdirSync(this.destinationPath(), { recursive: true })
-			fs.writeFileSync(this.destinationPath("ui5-local.yaml"), "specVersion: \"2.6\"")
 
 			const freestyleFs = await writeFreestyleApp(this.destinationPath(), appConfig)
 			await new Promise(resolve => freestyleFs.commit(resolve))
