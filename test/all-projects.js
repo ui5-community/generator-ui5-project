@@ -34,10 +34,10 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 			)
 		})
 
-		it("should use the preview-middleware for the flpSandbox.html", async function() {
+		it("should use the fiori-tools-preview for the flpSandbox.html", async function() {
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),
-				"preview-middleware"
+				"fiori-tools-preview"
 			)
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),
@@ -86,7 +86,11 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 			path.join(uimodulePath, "package.json"),
 			"\"lint\": \"eslint ./\""
 		)
-		assert.file(path.join(uimodulePath, ".eslintrc"))
+		assert.fileContent(
+			path.join(uimodulePath, "package.json"),
+			"@sap-ux/eslint-plugin-fiori-tools"
+		)
+		assert.file(path.join(uimodulePath, "eslint.config.mjs"))
 	})
 
 	it("should use @ui5/linter", async function() {
@@ -103,7 +107,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 	it("should have basic qunit configuration", async function() {
 		assert.fileContent(
 			path.join(uimodulePath, "ui5.yaml"),
-			"preview-middleware"
+			"fiori-tools-preview"
 		)
 		assert.fileContent(
 			path.join(uimodulePath, "ui5.yaml"),
@@ -129,7 +133,7 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 		it("should have basic opa5 configuration", async function() {
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),
-				"preview-middleware"
+				"fiori-tools-preview"
 			)
 			assert.fileContent(
 				path.join(uimodulePath, "ui5.yaml"),

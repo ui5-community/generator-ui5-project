@@ -51,7 +51,7 @@ export async function ensureCorrectDestinationPath() {
 export async function addPreviewMiddlewareTestConfig(framework) {
 	const ui5Yaml = yaml.parse(fs.readFileSync(this.destinationPath("ui5.yaml")).toString())
 	const testConfig = { framework: framework }
-	const middlewareName = "preview-middleware"
+	const middlewareName = "fiori-tools-preview"
 
 	let middleware = ui5Yaml.server.customMiddleware.find(m => m.name === middlewareName)
 

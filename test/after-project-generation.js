@@ -150,7 +150,7 @@ export const tests = (testCase, uimodulePath, uimodulePath2) => {
 	it("should have new opa5 journey and page object", async function() {
 		const fileEnding = testCase.enableTypescript ? "ts" : "js"
 		assert.file(path.join(uimodulePath, `webapp/test/integration/${testCase.testName}Journey.${fileEnding}`))
-		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.page.${fileEnding}`))
+		assert.file(path.join(uimodulePath, `webapp/test/integration/pages/${testCase.viewName}.${fileEnding}`))
 	})
 
 

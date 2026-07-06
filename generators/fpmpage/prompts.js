@@ -1,4 +1,4 @@
-import axios from "@sap-ux/axios-extension"
+import { createServiceForUrl } from "@sap-ux/axios-extension"
 import fs from "fs"
 import {
 	validateAlphaNumeric,
@@ -31,7 +31,7 @@ export default async function prompts() {
 		if (serviceUrl.searchParams.has("sap-client")) {
 			this.options.config.client = serviceUrl.searchParams.get("sap-client")
 		}
-		const service = axios.createServiceForUrl(serviceUrl, {
+		const service = createServiceForUrl(serviceUrl, {
 			ignoreCertErrors: true
 		})
 
@@ -86,7 +86,7 @@ export default async function prompts() {
 		)
 	}
 	this.options.config.pageType = (await this.prompt({
-		type: "list",
+		type: "select",
 		name: "pageType",
 		message: "What type of page do you want to add?",
 		choices: pageOptions,

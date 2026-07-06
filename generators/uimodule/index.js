@@ -38,10 +38,12 @@ export default class extends Generator {
 			app: {
 				id: this.options.config.uimoduleName,
 				title: this.options.config.tileName || this.options.config.uimoduleName,
-				description: `${this.options.config.uimoduleName} description`
+				description: `${this.options.config.uimoduleName} description`,
+				projectType: "EDMXBackend",
 			},
 			appOptions: {
-				loadReuseLibs: true
+				loadReuseLibs: true,
+				eslint: true
 			},
 			package: {
 				name: this.options.config.uimoduleName
@@ -53,21 +55,14 @@ export default class extends Generator {
 			}
 		}
 
-		// pass appConfig to @sap-ux writers
 		if (this.options.config.enableFPM) {
 			appConfig.appOptions.sapux = this.options.config.enableFioriTools
 			appConfig.app.baseComponent = "sap/fe/core/AppComponent"
 			if (this.options.config.enableTypescript) {
 				appConfig.appOptions.typescript = true
 			}
-			await writeFPMApp(this.destinationPath(), appConfig, this.fs)
-			this.composeWith(
-				{
-					Generator: FPMPageGenerator,
-					path: require.resolve("../fpmpage")
-				},
-				{ config: this.options.config }
-			)
+			const fpmFs = await writeFPMApp(this.destinationPath(), appConfig)
+			await new Promise(resolve => fpmFs.commit(resolve))
 		} else {
 			appConfig.template = {
 				type: TemplateType.Basic,
@@ -75,10 +70,22 @@ export default class extends Generator {
 					viewName: "MainView"
 				}
 			}
-			await writeFreestyleApp(this.destinationPath(), appConfig, this.fs)
 
-			// compose with these subgenerators from here only for freestyle apps
-			// for fpm apps these subgenerators have to be called from within ../fpmpage to ensure they run after the fe-fpm-writer doesn't overwrite them
+			const freestyleFs = await writeFreestyleApp(this.destinationPath(), appConfig)
+			await new Promise(resolve => freestyleFs.commit(resolve))
+		}
+
+			if (this.options.config.enableFPM) {
+				this.composeWith(
+					{
+						Generator: FPMPageGenerator,
+						path: require.resolve("../fpmpage")
+					},
+					{ config: this.options.config }
+				)
+			}
+
+
 			this.composeWith(
 				{
 					Generator: PlatformGenerator,
@@ -126,7 +133,7 @@ export default class extends Generator {
 					uimoduleName: this.options.config.uimoduleName
 				}
 			)
-		}
+
 	}
 
 	install() {

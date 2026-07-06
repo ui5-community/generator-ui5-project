@@ -2,35 +2,35 @@ import assert from "yeoman-assert"
 import path from "path"
 
 export const testCases = [
-	// {
-	// 	platform: "Static webserver",
-	// 	enableFPM: true,
-	// 	serviceUrl: "http://localhost:4004/travel",
-	// 	mainEntity: "BookedFlights",
-	// 	enableTypescript: false
-	// },
-	// {
-	// 	platform: "Application Router",
-	// 	enableFPM: true,
-	// 	serviceUrl: "http://localhost:4004/travel",
-	// 	mainEntity: "BookedFlights",
-	// 	enableTypescript: true,
-	// 	newDir: false
-	// },
-	// {
-	// 	platform: "SAP HTML5 Application Repository Service",
-	// 	enableFPM: true,
-	// 	serviceUrl: "http://localhost:4004/travel",
-	// 	mainEntity: "BookedFlights",
-	// 	enableTypescript: true
-	// },
-	// {
-	// 	platform: "SAP Build Work Zone, standard edition",
-	// 	enableFPM: true,
-	// 	serviceUrl: "http://localhost:4004/travel",
-	// 	mainEntity: "BookedFlights",
-	// 	enableTypescript: true
-	// },
+	{
+		platform: "Static webserver",
+		enableFPM: true,
+		serviceUrl: "http://localhost:4004/travel",
+		mainEntity: "BookedFlights",
+		enableTypescript: false
+	},
+	{
+		platform: "Application Router",
+		enableFPM: true,
+		serviceUrl: "http://localhost:4004/travel",
+		mainEntity: "BookedFlights",
+		enableTypescript: true,
+		newDir: false
+	},
+	{
+		platform: "SAP HTML5 Application Repository Service",
+		enableFPM: true,
+		serviceUrl: "http://localhost:4004/travel",
+		mainEntity: "BookedFlights",
+		enableTypescript: true
+	},
+	{
+		platform: "SAP Build Work Zone, standard edition",
+		enableFPM: true,
+		serviceUrl: "http://localhost:4004/travel",
+		mainEntity: "BookedFlights",
+		enableTypescript: true
+	},
 	{
 		platform: "SAP Build Work Zone, standard edition",
 		enableFPM: true,
@@ -53,12 +53,12 @@ export const tests = (testCase, uimodulePath) => {
 			path.join(uimodulePath, "ui5.yaml"),
 			path.join(uimodulePath, "webapp/manifest.json"),
 			path.join(uimodulePath, "webapp/index.html"),
-			path.join(uimodulePath, "webapp/ext/main/Main.view.xml")
+			path.join(uimodulePath, "webapp/ext/view/Main.view.xml")
 		]
 		if (testCase.enableTypescript) {
-			files.push(path.join(uimodulePath, "webapp/ext/main/Main.controller.ts"))
+			files.push(path.join(uimodulePath, "webapp/ext/view/Main.controller.ts"))
 		} else {
-			files.push(path.join(uimodulePath, "webapp/ext/main/Main.controller.js"))
+			files.push(path.join(uimodulePath, "webapp/ext/view/Main.controller.js"))
 		}
 		assert.file(files)
 	})
@@ -79,7 +79,7 @@ export const tests = (testCase, uimodulePath) => {
 			)
 		}
 
-		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via preview-middleware)
+		// don't proxy resources/ to CDN unless its needed for flpSandbox.html (via fiori-tools-preview)
 		if (testCase.platform !== "SAP Build Work Zone, standard edition") {
 			assert.noFileContent(
 				path.join(uimodulePath, "ui5.yaml"),
@@ -148,10 +148,6 @@ export const tests = (testCase, uimodulePath) => {
 		assert.fileContent(
 			path.join(uimodulePath, "package.json"),
 			"sapux"
-		)
-		assert.fileContent(
-			path.join(uimodulePath, "package.json"),
-			"@sap/ux-specification"
 		)
 	})
 
