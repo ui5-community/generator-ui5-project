@@ -86,7 +86,7 @@ export default async function prompts() {
 		)
 	}
 	this.options.config.pageType = (await this.prompt({
-		type: "list",
+		type: "select",
 		name: "pageType",
 		message: "What type of page do you want to add?",
 		choices: pageOptions,

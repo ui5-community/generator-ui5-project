@@ -38,10 +38,12 @@ export default class extends Generator {
 			app: {
 				id: this.options.config.uimoduleName,
 				title: this.options.config.tileName || this.options.config.uimoduleName,
-				description: `${this.options.config.uimoduleName} description`
+				description: `${this.options.config.uimoduleName} description`,
+				projectType: "EDMXBackend",
 			},
 			appOptions: {
-				loadReuseLibs: true
+				loadReuseLibs: true,
+				eslint: true
 			},
 			package: {
 				name: this.options.config.uimoduleName
@@ -53,8 +55,8 @@ export default class extends Generator {
 			}
 		}
 
-		// pass appConfig to @sap-ux writers
 		if (this.options.config.enableFPM) {
+			console.log(this.options.config.enableFioriTools)
 			appConfig.appOptions.sapux = this.options.config.enableFioriTools
 			appConfig.app.baseComponent = "sap/fe/core/AppComponent"
 			if (this.options.config.enableTypescript) {
@@ -62,13 +64,6 @@ export default class extends Generator {
 			}
 			const fpmFs = await writeFPMApp(this.destinationPath(), appConfig)
 			await new Promise(resolve => fpmFs.commit(resolve))
-			this.composeWith(
-				{
-					Generator: FPMPageGenerator,
-					path: require.resolve("../fpmpage")
-				},
-				{ config: this.options.config }
-			)
 		} else {
 			appConfig.template = {
 				type: TemplateType.Basic,
@@ -131,6 +126,15 @@ export default class extends Generator {
 					uimoduleName: this.options.config.uimoduleName
 				}
 			)
+			if (this.options.config.enableFPM) {
+				this.composeWith(
+					{
+						Generator: FPMPageGenerator,
+						path: require.resolve("../fpmpage")
+					},
+					{ config: this.options.config }
+				)
+			}
 
 	}
 

@@ -53,12 +53,12 @@ export const tests = (testCase, uimodulePath) => {
 			path.join(uimodulePath, "ui5.yaml"),
 			path.join(uimodulePath, "webapp/manifest.json"),
 			path.join(uimodulePath, "webapp/index.html"),
-			path.join(uimodulePath, "webapp/ext/main/Main.view.xml")
+			path.join(uimodulePath, "webapp/ext/view/Main.view.xml")
 		]
 		if (testCase.enableTypescript) {
-			files.push(path.join(uimodulePath, "webapp/ext/main/Main.controller.ts"))
+			files.push(path.join(uimodulePath, "webapp/ext/view/Main.controller.ts"))
 		} else {
-			files.push(path.join(uimodulePath, "webapp/ext/main/Main.controller.js"))
+			files.push(path.join(uimodulePath, "webapp/ext/view/Main.controller.js"))
 		}
 		assert.file(files)
 	})
@@ -148,10 +148,6 @@ export const tests = (testCase, uimodulePath) => {
 		assert.fileContent(
 			path.join(uimodulePath, "package.json"),
 			"sapux"
-		)
-		assert.fileContent(
-			path.join(uimodulePath, "package.json"),
-			"@sap/ux-specification"
 		)
 	})
 

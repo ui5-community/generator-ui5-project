@@ -6,13 +6,6 @@ import prompts from "./prompts.js"
 import { generate as serviceWriterGenerate, OdataVersion } from "@sap-ux/odata-service-writer"
 import { lookForParentUI5ProjectAndPrompt } from "../helpers.js"
 
-import PlatformGenerator from "../uimodule/platform.js"
-import UI5LibsGenerator from "../uimodule/ui5Libs.js"
-import LintGenerator from "../uimodule/lint.js"
-import QunitGenerator from "../qunit/index.js"
-import { createRequire } from "node:module"
-const require = createRequire(import.meta.url)
-
 export default class extends Generator {
 	static displayName = "Add a page to a Fiori elements FPM application."
 
@@ -62,18 +55,18 @@ export default class extends Generator {
 
 		switch (this.options.config.pageType) {
 			case "object":
-				generateObjectPage(uimodulePath, {
+				await generateObjectPage(uimodulePath, {
 					entity: this.options.config.mainEntity,
 					navigation: navigation
 				}, this.fs)
 				break
 			case "list report":
-				generateListReport(uimodulePath, {
+				await generateListReport(uimodulePath, {
 					entity: this.options.config.mainEntity
 				}, this.fs)
 				break
 			default:
-				generateCustomPage(uimodulePath, {
+				await generateCustomPage(uimodulePath, {
 					name: this.options.config.viewName,
 					entity: this.options.config.mainEntity,
 					navigation: navigation,

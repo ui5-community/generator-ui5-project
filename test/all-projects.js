@@ -86,6 +86,10 @@ export const allProjects = (testCase, testDir, projectId, uimoduleName, uimodule
 			path.join(uimodulePath, "package.json"),
 			"\"lint\": \"eslint ./\""
 		)
+		assert.fileContent(
+			path.join(uimodulePath, "package.json"),
+			"@sap-ux/eslint-plugin-fiori-tools"
+		)
 		assert.file(path.join(uimodulePath, "eslint.config.mjs"))
 	})
 
